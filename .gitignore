@@ -23,6 +23,9 @@
 # misc
 .DS_Store
 *.pem
+/snapshots/
+/supabase/.temp/
+*.zip
 
 # debug
 npm-debug.log*
