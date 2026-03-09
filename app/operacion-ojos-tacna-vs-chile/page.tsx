@@ -1,56 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { Suspense } from 'react'
+import { LeadCaptureForm } from '@/components/forms/lead-capture-form'
 
 export default function OperacionOjosTacnaVsChilePage() {
-  const [name, setName] = useState('')
-  const [phone, setPhone] = useState('')
-  const [message, setMessage] = useState('')
-  const [loading, setLoading] = useState(false)
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-
-    if (loading) return
-
-    setLoading(true)
-
-    try {
-      const response = await fetch('/api/create-lead', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name,
-          phone,
-          tourist_phone: phone,
-          message: message || null,
-          service_name: 'oftalmologia',
-          landing_path: '/operacion-ojos-tacna-vs-chile',
-        }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        alert(data.error || 'No se pudo enviar la solicitud.')
-        setLoading(false)
-        return
-      }
-
-      alert('Solicitud enviada. Nuestro equipo te contactará por WhatsApp.')
-      setName('')
-      setPhone('')
-      setMessage('')
-    } catch {
-      alert('No se pudo enviar la solicitud.')
-    }
-
-    setLoading(false)
-  }
-
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
       <section className="bg-[linear-gradient(180deg,#dbeafe_0%,#f8fafc_100%)] px-5 py-14 sm:px-6 lg:px-8">
@@ -83,7 +37,9 @@ export default function OperacionOjosTacnaVsChilePage() {
               <h2 className="mb-4 text-2xl font-bold">Comparativa rápida</h2>
               <div className="grid gap-4">
                 <div className="rounded-2xl border border-rose-100 bg-rose-50 p-4">
-                  <div className="mb-2 text-sm font-bold uppercase tracking-[0.08em] text-rose-700">En Chile</div>
+                  <div className="mb-2 text-sm font-bold uppercase tracking-[0.08em] text-rose-700">
+                    En Chile
+                  </div>
                   <p className="text-sm leading-7 text-slate-700">
                     La atención o los procedimientos oftalmológicos suelen tener costos más altos y
                     una coordinación inicial menos flexible.
@@ -91,23 +47,29 @@ export default function OperacionOjosTacnaVsChilePage() {
                 </div>
 
                 <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
-                  <div className="mb-2 text-sm font-bold uppercase tracking-[0.08em] text-emerald-700">En Tacna</div>
+                  <div className="mb-2 text-sm font-bold uppercase tracking-[0.08em] text-emerald-700">
+                    En Tacna
+                  </div>
                   <p className="text-sm leading-7 text-slate-700">
-                    Los costos pueden ser considerablemente menores, con una alternativa más accesible
-                    para pacientes del norte de Chile.
+                    Los costos pueden ser considerablemente menores, con una alternativa más
+                    accesible para pacientes del norte de Chile.
                   </p>
                 </div>
 
                 <div className="rounded-2xl border border-sky-100 bg-sky-50 p-4">
-                  <div className="mb-2 text-sm font-bold uppercase tracking-[0.08em] text-sky-700">Cercanía</div>
+                  <div className="mb-2 text-sm font-bold uppercase tracking-[0.08em] text-sky-700">
+                    Cercanía
+                  </div>
                   <p className="text-sm leading-7 text-slate-700">
-                    La cercanía con la frontera facilita la atención y hace más simple coordinar una
-                    evaluación rápida por WhatsApp.
+                    La cercanía con la frontera facilita la atención y hace más simple coordinar
+                    una evaluación rápida por WhatsApp.
                   </p>
                 </div>
 
                 <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
-                  <div className="mb-2 text-sm font-bold uppercase tracking-[0.08em] text-amber-700">Ahorro</div>
+                  <div className="mb-2 text-sm font-bold uppercase tracking-[0.08em] text-amber-700">
+                    Ahorro
+                  </div>
                   <p className="text-sm leading-7 text-slate-700">
                     Muchos clientes buscan un ahorro importante frente a Chile y mejores condiciones
                     de acceso comercial antes de viajar.
@@ -120,7 +82,7 @@ export default function OperacionOjosTacnaVsChilePage() {
       </section>
 
       <section className="px-5 py-14 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl grid gap-6 lg:grid-cols-2">
+        <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-2">
           <div className="rounded-[28px] bg-white p-8 shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
             <h2 className="mb-5 text-3xl font-bold">Beneficios para pacientes de Chile</h2>
             <ul className="grid gap-3 text-base leading-7 text-slate-700">
@@ -138,25 +100,29 @@ export default function OperacionOjosTacnaVsChilePage() {
               <li>
                 <strong>1. El paciente deja sus datos</strong>
                 <div>
-                  Nos comparte su nombre, WhatsApp y una breve explicación de lo que desea consultar.
+                  Nos comparte su nombre, WhatsApp y una breve explicación de lo que desea
+                  consultar.
                 </div>
               </li>
               <li>
                 <strong>2. HolaTacna orienta el caso</strong>
                 <div>
-                  Revisamos la solicitud y ordenamos el primer contacto comercial con enfoque en rapidez.
+                  Revisamos la solicitud y ordenamos el primer contacto comercial con enfoque en
+                  rapidez.
                 </div>
               </li>
               <li>
                 <strong>3. Se coordina con clínica oftalmológica</strong>
                 <div>
-                  Cuando corresponde, alineamos la consulta con una clínica verificada dentro del flujo.
+                  Cuando corresponde, alineamos la consulta con una clínica verificada dentro del
+                  flujo.
                 </div>
               </li>
               <li>
                 <strong>4. Se agenda evaluación o tratamiento</strong>
                 <div>
-                  Con la información validada, el cliente puede avanzar a evaluación o al tratamiento que se determine después.
+                  Con la información validada, el cliente puede avanzar a evaluación o al
+                  tratamiento que se determine después.
                 </div>
               </li>
             </ol>
@@ -197,50 +163,22 @@ export default function OperacionOjosTacnaVsChilePage() {
             <div className="mb-3 inline-block rounded-full bg-sky-100 px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-sky-700">
               Solicita información
             </div>
-            <h2 className="text-3xl font-bold">Solicitar evaluación</h2>
           </div>
 
-          <form onSubmit={handleSubmit} className="grid gap-4">
-            <label className="grid gap-2">
-              <span className="font-medium">Nombre</span>
-              <input
-                required
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-                className="rounded-xl border border-slate-300 px-4 py-3"
-                placeholder="Tu nombre"
-              />
-            </label>
-
-            <label className="grid gap-2">
-              <span className="font-medium">WhatsApp</span>
-              <input
-                required
-                value={phone}
-                onChange={(event) => setPhone(event.target.value)}
-                className="rounded-xl border border-slate-300 px-4 py-3"
-                placeholder="+56 9 ..."
-              />
-            </label>
-
-            <label className="grid gap-2">
-              <span className="font-medium">Mensaje</span>
-              <textarea
-                value={message}
-                onChange={(event) => setMessage(event.target.value)}
-                className="min-h-[140px] rounded-xl border border-slate-300 px-4 py-3"
-                placeholder="Cuéntanos tu caso o tus dudas sobre atención oftalmológica en Tacna."
-              />
-            </label>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="rounded-xl bg-emerald-500 px-5 py-3 font-bold text-emerald-950 transition hover:bg-emerald-400 disabled:opacity-60"
-            >
-              {loading ? 'Enviando...' : 'Solicitar evaluación'}
-            </button>
-          </form>
+          <Suspense fallback={<div className="text-sm text-slate-500">Cargando formulario...</div>}>
+            <LeadCaptureForm
+              serviceSlug="oftalmologia"
+              serviceName="Oftalmología"
+              landingPath="/operacion-ojos-tacna-vs-chile"
+              pageType="comparison"
+              variant="comparison"
+              heading="Solicitar evaluación"
+              submitLabel="Solicitar evaluación"
+              messageLabel="Mensaje"
+              messagePlaceholder="Cuéntanos tu caso o tus dudas sobre atención oftalmológica en Tacna."
+              successMessage="Solicitud enviada. Nuestro equipo te contactará por WhatsApp."
+            />
+          </Suspense>
         </div>
       </section>
 
@@ -255,26 +193,29 @@ export default function OperacionOjosTacnaVsChilePage() {
 
           <div className="grid gap-5">
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-              <h3 className="mb-2 text-xl font-bold">¿Vale la pena viajar a Tacna para atención oftalmológica?</h3>
+              <h3 className="mb-2 text-xl font-bold">
+                ¿Vale la pena viajar a Tacna para atención oftalmológica?
+              </h3>
               <p className="text-base leading-7 text-slate-700">
-                Para muchos clientes de Chile sí. La combinación de ahorro, cercanía y coordinación previa hace que
-                Tacna sea una alternativa atractiva para evaluar atención oftalmológica.
+                Para muchos clientes de Chile sí. La combinación de ahorro, cercanía y
+                coordinación previa hace que Tacna sea una alternativa atractiva para evaluar
+                atención oftalmológica.
               </p>
             </div>
 
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
               <h3 className="mb-2 text-xl font-bold">¿Se puede ahorrar frente a Chile?</h3>
               <p className="text-base leading-7 text-slate-700">
-                En muchos casos sí. Lo relevante es que los costos pueden ser más accesibles y representar una
-                alternativa comercialmente conveniente.
+                En muchos casos sí. Lo relevante es que los costos pueden ser más accesibles y
+                representar una alternativa comercialmente conveniente.
               </p>
             </div>
 
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
               <h3 className="mb-2 text-xl font-bold">¿Cómo funciona la evaluación?</h3>
               <p className="text-base leading-7 text-slate-700">
-                Primero nos dejas tus datos, luego HolaTacna orienta el caso y coordina el siguiente paso con una
-                clínica verificada cuando corresponde.
+                Primero nos dejas tus datos, luego HolaTacna orienta el caso y coordina el
+                siguiente paso con una clínica verificada cuando corresponde.
               </p>
             </div>
           </div>

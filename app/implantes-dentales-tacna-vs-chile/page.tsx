@@ -1,56 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { Suspense } from 'react'
+import { LeadCaptureForm } from '@/components/forms/lead-capture-form'
 
 export default function ImplantesDentalesTacnaVsChilePage() {
-  const [name, setName] = useState('')
-  const [phone, setPhone] = useState('')
-  const [message, setMessage] = useState('')
-  const [loading, setLoading] = useState(false)
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-
-    if (loading) return
-
-    setLoading(true)
-
-    try {
-      const response = await fetch('/api/create-lead', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name,
-          phone,
-          tourist_phone: phone,
-          message: message || null,
-          service_name: 'implantes-dentales',
-          landing_path: '/implantes-dentales-tacna-vs-chile',
-        }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        alert(data.error || 'No se pudo enviar la solicitud.')
-        setLoading(false)
-        return
-      }
-
-      alert('Solicitud enviada. Nuestro equipo te contactará por WhatsApp.')
-      setName('')
-      setPhone('')
-      setMessage('')
-    } catch {
-      alert('No se pudo enviar la solicitud.')
-    }
-
-    setLoading(false)
-  }
-
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
       <section className="bg-[linear-gradient(180deg,#dbeafe_0%,#f8fafc_100%)] px-5 py-14 sm:px-6 lg:px-8">
@@ -64,10 +18,15 @@ export default function ImplantesDentalesTacnaVsChilePage() {
                 Implantes Dentales en Tacna vs Chile
               </h1>
               <p className="mb-6 text-lg leading-8 text-slate-600 sm:text-xl">
-                Descubre por qué muchos pacientes de Chile viajan a Tacna para ahorrar y atenderse con especialistas.
+                Descubre por qué muchos pacientes de Chile viajan a Tacna para ahorrar y atenderse
+                con especialistas.
               </p>
               <button
-                onClick={() => document.getElementById('formulario-evaluacion')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() =>
+                  document
+                    .getElementById('formulario-evaluacion')
+                    ?.scrollIntoView({ behavior: 'smooth' })
+                }
                 className="rounded-xl bg-emerald-500 px-5 py-3 font-bold text-emerald-950 transition hover:bg-emerald-400"
               >
                 Solicitar evaluación
@@ -78,30 +37,42 @@ export default function ImplantesDentalesTacnaVsChilePage() {
               <h2 className="mb-4 text-2xl font-bold">Comparativa rápida</h2>
               <div className="grid gap-4">
                 <div className="rounded-2xl border border-rose-100 bg-rose-50 p-4">
-                  <div className="mb-2 text-sm font-bold uppercase tracking-[0.08em] text-rose-700">En Chile</div>
+                  <div className="mb-2 text-sm font-bold uppercase tracking-[0.08em] text-rose-700">
+                    En Chile
+                  </div>
                   <p className="text-sm leading-7 text-slate-700">
-                    El tratamiento puede costar mucho más y la evaluación inicial suele requerir un presupuesto más alto.
+                    El tratamiento puede costar mucho más y la evaluación inicial suele requerir un
+                    presupuesto más alto.
                   </p>
                 </div>
 
                 <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
-                  <div className="mb-2 text-sm font-bold uppercase tracking-[0.08em] text-emerald-700">En Tacna</div>
+                  <div className="mb-2 text-sm font-bold uppercase tracking-[0.08em] text-emerald-700">
+                    En Tacna
+                  </div>
                   <p className="text-sm leading-7 text-slate-700">
-                    El ahorro puede ser significativo, con costos considerablemente menores y precios más accesibles.
+                    El ahorro puede ser significativo, con costos considerablemente menores y
+                    precios más accesibles.
                   </p>
                 </div>
 
                 <div className="rounded-2xl border border-sky-100 bg-sky-50 p-4">
-                  <div className="mb-2 text-sm font-bold uppercase tracking-[0.08em] text-sky-700">Cruzar la frontera</div>
+                  <div className="mb-2 text-sm font-bold uppercase tracking-[0.08em] text-sky-700">
+                    Cruzar la frontera
+                  </div>
                   <p className="text-sm leading-7 text-slate-700">
-                    La cercanía con Tacna reduce barreras logísticas y facilita coordinar una evaluación rápida.
+                    La cercanía con Tacna reduce barreras logísticas y facilita coordinar una
+                    evaluación rápida.
                   </p>
                 </div>
 
                 <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
-                  <div className="mb-2 text-sm font-bold uppercase tracking-[0.08em] text-amber-700">Ahorro estimado</div>
+                  <div className="mb-2 text-sm font-bold uppercase tracking-[0.08em] text-amber-700">
+                    Ahorro estimado
+                  </div>
                   <p className="text-sm leading-7 text-slate-700">
-                    Muchos casos reportan hasta 60% de ahorro frente a Chile, según el tratamiento y la evaluación clínica.
+                    Muchos casos reportan hasta 60% de ahorro frente a Chile, según el tratamiento
+                    y la evaluación clínica.
                   </p>
                 </div>
               </div>
@@ -111,7 +82,7 @@ export default function ImplantesDentalesTacnaVsChilePage() {
       </section>
 
       <section className="px-5 py-14 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl grid gap-6 lg:grid-cols-2">
+        <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-2">
           <div className="rounded-[28px] bg-white p-8 shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
             <h2 className="mb-5 text-3xl font-bold">Beneficios para pacientes de Chile</h2>
             <ul className="grid gap-3 text-base leading-7 text-slate-700">
@@ -128,19 +99,30 @@ export default function ImplantesDentalesTacnaVsChilePage() {
             <ol className="grid gap-4 text-base leading-7 text-slate-700">
               <li>
                 <strong>1. El paciente consulta</strong>
-                <div>Nos deja sus datos y explica brevemente el caso o su interés en implantes dentales.</div>
+                <div>
+                  Nos deja sus datos y explica brevemente el caso o su interés en implantes
+                  dentales.
+                </div>
               </li>
               <li>
                 <strong>2. HolaTacna orienta</strong>
-                <div>Revisamos la solicitud y ordenamos el primer contacto comercial por WhatsApp.</div>
+                <div>
+                  Revisamos la solicitud y ordenamos el primer contacto comercial por WhatsApp.
+                </div>
               </li>
               <li>
                 <strong>3. Se coordina con clínica</strong>
-                <div>Cuando aplica, se alinea la evaluación con una clínica verificada dentro del flujo comercial.</div>
+                <div>
+                  Cuando aplica, se alinea la evaluación con una clínica verificada dentro del
+                  flujo comercial.
+                </div>
               </li>
               <li>
                 <strong>4. Se agenda evaluación o tratamiento</strong>
-                <div>Con la información clara, el cliente puede avanzar a evaluación o tratamiento en Tacna.</div>
+                <div>
+                  Con la información clara, el cliente puede avanzar a evaluación o tratamiento en
+                  Tacna.
+                </div>
               </li>
             </ol>
           </div>
@@ -154,8 +136,8 @@ export default function ImplantesDentalesTacnaVsChilePage() {
             ¿Listo para solicitar tu evaluación de implantes?
           </h2>
           <p className="mb-5 text-base leading-8 text-slate-600 sm:text-lg">
-            Si esta comparación ya te ayudó a decidir, vuelve a la página principal de
-            implantes en Tacna y deja tu solicitud para que el equipo comercial te contacte.
+            Si esta comparación ya te ayudó a decidir, vuelve a la página principal de implantes
+            en Tacna y deja tu solicitud para que el equipo comercial te contacte.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link
@@ -180,50 +162,22 @@ export default function ImplantesDentalesTacnaVsChilePage() {
             <div className="mb-3 inline-block rounded-full bg-sky-100 px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-sky-700">
               Solicita información
             </div>
-            <h2 className="text-3xl font-bold">Solicitar evaluación</h2>
           </div>
 
-          <form onSubmit={handleSubmit} className="grid gap-4">
-            <label className="grid gap-2">
-              <span className="font-medium">Nombre</span>
-              <input
-                required
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-                className="rounded-xl border border-slate-300 px-4 py-3"
-                placeholder="Tu nombre"
-              />
-            </label>
-
-            <label className="grid gap-2">
-              <span className="font-medium">WhatsApp</span>
-              <input
-                required
-                value={phone}
-                onChange={(event) => setPhone(event.target.value)}
-                className="rounded-xl border border-slate-300 px-4 py-3"
-                placeholder="+56 9 ..."
-              />
-            </label>
-
-            <label className="grid gap-2">
-              <span className="font-medium">Mensaje</span>
-              <textarea
-                value={message}
-                onChange={(event) => setMessage(event.target.value)}
-                className="min-h-[140px] rounded-xl border border-slate-300 px-4 py-3"
-                placeholder="Cuéntanos tu caso o tus dudas sobre implantes dentales en Tacna."
-              />
-            </label>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="rounded-xl bg-emerald-500 px-5 py-3 font-bold text-emerald-950 transition hover:bg-emerald-400 disabled:opacity-60"
-            >
-              {loading ? 'Enviando...' : 'Solicitar evaluación'}
-            </button>
-          </form>
+          <Suspense fallback={<div className="text-sm text-slate-500">Cargando formulario...</div>}>
+            <LeadCaptureForm
+              serviceSlug="implantes-dentales"
+              serviceName="Implantes Dentales"
+              landingPath="/implantes-dentales-tacna-vs-chile"
+              pageType="comparison"
+              variant="comparison"
+              heading="Solicitar evaluación"
+              submitLabel="Solicitar evaluación"
+              messageLabel="Mensaje"
+              messagePlaceholder="Cuéntanos tu caso o tus dudas sobre implantes dentales en Tacna."
+              successMessage="Solicitud enviada. Nuestro equipo te contactará por WhatsApp."
+            />
+          </Suspense>
         </div>
       </section>
 
@@ -238,26 +192,29 @@ export default function ImplantesDentalesTacnaVsChilePage() {
 
           <div className="grid gap-5">
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-              <h3 className="mb-2 text-xl font-bold">¿Vale la pena viajar a Tacna para implantes?</h3>
+              <h3 className="mb-2 text-xl font-bold">
+                ¿Vale la pena viajar a Tacna para implantes?
+              </h3>
               <p className="text-base leading-7 text-slate-700">
-                Para muchos clientes de Chile sí. La combinación de ahorro, cercanía y coordinación previa hace que
-                Tacna sea una alternativa muy atractiva para evaluar implantes dentales.
+                Para muchos clientes de Chile sí. La combinación de ahorro, cercanía y
+                coordinación previa hace que Tacna sea una alternativa muy atractiva para evaluar
+                implantes dentales.
               </p>
             </div>
 
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
               <h3 className="mb-2 text-xl font-bold">¿Cuánto se puede ahorrar?</h3>
               <p className="text-base leading-7 text-slate-700">
-                Depende del tratamiento, pero en muchos casos se habla de hasta 60% de ahorro o de costos
-                considerablemente menores frente a Chile.
+                Depende del tratamiento, pero en muchos casos se habla de hasta 60% de ahorro o de
+                costos considerablemente menores frente a Chile.
               </p>
             </div>
 
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
               <h3 className="mb-2 text-xl font-bold">¿Cómo funciona la evaluación?</h3>
               <p className="text-base leading-7 text-slate-700">
-                Primero nos dejas tus datos, luego HolaTacna orienta el caso y coordina el siguiente paso con una
-                clínica verificada cuando corresponde.
+                Primero nos dejas tus datos, luego HolaTacna orienta el caso y coordina el
+                siguiente paso con una clínica verificada cuando corresponde.
               </p>
             </div>
           </div>

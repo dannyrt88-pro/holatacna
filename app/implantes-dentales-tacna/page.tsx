@@ -1,56 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { Suspense } from 'react'
+import { LeadCaptureForm } from '@/components/forms/lead-capture-form'
 
 export default function ImplantesDentalesTacnaPage() {
-  const [name, setName] = useState('')
-  const [phone, setPhone] = useState('')
-  const [message, setMessage] = useState('')
-  const [loading, setLoading] = useState(false)
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-
-    if (loading) return
-
-    setLoading(true)
-
-    try {
-      const response = await fetch('/api/create-lead', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name,
-          phone,
-          tourist_phone: phone,
-          message: message || null,
-          service_name: 'implantes-dentales',
-          landing_path: '/implantes-dentales-tacna',
-        }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        alert(data.error || 'No se pudo enviar la solicitud.')
-        setLoading(false)
-        return
-      }
-
-      alert('Solicitud enviada. Nuestro equipo te contactará por WhatsApp.')
-      setName('')
-      setPhone('')
-      setMessage('')
-    } catch {
-      alert('No se pudo enviar la solicitud.')
-    }
-
-    setLoading(false)
-  }
-
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
       <section className="bg-[linear-gradient(180deg,#dbeafe_0%,#f8fafc_100%)] px-5 py-14 sm:px-6 lg:px-8">
@@ -67,10 +21,9 @@ export default function ImplantesDentalesTacnaPage() {
                 Ahorra hasta 70% en comparación con Chile.
               </p>
               <p className="text-base leading-8 text-slate-600 sm:text-lg">
-                Muchos clientes chilenos viajan a Tacna para realizar tratamientos dentales
-                con especialistas, reducir costos y coordinar su atención antes de cruzar la
-                frontera. HolaTacna te ayuda a dejar lista la evaluación comercial inicial por
-                WhatsApp.
+                Muchos clientes chilenos viajan a Tacna para realizar tratamientos dentales con
+                especialistas, reducir costos y coordinar su atención antes de cruzar la frontera.
+                HolaTacna te ayuda a dejar lista la evaluación comercial inicial por WhatsApp.
               </p>
             </div>
 
@@ -96,9 +49,9 @@ export default function ImplantesDentalesTacnaPage() {
             ¿Conviene hacerse implantes en Tacna?
           </h2>
           <p className="mb-5 text-base leading-8 text-slate-600 sm:text-lg">
-            Si todavía estás comparando opciones, revisa la diferencia entre Tacna y Chile
-            antes de solicitar tu evaluación. Te ayudará a entender mejor el ahorro, la
-            cercanía y la rapidez de coordinación.
+            Si todavía estás comparando opciones, revisa la diferencia entre Tacna y Chile antes de
+            solicitar tu evaluación. Te ayudará a entender mejor el ahorro, la cercanía y la
+            rapidez de coordinación.
           </p>
           <Link
             href="/implantes-dentales-tacna-vs-chile"
@@ -113,50 +66,22 @@ export default function ImplantesDentalesTacnaPage() {
             <div className="mb-3 inline-block rounded-full bg-sky-100 px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-sky-700">
               Solicita información
             </div>
-            <h2 className="text-3xl font-bold">Solicitar Evaluación</h2>
           </div>
 
-          <form onSubmit={handleSubmit} className="grid gap-4">
-            <label className="grid gap-2">
-              <span className="font-medium">Nombre</span>
-              <input
-                required
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-                className="rounded-xl border border-slate-300 px-4 py-3"
-                placeholder="Tu nombre"
-              />
-            </label>
-
-            <label className="grid gap-2">
-              <span className="font-medium">WhatsApp</span>
-              <input
-                required
-                value={phone}
-                onChange={(event) => setPhone(event.target.value)}
-                className="rounded-xl border border-slate-300 px-4 py-3"
-                placeholder="+56 9 ..."
-              />
-            </label>
-
-            <label className="grid gap-2">
-              <span className="font-medium">Mensaje (opcional)</span>
-              <textarea
-                value={message}
-                onChange={(event) => setMessage(event.target.value)}
-                className="min-h-[140px] rounded-xl border border-slate-300 px-4 py-3"
-                placeholder="Cuéntanos qué evaluación buscas o qué dudas tienes."
-              />
-            </label>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="rounded-xl bg-emerald-500 px-5 py-3 font-bold text-emerald-950 transition hover:bg-emerald-400 disabled:opacity-60"
-            >
-              {loading ? 'Enviando...' : 'Solicitar Evaluación'}
-            </button>
-          </form>
+          <Suspense fallback={<div className="text-sm text-slate-500">Cargando formulario...</div>}>
+            <LeadCaptureForm
+              serviceSlug="implantes-dentales"
+              serviceName="Implantes Dentales"
+              landingPath="/implantes-dentales-tacna"
+              pageType="service"
+              variant="primary"
+              heading="Solicitar Evaluación"
+              submitLabel="Solicitar Evaluación"
+              messageLabel="Mensaje (opcional)"
+              messagePlaceholder="Cuéntanos qué evaluación buscas o qué dudas tienes."
+              successMessage="Solicitud enviada. Nuestro equipo te contactará por WhatsApp."
+            />
+          </Suspense>
         </div>
       </section>
     </main>

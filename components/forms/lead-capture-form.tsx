@@ -15,6 +15,7 @@ type LeadCaptureFormProps = {
   heading?: string
   submitLabel?: string
   messageLabel?: string
+  messagePlaceholder?: string
   includeMessage?: boolean
   successMessage?: string
 }
@@ -29,6 +30,7 @@ export function LeadCaptureForm({
   heading = 'Solicitar informacion',
   submitLabel = 'Solicitar informacion',
   messageLabel = 'Mensaje',
+  messagePlaceholder,
   includeMessage = true,
   successMessage = 'Solicitud enviada. Nuestro equipo te contactara por WhatsApp.',
 }: LeadCaptureFormProps) {
@@ -123,7 +125,7 @@ export function LeadCaptureForm({
             value={message}
             onChange={(event) => setMessage(event.target.value)}
             className="min-h-[140px] rounded-xl border border-slate-300 px-4 py-3"
-            placeholder="Cuentanos brevemente tu caso."
+            placeholder={messagePlaceholder || 'Cuéntanos brevemente tu caso'}
           />
         </label>
       )}

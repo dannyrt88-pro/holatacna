@@ -10,6 +10,7 @@ type ProviderMessageInput = {
   name?: string | null
   touristPhone?: string | null
   serviceName?: string | null
+  providerServiceName?: string | null
   referenceCode?: string | null
   cityInterest?: string | null
   suggestedPackageSlug?: string | null
@@ -58,6 +59,7 @@ export function buildProviderRoutingWhatsAppMessage(input: ProviderMessageInput)
     `Nombre: ${input.name || '-'}`,
     `Telefono: ${input.touristPhone || '-'}`,
     `Servicio: ${input.serviceName || '-'}`,
+    input.providerServiceName ? `Servicio especifico solicitado al proveedor: ${input.providerServiceName}` : null,
     `Ciudad: ${input.cityInterest || '-'}`,
     `Codigo: ${input.referenceCode || '-'}`,
     suggestedPackage ? `Paquete sugerido: ${suggestedPackage.name}` : null,

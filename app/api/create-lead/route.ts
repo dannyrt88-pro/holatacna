@@ -43,6 +43,7 @@ export async function POST(req: Request) {
     const preferred_date = body.preferred_date || null
     const service_id = body.service_id || null
     const service_name = body.service_name?.trim() || null
+    const service_slug = body.service_slug?.trim() || resolveServiceSlug(service_name)
     const message = body.message?.trim() || null
 
     const utm_source = getTrackingValue(body.utm_source)
@@ -53,7 +54,6 @@ export async function POST(req: Request) {
     const landing_path = body.landing_path?.trim() || null
     const city_interest = body.city_interest?.trim() || null
     const page_type = body.page_type?.trim() || null
-    const service_slug = body.service_slug?.trim() || resolveServiceSlug(service_name)
     const additional_services = Array.isArray(body.additional_services)
       ? body.additional_services.map((item: unknown) => String(item || '').trim()).filter(Boolean)
       : []

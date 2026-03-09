@@ -65,6 +65,7 @@ export function MedicalServicePage({
           tourist_phone: touristPhone,
           preferred_date: preferredDate || null,
           service_id: null,
+          service_slug: serviceSlug,
           service_name: serviceName,
           city_interest: cityInterest || null,
           utm_source: getTrackingValue(searchParams.get('utm_source')),

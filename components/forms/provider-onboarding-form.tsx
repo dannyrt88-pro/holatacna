@@ -5,7 +5,9 @@ import { services } from '@/lib/service-catalog'
 import { buildProviderAgreementFilename, buildProviderAgreementHtml } from '@/lib/provider-agreement'
 import {
   buildProviderRegistrationPayload,
+  getEmptyProviderOfferedService,
   getEmptyProviderRegistrationForm,
+  type ProviderOfferedService,
   type ProviderRegistrationFormState,
 } from '@/lib/provider-form'
 
@@ -49,6 +51,36 @@ export function ProviderOnboardingForm({
     value: ProviderRegistrationFormState[K]
   ) {
     setForm((prev) => ({ ...prev, [field]: value }))
+  }
+
+  function handleOfferedServiceChange(
+    index: number,
+    field: keyof ProviderOfferedService,
+    value: string | boolean
+  ) {
+    setForm((prev) => ({
+      ...prev,
+      offered_services: prev.offered_services.map((service, serviceIndex) =>
+        serviceIndex === index ? { ...service, [field]: value } : service
+      ),
+    }))
+  }
+
+  function addOfferedService() {
+    setForm((prev) => ({
+      ...prev,
+      offered_services: [...prev.offered_services, getEmptyProviderOfferedService()],
+    }))
+  }
+
+  function removeOfferedService(index: number) {
+    setForm((prev) => ({
+      ...prev,
+      offered_services:
+        prev.offered_services.length === 1
+          ? [getEmptyProviderOfferedService()]
+          : prev.offered_services.filter((_, serviceIndex) => serviceIndex !== index),
+    }))
   }
 
   function handleServiceSelect(value: string) {
@@ -207,6 +239,82 @@ export function ProviderOnboardingForm({
               ))}
             </select>
           </label>
+
+          <div className="md:col-span-2 grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <div className="text-sm font-semibold text-slate-900">Servicios que brinda</div>
+                <div className="text-sm text-slate-600">
+                  Puedes habilitar uno o varios servicios adicionales y describir cada uno sin
+                  afectar el servicio principal del sistema.
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={addOfferedService}
+                className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900"
+              >
+                Agregar servicio
+              </button>
+            </div>
+
+            <div className="grid gap-4">
+              {form.offered_services.map((service, index) => (
+                <div key={`offered-service-${index}`} className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="text-sm font-semibold text-slate-900">Servicio {index + 1}</div>
+                    {form.offered_services.length > 1 ? (
+                      <button
+                        type="button"
+                        onClick={() => removeOfferedService(index)}
+                        className="rounded-lg bg-rose-50 px-3 py-2 text-sm font-semibold text-rose-700"
+                      >
+                        Quitar
+                      </button>
+                    ) : null}
+                  </div>
+
+                  <div className="grid gap-3 md:grid-cols-2">
+                    <label className="grid gap-2">
+                      <span className="text-sm font-semibold">Nombre del servicio</span>
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="checkbox"
+                          checked={service.enabled}
+                          onChange={(event) =>
+                            handleOfferedServiceChange(index, 'enabled', event.target.checked)
+                          }
+                        />
+                        <input
+                          value={service.name}
+                          onChange={(event) =>
+                            handleOfferedServiceChange(index, 'name', event.target.value)
+                          }
+                          className="w-full rounded-xl border border-slate-300 px-4 py-3"
+                          placeholder={`Servicio ${index + 1}`}
+                          disabled={!service.enabled}
+                        />
+                      </div>
+                    </label>
+
+                    <label className="grid gap-2">
+                      <span className="text-sm font-semibold">Descripción</span>
+                      <input
+                        value={service.description}
+                        onChange={(event) =>
+                          handleOfferedServiceChange(index, 'description', event.target.value)
+                        }
+                        className="rounded-xl border border-slate-300 px-4 py-3"
+                        placeholder="Describe brevemente este servicio"
+                        disabled={!service.enabled}
+                      />
+                    </label>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
           <label className="grid gap-2">
             <span className="text-sm font-semibold">WhatsApp</span>

@@ -8,6 +8,7 @@ import type { Lead, LeadStatus, Provider } from '@/lib/crm-types'
 import type { AppRole } from '@/lib/access-control'
 import { calculateLeadScore } from '@/lib/lead-scoring'
 import { getPackageBySlug } from '@/lib/package-catalog'
+import { parseProviderOfferedServicesFromNotes } from '@/lib/provider-form'
 import {
   buildInitialPatientWhatsAppMessage,
   buildProviderRoutingWhatsAppMessage,
@@ -23,6 +24,7 @@ export default function Dashboard() {
   const [leads, setLeads] = useState<Lead[]>([])
   const [filtered, setFiltered] = useState<Lead[]>([])
   const [providers, setProviders] = useState<Provider[]>([])
+  const [selectedProviderServices, setSelectedProviderServices] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(true)
   const [role, setRole] = useState<AppRole>('none')
   const [currentEmail, setCurrentEmail] = useState('')
@@ -348,6 +350,16 @@ export default function Dashboard() {
         return
       }
 
+      setSelectedProviderServices((prev) => {
+        const next = { ...prev }
+        Object.keys(next).forEach((key) => {
+          if (key.startsWith(`${leadId}:`)) {
+            delete next[key]
+          }
+        })
+        return next
+      })
+
       await loadLeads()
       return
     }
@@ -401,6 +413,40 @@ export default function Dashboard() {
     }
 
     void assignDirectProviders(lead.id, Array.from(selected))
+
+    if (!checked) {
+      setSelectedProviderServices((prev) => {
+        const next = { ...prev }
+        delete next[`${lead.id}:${providerId}`]
+        return next
+      })
+    }
+  }
+
+  function getProviderServiceOptions(provider: Provider) {
+    const services = parseProviderOfferedServicesFromNotes(provider.notes)
+    const primaryService = provider.service_name?.trim()
+
+    if (primaryService && !services.some((service) => service.name === primaryService)) {
+      return [{ name: primaryService, description: '' }, ...services]
+    }
+
+    return services
+  }
+
+  function getProviderServiceSelectionKey(leadId: string, providerId: string) {
+    return `${leadId}:${providerId}`
+  }
+
+  function getSelectedProviderService(leadId: string, providerId: string) {
+    return selectedProviderServices[getProviderServiceSelectionKey(leadId, providerId)] || ''
+  }
+
+  function updateSelectedProviderService(leadId: string, providerId: string, serviceName: string) {
+    setSelectedProviderServices((prev) => ({
+      ...prev,
+      [getProviderServiceSelectionKey(leadId, providerId)]: serviceName,
+    }))
   }
 
   async function toggleDirectMode(leadId: string, checked: boolean) {
@@ -596,10 +642,12 @@ export default function Dashboard() {
       })
 
       directProviders.forEach((provider, index) => {
+        const selectedProviderService = getSelectedProviderService(lead.id, provider.id)
         const message = buildProviderRoutingWhatsAppMessage({
           name: lead.name,
           touristPhone: lead.tourist_phone,
           serviceName: lead.service_name,
+          providerServiceName: selectedProviderService || null,
           referenceCode: lead.reference_code,
           cityInterest: lead.city_interest,
           suggestedPackageSlug: lead.suggested_package_slug,
@@ -620,6 +668,9 @@ export default function Dashboard() {
     }
 
     const managementAt = new Date().toISOString()
+    const selectedProviderService = lead.provider_id
+      ? getSelectedProviderService(lead.id, lead.provider_id)
+      : ''
 
     void persistLeadTracking(lead.id, {
       attended_at: lead.attended_at || managementAt,
@@ -631,6 +682,7 @@ export default function Dashboard() {
       name: lead.name,
       touristPhone: lead.tourist_phone,
       serviceName: lead.service_name,
+      providerServiceName: selectedProviderService || null,
       referenceCode: lead.reference_code,
       cityInterest: lead.city_interest,
       suggestedPackageSlug: lead.suggested_package_slug,
@@ -1027,37 +1079,92 @@ export default function Dashboard() {
                           <span style={monoPillStyle}>{lead.reference_code}</span>
                         </td>
                         <td style={tdStyle}>
-                          <select value={lead.provider_id || ''} onChange={(e) => assignProvider(lead.id, e.target.value)} style={selectStyle}>
-                            <option value="">Sin asignar</option>
-                            {providers.map((provider) => (
-                              <option key={provider.id} value={provider.id}>
-                                {provider.name}
-                                {provider.service_name ? ` - ${provider.service_name}` : ''}
-                              </option>
-                            ))}
-                          </select>
+                          <div style={directProvidersCellStyle}>
+                            <select value={lead.provider_id || ''} onChange={(e) => assignProvider(lead.id, e.target.value)} style={selectStyle}>
+                              <option value="">Sin asignar</option>
+                              {providers.map((provider) => (
+                                <option key={provider.id} value={provider.id}>
+                                  {provider.name}
+                                  {provider.service_name ? ` - ${provider.service_name}` : ''}
+                                </option>
+                              ))}
+                            </select>
+
+                            {lead.provider_id ? (() => {
+                              const assignedProvider = providers.find((provider) => provider.id === lead.provider_id)
+                              if (!assignedProvider) return null
+
+                              const providerServices = getProviderServiceOptions(assignedProvider)
+
+                              if (!providerServices.length) {
+                                return (
+                                  <small style={smallMutedStyle}>
+                                    Este proveedor no tiene servicios especificos cargados.
+                                  </small>
+                                )
+                              }
+
+                              return (
+                                <select
+                                  value={getSelectedProviderService(lead.id, assignedProvider.id)}
+                                  onChange={(e) =>
+                                    updateSelectedProviderService(lead.id, assignedProvider.id, e.target.value)
+                                  }
+                                  style={selectStyle}
+                                >
+                                  <option value="">Servicio especifico del proveedor</option>
+                                  {providerServices.map((service) => (
+                                    <option key={`${assignedProvider.id}-${service.name}`} value={service.name}>
+                                      {service.name}
+                                    </option>
+                                  ))}
+                                </select>
+                              )
+                            })() : null}
+                          </div>
                         </td>
                         <td style={tdStyle}>
                           <div style={directProvidersCellStyle}>
                             <div style={multiProviderListStyle}>
                               {providers.map((provider) => {
                                 const isChecked = (lead.direct_provider_ids || []).includes(provider.id)
+                                const providerServices = getProviderServiceOptions(provider)
 
                                 return (
-                                  <label key={provider.id} style={multiProviderOptionStyle}>
-                                    <input
-                                      type="checkbox"
-                                      checked={isChecked}
-                                      disabled={role !== 'admin'}
-                                      onChange={(e) =>
-                                        toggleDirectProviderSelection(lead, provider.id, e.target.checked)
-                                      }
-                                    />
-                                    <span>
-                                      {provider.name}
-                                      {provider.service_name ? ` - ${provider.service_name}` : ''}
-                                    </span>
-                                  </label>
+                                  <div key={provider.id} style={multiProviderOptionStyle}>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1 }}>
+                                      <input
+                                        type="checkbox"
+                                        checked={isChecked}
+                                        disabled={role !== 'admin'}
+                                        onChange={(e) =>
+                                          toggleDirectProviderSelection(lead, provider.id, e.target.checked)
+                                        }
+                                      />
+                                      <span>
+                                        {provider.name}
+                                        {provider.service_name ? ` - ${provider.service_name}` : ''}
+                                      </span>
+                                    </label>
+
+                                    {isChecked && providerServices.length ? (
+                                      <select
+                                        value={getSelectedProviderService(lead.id, provider.id)}
+                                        disabled={role !== 'admin'}
+                                        onChange={(e) =>
+                                          updateSelectedProviderService(lead.id, provider.id, e.target.value)
+                                        }
+                                        style={{ ...selectStyle, width: '220px' }}
+                                      >
+                                        <option value="">Servicio especifico</option>
+                                        {providerServices.map((service) => (
+                                          <option key={`${provider.id}-${service.name}`} value={service.name}>
+                                            {service.name}
+                                          </option>
+                                        ))}
+                                      </select>
+                                    ) : null}
+                                  </div>
                                 )
                               })}
                             </div>

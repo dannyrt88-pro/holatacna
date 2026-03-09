@@ -1,56 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { Suspense } from 'react'
+import { LeadCaptureForm } from '@/components/forms/lead-capture-form'
 
 export default function OperacionOjosTacnaPage() {
-  const [name, setName] = useState('')
-  const [phone, setPhone] = useState('')
-  const [message, setMessage] = useState('')
-  const [loading, setLoading] = useState(false)
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-
-    if (loading) return
-
-    setLoading(true)
-
-    try {
-      const response = await fetch('/api/create-lead', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name,
-          phone,
-          tourist_phone: phone,
-          message: message || null,
-          service_name: 'oftalmologia',
-          landing_path: '/operacion-ojos-tacna',
-        }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        alert(data.error || 'No se pudo enviar la solicitud.')
-        setLoading(false)
-        return
-      }
-
-      alert('Solicitud enviada. Nuestro equipo te contactará por WhatsApp.')
-      setName('')
-      setPhone('')
-      setMessage('')
-    } catch {
-      alert('No se pudo enviar la solicitud.')
-    }
-
-    setLoading(false)
-  }
-
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
       <section className="bg-[linear-gradient(180deg,#e0f2fe_0%,#f8fafc_100%)] px-5 py-14 sm:px-6 lg:px-8">
@@ -98,12 +52,10 @@ export default function OperacionOjosTacnaPage() {
           <div className="mb-3 inline-block rounded-full bg-white px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-sky-700">
             Comparativa comercial
           </div>
-          <h2 className="mb-3 text-3xl font-bold text-slate-950">
-            ¿Conviene atenderse en Tacna?
-          </h2>
+          <h2 className="mb-3 text-3xl font-bold text-slate-950">¿Conviene atenderse en Tacna?</h2>
           <p className="mb-5 text-base leading-8 text-slate-600 sm:text-lg">
-            Si todavía estás comparando opciones, revisa la comparación entre Tacna y Chile
-            para entender mejor el ahorro, la cercanía y la velocidad de coordinación.
+            Si todavía estás comparando opciones, revisa la comparación entre Tacna y Chile para
+            entender mejor el ahorro, la cercanía y la velocidad de coordinación.
           </p>
           <Link
             href="/operacion-ojos-tacna-vs-chile"
@@ -113,7 +65,7 @@ export default function OperacionOjosTacnaPage() {
           </Link>
         </div>
 
-        <div className="mx-auto max-w-6xl grid gap-6 lg:grid-cols-2">
+        <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-2">
           <div className="rounded-[28px] bg-white p-8 shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
             <div className="mb-3 inline-block rounded-full bg-emerald-100 px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-emerald-700">
               Qué suelen consultar
@@ -123,22 +75,22 @@ export default function OperacionOjosTacnaPage() {
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
                 <h3 className="mb-2 text-xl font-bold">Cirugía láser</h3>
                 <p className="text-base leading-7 text-slate-700">
-                  Muchas personas consultan por alternativas oftalmológicas orientadas a
-                  mejorar su visión con evaluación previa y orientación profesional.
+                  Muchas personas consultan por alternativas oftalmológicas orientadas a mejorar su
+                  visión con evaluación previa y orientación profesional.
                 </p>
               </div>
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
                 <h3 className="mb-2 text-xl font-bold">Evaluación oftalmológica</h3>
                 <p className="text-base leading-7 text-slate-700">
-                  También recibimos solicitudes de clientes que quieren revisar su caso con
-                  una clínica oftalmológica antes de decidir el siguiente paso.
+                  También recibimos solicitudes de clientes que quieren revisar su caso con una
+                  clínica oftalmológica antes de decidir el siguiente paso.
                 </p>
               </div>
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
                 <h3 className="mb-2 text-xl font-bold">Problemas visuales frecuentes</h3>
                 <p className="text-base leading-7 text-slate-700">
-                  La página está pensada para personas que buscan una orientación inicial
-                  segura sobre atención oftalmológica en Tacna.
+                  La página está pensada para personas que buscan una orientación inicial segura
+                  sobre atención oftalmológica en Tacna.
                 </p>
               </div>
             </div>
@@ -160,15 +112,15 @@ export default function OperacionOjosTacnaPage() {
               <li>
                 <strong>2. HolaTacna orienta el caso</strong>
                 <div>
-                  Revisamos la solicitud y ordenamos el primer contacto comercial con enfoque
-                  en rapidez y claridad.
+                  Revisamos la solicitud y ordenamos el primer contacto comercial con enfoque en
+                  rapidez y claridad.
                 </div>
               </li>
               <li>
                 <strong>3. Se coordina con clínica oftalmológica</strong>
                 <div>
-                  Cuando corresponde, alineamos la consulta con una clínica verificada dentro
-                  del flujo de atención.
+                  Cuando corresponde, alineamos la consulta con una clínica verificada dentro del
+                  flujo de atención.
                 </div>
               </li>
               <li>
@@ -189,50 +141,22 @@ export default function OperacionOjosTacnaPage() {
             <div className="mb-3 inline-block rounded-full bg-emerald-100 px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-emerald-700">
               Solicita información
             </div>
-            <h2 className="text-3xl font-bold">Solicitar evaluación</h2>
           </div>
 
-          <form onSubmit={handleSubmit} className="grid gap-4">
-            <label className="grid gap-2">
-              <span className="font-medium">Nombre</span>
-              <input
-                required
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-                className="rounded-xl border border-slate-300 px-4 py-3"
-                placeholder="Tu nombre"
-              />
-            </label>
-
-            <label className="grid gap-2">
-              <span className="font-medium">WhatsApp</span>
-              <input
-                required
-                value={phone}
-                onChange={(event) => setPhone(event.target.value)}
-                className="rounded-xl border border-slate-300 px-4 py-3"
-                placeholder="+56 9 ..."
-              />
-            </label>
-
-            <label className="grid gap-2">
-              <span className="font-medium">Mensaje</span>
-              <textarea
-                value={message}
-                onChange={(event) => setMessage(event.target.value)}
-                className="min-h-[140px] rounded-xl border border-slate-300 px-4 py-3"
-                placeholder="Cuéntanos qué tipo de evaluación visual o tratamiento deseas consultar."
-              />
-            </label>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="rounded-xl bg-emerald-500 px-5 py-3 font-bold text-emerald-950 transition hover:bg-emerald-400 disabled:opacity-60"
-            >
-              {loading ? 'Enviando...' : 'Solicitar evaluación'}
-            </button>
-          </form>
+          <Suspense fallback={<div className="text-sm text-slate-500">Cargando formulario...</div>}>
+            <LeadCaptureForm
+              serviceSlug="oftalmologia"
+              serviceName="Oftalmología"
+              landingPath="/operacion-ojos-tacna"
+              pageType="service"
+              variant="primary"
+              heading="Solicitar evaluación"
+              submitLabel="Solicitar evaluación"
+              messageLabel="Mensaje"
+              messagePlaceholder="Cuéntanos qué tipo de evaluación visual o tratamiento deseas consultar."
+              successMessage="Solicitud enviada. Nuestro equipo te contactará por WhatsApp."
+            />
+          </Suspense>
         </div>
       </section>
 
@@ -246,8 +170,8 @@ export default function OperacionOjosTacnaPage() {
           </h2>
           <p className="max-w-3xl text-base leading-8 text-slate-100 sm:text-lg">
             Si estás evaluando atención oftalmológica en Tacna, deja tu solicitud. El equipo
-            comercial de HolaTacna te ayudará a ordenar el caso y coordinar el siguiente paso
-            por WhatsApp.
+            comercial de HolaTacna te ayudará a ordenar el caso y coordinar el siguiente paso por
+            WhatsApp.
           </p>
         </div>
       </section>
