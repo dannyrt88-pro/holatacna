@@ -26,7 +26,9 @@ export type Lead = {
   utm_content?: string | null
   utm_term?: string | null
   landing_path?: string | null
+  page_type?: string | null
   city_interest?: string | null
+  service_slug?: string | null
   additional_services?: string[] | null
   lead_score?: number | null
   lead_priority?: string | null
@@ -60,4 +62,21 @@ export type Provider = {
   notes: string | null
   score?: number | null
   city_scope?: string | null
+}
+
+export type LeadCapturePayload = {
+  name: string | null
+  phone: string | null
+  tourist_phone: string | null
+  message: string | null
+  service_slug: string | null
+  service_name: string | null
+  city_interest: string | null
+  landing_path: string | null
+  page_type: string | null
+  utm_source: string | null
+  utm_medium: string | null
+  utm_campaign: string | null
+  utm_content: string | null
+  utm_term: string | null
 }

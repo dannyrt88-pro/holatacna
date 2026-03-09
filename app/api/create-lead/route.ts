@@ -5,6 +5,7 @@ import { notifyTelegramLead } from "@/lib/telegram"
 import { calculateLeadScore } from "@/lib/lead-scoring"
 import { getSuggestedPackageSlugForSelection } from "@/lib/package-catalog"
 import { services } from "@/lib/service-catalog"
+import { getTrackingValue } from "@/lib/lead-tracking"
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -36,21 +37,23 @@ export async function POST(req: Request) {
 
     const reference_code = generateReference()
 
-    const name = body.name || null
-    const tourist_phone = body.tourist_phone || null
+    const name = body.name?.trim() || null
+    const tourist_phone = body.tourist_phone?.trim() || body.phone?.trim() || null
+    const phone = body.phone?.trim() || tourist_phone
     const preferred_date = body.preferred_date || null
     const service_id = body.service_id || null
     const service_name = body.service_name?.trim() || null
     const message = body.message?.trim() || null
 
-    const utm_source = body.utm_source || null
-    const utm_medium = body.utm_medium || null
-    const utm_campaign = body.utm_campaign || null
-    const utm_content = body.utm_content || null
-    const utm_term = body.utm_term || null
-    const landing_path = body.landing_path || null
-    const city_interest = body.city_interest || null
-    const service_slug = body.service_slug || resolveServiceSlug(service_name)
+    const utm_source = getTrackingValue(body.utm_source)
+    const utm_medium = getTrackingValue(body.utm_medium)
+    const utm_campaign = getTrackingValue(body.utm_campaign)
+    const utm_content = getTrackingValue(body.utm_content)
+    const utm_term = getTrackingValue(body.utm_term)
+    const landing_path = body.landing_path?.trim() || null
+    const city_interest = body.city_interest?.trim() || null
+    const page_type = body.page_type?.trim() || null
+    const service_slug = body.service_slug?.trim() || resolveServiceSlug(service_name)
     const additional_services = Array.isArray(body.additional_services)
       ? body.additional_services.map((item: unknown) => String(item || '').trim()).filter(Boolean)
       : []
@@ -161,7 +164,9 @@ export async function POST(req: Request) {
       lead_score: assignedLead?.lead_score ?? scoring.score,
       lead_priority: assignedLead?.lead_priority ?? scoring.priority,
       suggested_package_slug: assignedLead?.suggested_package_slug ?? suggested_package_slug,
-      message_persisted: Boolean(assignedLead?.message)
+      message_persisted: Boolean(assignedLead?.message),
+      page_type: page_type,
+      phone_persisted: Boolean(phone)
     })
   } catch (error) {
     console.error("Server error create-lead:", error)
