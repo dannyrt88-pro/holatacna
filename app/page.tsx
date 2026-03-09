@@ -133,6 +133,13 @@ const chileSeoAccesses = [
     cta: 'Ver opcion de estetica',
   },
   {
+    title: 'Dermatologia en Tacna para Iquique',
+    description:
+      'Landing SEO para pacientes de Iquique que buscan tratamientos dermatologicos con alternativa mas accesible y coordinacion por WhatsApp.',
+    href: '/iquique/dermatologia-tacna',
+    cta: 'Ver opcion de dermatologia',
+  },
+  {
     title: 'Operacion de Ojos en Tacna para Arica',
     description:
       'Landing SEO para pacientes de Arica que buscan atencion oftalmologica mas accesible, rapida y cercana a la frontera.',
@@ -152,6 +159,13 @@ const chileSeoAccesses = [
       'Landing SEO para pacientes de Antofagasta que buscan tratamientos dermatologicos con coordinacion previa.',
     href: '/antofagasta/dermatologia-tacna',
     cta: 'Ver opcion de dermatologia',
+  },
+  {
+    title: 'Implantes Dentales en Tacna para Antofagasta',
+    description:
+      'Landing SEO para pacientes de Antofagasta que buscan implantes dentales con alternativa mas accesible y coordinacion por WhatsApp.',
+    href: '/antofagasta/implantes-dentales-tacna',
+    cta: 'Ver opcion de implantes',
   },
 ]
 
@@ -312,7 +326,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="mb-6 grid gap-5 md:grid-cols-2 xl:grid-cols-6">
+          <div className="mb-6 grid gap-5 md:grid-cols-2 xl:grid-cols-8">
             <div className="rounded-[28px] border border-sky-100 bg-sky-50/80 p-8 shadow-[0_16px_30px_rgba(15,23,42,0.06)]">
               <div className="mb-3 inline-block rounded-full bg-white px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-sky-700">
                 Pacientes desde Arica
@@ -381,6 +395,23 @@ export default function HomePage() {
               </Link>
             </div>
 
+            <div className="rounded-[28px] border border-indigo-100 bg-indigo-50/80 p-8 shadow-[0_16px_30px_rgba(15,23,42,0.06)]">
+              <div className="mb-3 inline-block rounded-full bg-white px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-indigo-700">
+                Pacientes desde Iquique
+              </div>
+              <h3 className="mb-3 text-3xl font-bold text-slate-950">Pacientes desde Iquique</h3>
+              <p className="mb-5 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
+                Tratamientos dermatologicos en Tacna para pacientes de Iquique, con alternativa mas
+                accesible y coordinacion por WhatsApp.
+              </p>
+              <Link
+                href="/iquique/dermatologia-tacna"
+                className="inline-flex items-center rounded-xl bg-indigo-600 px-5 py-3 font-bold text-white transition hover:bg-indigo-500"
+              >
+                Ver opcion de dermatologia
+              </Link>
+            </div>
+
             <div className="rounded-[28px] border border-pink-100 bg-pink-50/80 p-8 shadow-[0_16px_30px_rgba(15,23,42,0.06)]">
               <div className="mb-3 inline-block rounded-full bg-white px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-pink-700">
                 Pacientes desde Antofagasta
@@ -412,6 +443,23 @@ export default function HomePage() {
                 className="inline-flex items-center rounded-xl bg-violet-600 px-5 py-3 font-bold text-white transition hover:bg-violet-500"
               >
                 Ver opcion de dermatologia
+              </Link>
+            </div>
+
+            <div className="rounded-[28px] border border-amber-100 bg-amber-50/80 p-8 shadow-[0_16px_30px_rgba(15,23,42,0.06)]">
+              <div className="mb-3 inline-block rounded-full bg-white px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-amber-700">
+                Pacientes desde Antofagasta
+              </div>
+              <h3 className="mb-3 text-3xl font-bold text-slate-950">Pacientes desde Antofagasta</h3>
+              <p className="mb-5 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
+                Implantes dentales en Tacna para pacientes de Antofagasta, con alternativa mas
+                accesible y coordinacion por WhatsApp.
+              </p>
+              <Link
+                href="/antofagasta/implantes-dentales-tacna"
+                className="inline-flex items-center rounded-xl bg-amber-500 px-5 py-3 font-bold text-amber-950 transition hover:bg-amber-400"
+              >
+                Ver opcion de implantes
               </Link>
             </div>
           </div>
