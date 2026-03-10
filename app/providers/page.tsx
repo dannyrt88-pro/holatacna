@@ -82,7 +82,9 @@ function ProvidersPageInner() {
   const [form, setForm] = useState<ProviderFormState>(getEmptyProviderForm())
   const [editingId, setEditingId] = useState<string | null>(null)
   const isPublicRegistration = searchParams.get('register') === '1'
-  const providerRegistrationLink = 'http://localhost:3000/providers?register=1'
+  const publicSiteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://holatacna.com').replace(/\/$/, '')
+  const providerRegistrationPath = '/providers?register=1'
+  const providerRegistrationLink = `${publicSiteUrl}${providerRegistrationPath}`
 
   const serviceOptions = useMemo(
     () => services.map((service) => ({ slug: service.slug, name: service.name })),
@@ -422,28 +424,50 @@ function ProvidersPageInner() {
             <div className="grid gap-3">
               <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
                 <div className="mb-2 text-sm font-semibold text-slate-700">Link directo</div>
-                <div className="break-all rounded-xl bg-white px-4 py-3 font-mono text-sm text-slate-900">
+                <a
+                  href={providerRegistrationLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block break-all rounded-xl bg-white px-4 py-3 font-mono text-sm text-sky-700 underline"
+                >
                   {providerRegistrationLink}
-                </div>
+                </a>
               </div>
 
-              <button
-                onClick={() => navigator.clipboard.writeText(providerRegistrationLink)}
-                className="w-fit rounded-xl bg-slate-950 px-4 py-3 font-semibold text-white"
-              >
-                Copiar link
-              </button>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => navigator.clipboard.writeText(providerRegistrationLink)}
+                  className="w-fit rounded-xl bg-slate-950 px-4 py-3 font-semibold text-white"
+                >
+                  Copiar link
+                </button>
+
+                <a
+                  href={providerRegistrationLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-fit rounded-xl border border-slate-300 bg-white px-4 py-3 font-semibold text-slate-900"
+                >
+                  Abrir link
+                </a>
+              </div>
             </div>
 
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-              <div className="mb-3 text-sm font-semibold text-slate-700">QR de registro</div>
-              <div className="flex items-center justify-center rounded-2xl bg-white p-4">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/qr-provider-register.svg"
-                  alt="QR registro de proveedores"
-                  className="h-56 w-56 object-contain"
-                />
+              <div className="mb-3 text-sm font-semibold text-slate-700">Acceso del proveedor</div>
+              <div className="rounded-2xl bg-white p-4">
+                <div className="mb-3 text-sm text-slate-600">
+                  Usa este acceso directo para abrir el formulario real del proveedor en el dominio
+                  actual.
+                </div>
+                <a
+                  href={providerRegistrationLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center rounded-xl bg-slate-950 px-4 py-3 font-semibold text-white"
+                >
+                  Ir al registro del proveedor
+                </a>
               </div>
             </div>
           </div>
