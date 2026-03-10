@@ -87,3 +87,19 @@ export function buildServiceCityMetadata({
     path,
   })
 }
+
+export function buildServiceCityIntentMetadata({
+  title,
+  description,
+  path,
+}: {
+  title: string
+  description: string
+  path: string
+}): Metadata {
+  return buildSeoMetadata({
+    title: `${title} | HolaTacna`,
+    description,
+    path,
+  })
+}
