@@ -1,534 +1,117 @@
 import Link from 'next/link'
 
-const premiumMedicalServices = [
-  {
-    name: 'Implantes Dentales',
-    description:
-      'Tratamiento dental con ahorro frente a Chile, evaluacion inicial rapida e informacion clara antes de viajar a Tacna.',
-    href: '/implantes-dentales-tacna',
-    cta: 'Solicitar evaluacion',
-  },
-  {
-    name: 'Operacion de Ojos',
-    description:
-      'Atencion oftalmologica para pacientes de Chile con enfoque en ahorro, rapidez e informacion clara antes de viajar a Tacna.',
-    href: '/operacion-ojos-tacna',
-    cta: 'Solicitar evaluacion',
-  },
-  {
-    name: 'Estetica',
-    description:
-      'Procedimientos esteticos con coordinacion por WhatsApp, informacion clara antes de viajar y clinicas verificadas en Tacna.',
-    href: '/estetica-tacna',
-    cta: 'Solicitar evaluacion',
-  },
-  {
-    name: 'Dermatologia en Tacna',
-    description:
-      'Pacientes de Chile visitan Tacna para acceder a tratamientos dermatologicos mas accesibles.',
-    href: '/dermatologia-tacna',
-    cta: 'Ver mas',
-  },
-]
+function HolaTacnaLogo() {
+  return (
+    <div className="flex items-center gap-4">
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 120 120"
+        className="h-20 w-20 drop-shadow-[0_12px_24px_rgba(14,116,144,0.24)] sm:h-24 sm:w-24"
+      >
+        <defs>
+          <linearGradient id="holatacna-blue" x1="0%" x2="100%" y1="0%" y2="100%">
+            <stop offset="0%" stopColor="#1d4ed8" />
+            <stop offset="100%" stopColor="#0f766e" />
+          </linearGradient>
+          <linearGradient id="holatacna-green" x1="0%" x2="100%" y1="0%" y2="100%">
+            <stop offset="0%" stopColor="#84cc16" />
+            <stop offset="100%" stopColor="#16a34a" />
+          </linearGradient>
+        </defs>
+        <g fill="none" strokeWidth="6">
+          <path
+            d="M28 28 L56 18 L78 34 L88 58 L74 84 L46 92 L24 72 L20 46 Z"
+            stroke="url(#holatacna-blue)"
+            opacity="0.95"
+          />
+          <path
+            d="M56 18 L84 20 L100 42 L96 72 L74 84"
+            stroke="url(#holatacna-green)"
+            opacity="0.9"
+          />
+          <path
+            d="M24 72 L10 52 L18 28 L40 16"
+            stroke="url(#holatacna-green)"
+            opacity="0.9"
+          />
+          <path d="M24 72 L56 18" stroke="url(#holatacna-blue)" opacity="0.65" />
+          <path d="M78 34 L46 92" stroke="url(#holatacna-green)" opacity="0.65" />
+          <path d="M20 46 L88 58" stroke="url(#holatacna-blue)" opacity="0.45" />
+        </g>
+        <g>
+          <circle cx="20" cy="46" r="9" fill="#2563eb" />
+          <circle cx="40" cy="16" r="10" fill="#0f766e" />
+          <circle cx="56" cy="18" r="8" fill="#1d4ed8" />
+          <circle cx="84" cy="20" r="8" fill="#65a30d" />
+          <circle cx="100" cy="42" r="9" fill="#22c55e" />
+          <circle cx="88" cy="58" r="8" fill="#0ea5e9" />
+          <circle cx="74" cy="84" r="10" fill="#16a34a" />
+          <circle cx="46" cy="92" r="9" fill="#2563eb" />
+          <circle cx="24" cy="72" r="8" fill="#84cc16" />
+        </g>
+      </svg>
 
-const chileBenefits = [
-  'Ahorro frente a Chile en servicios medicos prioritarios',
-  'Tacna esta a minutos de la frontera',
-  'Coordinacion previa por WhatsApp antes del viaje',
-  'Clinicas verificadas e informacion clara antes de viajar',
-]
-
-const chileCities = [
-  {
-    city: 'Arica',
-    description: 'Acceso rapido por cercania y alta demanda de tratamientos medicos en Tacna.',
-  },
-  {
-    city: 'Iquique',
-    description:
-      'Interes creciente en atencion visual, estetica y coordinacion previa para viajar con agenda definida.',
-  },
-  {
-    city: 'Antofagasta',
-    description: 'Pacientes que buscan ahorrar, resolver sus dudas y recibir orientacion antes de viajar.',
-  },
-]
-
-const trustPoints = [
-  {
-    title: 'Clinicas verificadas',
-    description: 'Trabajamos con clinicas y especialistas revisados antes de ser recomendados a pacientes.',
-  },
-  {
-    title: 'Coordinacion por WhatsApp',
-    description: 'La atencion inicial se ordena rapido para acelerar la evaluacion y la respuesta.',
-  },
-  {
-    title: 'Ahorro y cercania',
-    description: 'Tacna permite una alternativa mas accesible para clientes chilenos que cruzan la frontera.',
-  },
-]
-
-const chileSeoAccesses = [
-  {
-    title: 'Implantes Dentales en Tacna',
-    description: 'Informacion principal para pacientes de Chile que buscan evaluacion dental en Tacna.',
-    href: '/implantes-dentales-tacna',
-    cta: 'Ver implantes dentales',
-  },
-  {
-    title: 'Implantes Dentales Tacna vs Chile',
-    description: 'Comparativa para pacientes que quieren evaluar ahorro, cercania y tiempos antes de viajar.',
-    href: '/implantes-dentales-tacna-vs-chile',
-    cta: 'Comparar con Chile',
-  },
-  {
-    title: 'Operacion de Ojos en Tacna',
-    description: 'Informacion principal sobre consultas oftalmologicas con coordinacion previa.',
-    href: '/operacion-ojos-tacna',
-    cta: 'Ver operacion de ojos',
-  },
-  {
-    title: 'Operacion de Ojos Tacna vs Chile',
-    description: 'Pagina comparativa para ayudar a tomar una decision con mas claridad antes del viaje.',
-    href: '/operacion-ojos-tacna-vs-chile',
-    cta: 'Comparar con Chile',
-  },
-  {
-    title: 'Estetica en Tacna',
-    description: 'Landing principal de tratamientos esteticos para pacientes de Chile.',
-    href: '/estetica-tacna',
-    cta: 'Ver estetica',
-  },
-  {
-    title: 'Estetica Tacna vs Chile',
-    description: 'Comparativa para pacientes que quieren validar ahorro y cercania.',
-    href: '/estetica-tacna-vs-chile',
-    cta: 'Comparar con Chile',
-  },
-  {
-    title: 'Dermatologia en Tacna',
-    description: 'Landing principal para consultas dermatologicas con clinicas verificadas.',
-    href: '/dermatologia-tacna',
-    cta: 'Ver dermatologia',
-  },
-  {
-    title: 'Dermatologia Tacna vs Chile',
-    description: 'Comparativa pensada para pacientes que quieren decidir con mas claridad.',
-    href: '/dermatologia-tacna-vs-chile',
-    cta: 'Comparar con Chile',
-  },
-  {
-    title: 'Operacion de Ojos en Tacna para Iquique',
-    description:
-      'Informacion para pacientes de Iquique que buscan atencion oftalmologica mas accesible y coordinacion previa.',
-    href: '/iquique/operacion-ojos-tacna',
-    cta: 'Ver opcion para Iquique',
-  },
-  {
-    title: 'Estetica en Tacna para Iquique',
-    description:
-      'Informacion para pacientes de Iquique que buscan tratamientos esteticos con alternativa mas accesible y coordinacion por WhatsApp.',
-    href: '/iquique/estetica-tacna',
-    cta: 'Ver opcion de estetica',
-  },
-  {
-    title: 'Dermatologia en Tacna para Iquique',
-    description:
-      'Informacion para pacientes de Iquique que buscan tratamientos dermatologicos con alternativa mas accesible y coordinacion por WhatsApp.',
-    href: '/iquique/dermatologia-tacna',
-    cta: 'Ver opcion de dermatologia',
-  },
-  {
-    title: 'Operacion de Ojos en Tacna para Arica',
-    description:
-      'Informacion para pacientes de Arica que buscan atencion oftalmologica mas accesible, rapida y cercana a la frontera.',
-    href: '/arica/operacion-ojos-tacna',
-    cta: 'Ver opcion de ojos',
-  },
-  {
-    title: 'Estetica en Tacna para Antofagasta',
-    description:
-      'Informacion para pacientes de Antofagasta que buscan tratamientos esteticos con coordinacion previa.',
-    href: '/antofagasta/estetica-tacna',
-    cta: 'Ver opcion para Antofagasta',
-  },
-  {
-    title: 'Dermatologia en Tacna para Antofagasta',
-    description:
-      'Informacion para pacientes de Antofagasta que buscan tratamientos dermatologicos con coordinacion previa.',
-    href: '/antofagasta/dermatologia-tacna',
-    cta: 'Ver opcion de dermatologia',
-  },
-  {
-    title: 'Implantes Dentales en Tacna para Antofagasta',
-    description:
-      'Informacion para pacientes de Antofagasta que buscan implantes dentales con alternativa mas accesible y coordinacion por WhatsApp.',
-    href: '/antofagasta/implantes-dentales-tacna',
-    cta: 'Ver opcion de implantes',
-  },
-]
+      <div className="text-4xl font-black tracking-[-0.05em] sm:text-6xl">
+        <span className="text-sky-700">Hola</span>
+        <span className="text-green-600">Tacna</span>
+      </div>
+    </div>
+  )
+}
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-950">
-      <section className="bg-[linear-gradient(135deg,#07111f_0%,#0f3f8c_55%,#14b8a6_100%)] px-5 py-16 text-white sm:px-6 sm:py-20">
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
-          <div>
-            <div className="mb-4 inline-block rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.14em]">
-              HolaTacna | Clientes desde Chile
-            </div>
-            <h1 className="mb-4 max-w-4xl text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-              Atencion medica en Tacna con ahorro, rapidez y coordinacion previa
-            </h1>
-            <p className="mb-8 max-w-3xl text-base leading-8 text-white/85 sm:text-lg">
-              HolaTacna conecta a clientes chilenos con clinicas verificadas en Tacna. Te ayudamos
-              a coordinar por WhatsApp, reducir costos frente a Chile y avanzar con una evaluacion
-              clara antes de viajar.
-            </p>
-
-            <div className="flex flex-wrap gap-3">
-              <Link
-                href="/implantes-dentales-tacna"
-                className="rounded-xl bg-emerald-400 px-5 py-3 font-bold text-emerald-950 shadow-[0_14px_30px_rgba(34,197,94,0.24)] transition hover:bg-emerald-300"
-              >
-                Ver Implantes Dentales en Tacna
-              </Link>
-
-              <Link
-                href="/operacion-ojos-tacna"
-                className="rounded-xl bg-white px-5 py-3 font-bold text-sky-800 shadow-[0_14px_30px_rgba(255,255,255,0.16)] transition hover:bg-sky-50"
-              >
-                Ver Operacion de Ojos en Tacna
-              </Link>
-
-              <Link
-                href="/estetica-tacna"
-                className="rounded-xl border border-white/20 bg-white/10 px-5 py-3 font-bold text-white transition hover:bg-white/15"
-              >
-                Ver Estetica en Tacna
-              </Link>
-
-              <Link
-                href="#servicios-medicos"
-                className="rounded-xl border border-white/20 bg-transparent px-5 py-3 font-bold text-white transition hover:bg-white/10"
-              >
-                Ver servicios medicos
-              </Link>
-            </div>
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,#eff6ff_0%,#f8fafc_42%,#e2e8f0_100%)] px-6 py-10 text-slate-950 sm:px-8 sm:py-14">
+      <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-5xl items-center justify-center">
+        <section className="w-full rounded-[36px] border border-white/70 bg-white/80 px-8 py-12 text-center shadow-[0_30px_80px_rgba(15,23,42,0.12)] backdrop-blur sm:px-12 sm:py-16">
+          <div className="mb-8 flex justify-center">
+            <HolaTacnaLogo />
           </div>
 
-          <div className="rounded-[28px] border border-white/15 bg-white/10 p-6 backdrop-blur">
-            <div className="mb-4 text-xs font-bold uppercase tracking-[0.14em] text-white/75">
-              Beneficios para Chile
-            </div>
-            <div className="grid gap-3">
-              {chileBenefits.map((item) => (
-                <div
-                  key={item}
-                  className="rounded-2xl border border-white/10 bg-white/10 px-4 py-4 text-sm font-semibold leading-6 text-white/90"
-                >
-                  {item}
-                </div>
-              ))}
-            </div>
-            <div className="mt-5 rounded-2xl border border-emerald-300/20 bg-emerald-300/10 px-4 py-4 text-sm font-semibold leading-6 text-white/90">
-              Aqui puedes encontrar las principales opciones medicas que hoy consultan pacientes de
-              Chile antes de viajar a Tacna.
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="servicios-medicos" className="px-5 py-16 sm:px-6 sm:py-20">
-        <div className="mx-auto max-w-7xl">
-          <div className="mx-auto mb-10 max-w-3xl text-center">
-            <div className="mb-4 inline-block rounded-full bg-sky-100 px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-sky-700">
-              Servicios medicos destacados
-            </div>
-            <h2 className="mb-3 text-3xl font-bold sm:text-4xl">
-              Servicios medicos mas consultados
-            </h2>
-            <p className="text-base leading-7 text-slate-600 sm:text-lg">
-              Estas son algunas de las consultas medicas mas frecuentes entre pacientes de Chile
-              que evaluan atenderse en Tacna.
-            </p>
+          <div className="mx-auto mb-4 inline-flex rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-sky-800">
+            Pre lanzamiento comercial
           </div>
 
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {premiumMedicalServices.map((service) => (
-              <div
-                key={service.name}
-                className="rounded-[24px] border border-emerald-200 bg-[linear-gradient(180deg,#ecfdf5,#ffffff)] p-6 shadow-[0_16px_30px_rgba(15,23,42,0.07)]"
-              >
-                <div className="mb-4 flex items-center justify-between gap-3">
-                  <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-emerald-700">
-                    Servicio destacado
-                  </span>
-                </div>
+          <h1 className="mx-auto max-w-3xl text-3xl font-black leading-tight tracking-[-0.04em] sm:text-5xl">
+            Muy pronto: El puente digital entre Chile y lo mejor de Tacna
+          </h1>
 
-                <h3 className="mb-3 text-2xl font-bold">{service.name}</h3>
-                <p className="text-sm leading-7 text-slate-600 sm:text-base">{service.description}</p>
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
+            Estamos cerrando acuerdos con proveedores y afinando la apertura oficial de
+            HolaTacna para conectar demanda desde Chile con servicios medicos y comerciales de alto
+            valor en Tacna.
+          </p>
 
-                <Link
-                  href={service.href}
-                  className="mt-6 inline-block rounded-xl bg-emerald-500 px-4 py-3 font-bold text-emerald-950 transition hover:bg-emerald-400"
-                >
-                  {service.cta}
-                </Link>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-[linear-gradient(180deg,#eff6ff,#f8fafc)] px-5 py-16 sm:px-6 sm:py-20">
-        <div className="mx-auto max-w-7xl">
-          <div className="mx-auto mb-10 max-w-3xl text-center">
-            <div className="mb-4 inline-block rounded-full bg-blue-100 px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-blue-700">
-              Pacientes desde Chile
-            </div>
-            <h2 className="mb-3 text-3xl font-bold sm:text-4xl">Ciudades desde donde mas nos consultan</h2>
-            <p className="text-base leading-7 text-slate-600 sm:text-lg">
-              Pacientes de distintas ciudades de Chile consultan por atencion medica en Tacna
-              buscando cercania, ahorro y rapidez.
-            </p>
+          <div className="mt-10 flex justify-center">
+            <Link
+              href="/registro-proveedores"
+              className="rounded-2xl bg-[linear-gradient(135deg,#0f766e_0%,#1d4ed8_100%)] px-7 py-4 text-base font-bold text-white shadow-[0_18px_40px_rgba(29,78,216,0.22)] transition hover:scale-[1.01] hover:shadow-[0_22px_46px_rgba(15,118,110,0.28)]"
+            >
+              Eres un proveedor? Contacta aqui
+            </Link>
           </div>
 
-          <div className="grid gap-5 md:grid-cols-3">
-            {chileCities.map((item) => (
-              <div
-                key={item.city}
-                className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-[0_14px_28px_rgba(15,23,42,0.06)]"
-              >
-                <div className="mb-3 inline-block rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-emerald-700">
-                  {item.city}
-                </div>
-                <p className="text-base leading-7 text-slate-600">{item.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="px-5 py-16 sm:px-6 sm:py-20">
-        <div className="mx-auto max-w-7xl">
-          <div className="mx-auto mb-10 max-w-3xl text-center">
-            <div className="mb-4 inline-block rounded-full bg-emerald-100 px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-emerald-700">
-              Pacientes desde Chile
-            </div>
-            <h2 className="mb-3 text-3xl font-bold sm:text-4xl">Paginas y opciones de atencion disponibles</h2>
-            <p className="text-base leading-7 text-slate-600 sm:text-lg">
-              Desde aqui puedes revisar nuestras paginas principales, comparativas y opciones
-              pensadas para pacientes de Arica, Iquique y Antofagasta.
-            </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3 text-sm">
+            <Link
+              href="/home-completa"
+              className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 font-semibold text-slate-700 transition hover:bg-slate-100"
+            >
+              Ver home actual
+            </Link>
+            <Link
+              href="/dashboard"
+              className="rounded-xl border border-slate-200 bg-white px-4 py-3 font-semibold text-slate-700 transition hover:bg-slate-50"
+            >
+              Ingresar al panel
+            </Link>
           </div>
 
-          <div className="mb-6 grid gap-5 md:grid-cols-2 xl:grid-cols-8">
-            <div className="rounded-[28px] border border-sky-100 bg-sky-50/80 p-8 shadow-[0_16px_30px_rgba(15,23,42,0.06)]">
-              <div className="mb-3 inline-block rounded-full bg-white px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-sky-700">
-                Pacientes desde Arica
-              </div>
-              <h3 className="mb-3 text-3xl font-bold text-slate-950">Pacientes desde Arica</h3>
-              <p className="mb-5 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
-                Implantes dentales en Tacna para pacientes de Arica, con atencion rapida, cercania a
-                la frontera y coordinacion por WhatsApp.
-              </p>
-              <Link
-                href="/arica/implantes-dentales-tacna"
-                className="inline-flex items-center rounded-xl bg-sky-600 px-5 py-3 font-bold text-white transition hover:bg-sky-500"
-              >
-                Ver opcion para Arica
-              </Link>
-            </div>
-
-            <div className="rounded-[28px] border border-cyan-100 bg-cyan-50/80 p-8 shadow-[0_16px_30px_rgba(15,23,42,0.06)]">
-              <div className="mb-3 inline-block rounded-full bg-white px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-cyan-700">
-                Pacientes desde Arica
-              </div>
-              <h3 className="mb-3 text-3xl font-bold text-slate-950">Pacientes desde Arica</h3>
-              <p className="mb-5 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
-                Operacion de ojos en Tacna para pacientes de Arica, con atencion rapida, cercania
-                con la frontera y coordinacion por WhatsApp.
-              </p>
-              <Link
-                href="/arica/operacion-ojos-tacna"
-                className="inline-flex items-center rounded-xl bg-cyan-600 px-5 py-3 font-bold text-white transition hover:bg-cyan-500"
-              >
-                Ver opcion de ojos
-              </Link>
-            </div>
-
-            <div className="rounded-[28px] border border-emerald-100 bg-emerald-50/80 p-8 shadow-[0_16px_30px_rgba(15,23,42,0.06)]">
-              <div className="mb-3 inline-block rounded-full bg-white px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-emerald-700">
-                Pacientes desde Iquique
-              </div>
-              <h3 className="mb-3 text-3xl font-bold text-slate-950">Pacientes desde Iquique</h3>
-              <p className="mb-5 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
-                Operacion de ojos en Tacna para pacientes de Iquique, con atencion rapida,
-                alternativa mas accesible y coordinacion por WhatsApp.
-              </p>
-              <Link
-                href="/iquique/operacion-ojos-tacna"
-                className="inline-flex items-center rounded-xl bg-emerald-500 px-5 py-3 font-bold text-emerald-950 transition hover:bg-emerald-400"
-              >
-                Ver opcion para Iquique
-              </Link>
-            </div>
-
-            <div className="rounded-[28px] border border-rose-100 bg-rose-50/80 p-8 shadow-[0_16px_30px_rgba(15,23,42,0.06)]">
-              <div className="mb-3 inline-block rounded-full bg-white px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-rose-700">
-                Pacientes desde Iquique
-              </div>
-              <h3 className="mb-3 text-3xl font-bold text-slate-950">Pacientes desde Iquique</h3>
-              <p className="mb-5 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
-                Tratamientos esteticos en Tacna para pacientes de Iquique, con alternativa mas
-                accesible y coordinacion por WhatsApp.
-              </p>
-              <Link
-                href="/iquique/estetica-tacna"
-                className="inline-flex items-center rounded-xl bg-rose-500 px-5 py-3 font-bold text-white transition hover:bg-rose-400"
-              >
-                Ver opcion de estetica
-              </Link>
-            </div>
-
-            <div className="rounded-[28px] border border-indigo-100 bg-indigo-50/80 p-8 shadow-[0_16px_30px_rgba(15,23,42,0.06)]">
-              <div className="mb-3 inline-block rounded-full bg-white px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-indigo-700">
-                Pacientes desde Iquique
-              </div>
-              <h3 className="mb-3 text-3xl font-bold text-slate-950">Pacientes desde Iquique</h3>
-              <p className="mb-5 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
-                Tratamientos dermatologicos en Tacna para pacientes de Iquique, con alternativa mas
-                accesible y coordinacion por WhatsApp.
-              </p>
-              <Link
-                href="/iquique/dermatologia-tacna"
-                className="inline-flex items-center rounded-xl bg-indigo-600 px-5 py-3 font-bold text-white transition hover:bg-indigo-500"
-              >
-                Ver opcion de dermatologia
-              </Link>
-            </div>
-
-            <div className="rounded-[28px] border border-pink-100 bg-pink-50/80 p-8 shadow-[0_16px_30px_rgba(15,23,42,0.06)]">
-              <div className="mb-3 inline-block rounded-full bg-white px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-pink-700">
-                Pacientes desde Antofagasta
-              </div>
-              <h3 className="mb-3 text-3xl font-bold text-slate-950">Pacientes desde Antofagasta</h3>
-              <p className="mb-5 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
-                Tratamientos esteticos en Tacna para pacientes de Antofagasta, con alternativa mas
-                accesible y coordinacion por WhatsApp.
-              </p>
-              <Link
-                href="/antofagasta/estetica-tacna"
-                className="inline-flex items-center rounded-xl bg-pink-500 px-5 py-3 font-bold text-white transition hover:bg-pink-400"
-              >
-                Ver opcion para Antofagasta
-              </Link>
-            </div>
-
-            <div className="rounded-[28px] border border-violet-100 bg-violet-50/80 p-8 shadow-[0_16px_30px_rgba(15,23,42,0.06)]">
-              <div className="mb-3 inline-block rounded-full bg-white px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-violet-700">
-                Pacientes desde Antofagasta
-              </div>
-              <h3 className="mb-3 text-3xl font-bold text-slate-950">Pacientes desde Antofagasta</h3>
-              <p className="mb-5 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
-                Tratamientos dermatologicos en Tacna para pacientes de Antofagasta, con alternativa
-                mas accesible y coordinacion por WhatsApp.
-              </p>
-              <Link
-                href="/antofagasta/dermatologia-tacna"
-                className="inline-flex items-center rounded-xl bg-violet-600 px-5 py-3 font-bold text-white transition hover:bg-violet-500"
-              >
-                Ver opcion de dermatologia
-              </Link>
-            </div>
-
-            <div className="rounded-[28px] border border-amber-100 bg-amber-50/80 p-8 shadow-[0_16px_30px_rgba(15,23,42,0.06)]">
-              <div className="mb-3 inline-block rounded-full bg-white px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-amber-700">
-                Pacientes desde Antofagasta
-              </div>
-              <h3 className="mb-3 text-3xl font-bold text-slate-950">Pacientes desde Antofagasta</h3>
-              <p className="mb-5 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
-                Implantes dentales en Tacna para pacientes de Antofagasta, con alternativa mas
-                accesible y coordinacion por WhatsApp.
-              </p>
-              <Link
-                href="/antofagasta/implantes-dentales-tacna"
-                className="inline-flex items-center rounded-xl bg-amber-500 px-5 py-3 font-bold text-amber-950 transition hover:bg-amber-400"
-              >
-                Ver opcion de implantes
-              </Link>
-            </div>
-          </div>
-
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {chileSeoAccesses.map((item) => (
-              <div
-                key={item.href}
-                className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-[0_16px_30px_rgba(15,23,42,0.05)]"
-              >
-                <h3 className="mb-3 text-2xl font-bold">{item.title}</h3>
-                <p className="text-sm leading-7 text-slate-600 sm:text-base">{item.description}</p>
-                <Link
-                  href={item.href}
-                  className="mt-6 inline-block rounded-xl bg-slate-950 px-4 py-3 font-bold text-white transition hover:bg-slate-800"
-                >
-                  {item.cta}
-                </Link>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="px-5 py-16 sm:px-6 sm:py-20">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-            <div>
-              <div className="mb-4 inline-block rounded-full bg-emerald-100 px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-emerald-700">
-                Confianza
-              </div>
-              <h2 className="text-3xl font-bold sm:text-4xl">Por que HolaTacna</h2>
-              <p className="mt-4 text-base leading-7 text-slate-600 sm:text-lg">
-                HolaTacna te ayuda a encontrar una opcion medica confiable en Tacna, con
-                orientacion antes del viaje, coordinacion previa a la atencion y clinicas
-                verificadas.
-              </p>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-3">
-              {trustPoints.map((item) => (
-                <div
-                  key={item.title}
-                  className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-[0_14px_28px_rgba(15,23,42,0.06)]"
-                >
-                  <h3 className="mb-3 text-xl font-bold">{item.title}</h3>
-                  <p className="text-sm leading-7 text-slate-600">{item.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-slate-950 px-5 py-14 text-white sm:px-6 sm:py-16">
-        <div className="mx-auto flex max-w-7xl flex-col gap-5 rounded-[28px] border border-white/10 bg-white/5 px-6 py-8 sm:px-8 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <h2 className="text-2xl font-bold">Acceso para el equipo</h2>
-            <p className="mt-2 max-w-2xl text-sm leading-7 text-white/75">
-              Esta seccion es solo para el equipo de gestion de HolaTacna.
-            </p>
-          </div>
-
-          <Link
-            href="/dashboard"
-            className="w-fit rounded-xl border border-white/20 bg-white/10 px-5 py-3 font-bold text-white transition hover:bg-white/15"
-          >
-            Ingresar al panel
-          </Link>
-        </div>
-      </section>
+          <p className="mt-6 text-sm leading-7 text-slate-500">
+            Si ya estas evaluando una alianza comercial con HolaTacna, deja tus datos y te
+            contactaremos para revisar cobertura, condiciones y activacion.
+          </p>
+        </section>
+      </div>
     </main>
   )
 }
