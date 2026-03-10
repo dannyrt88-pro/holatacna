@@ -67,3 +67,23 @@ export function buildSeoMetadata({
         },
   }
 }
+
+export function buildServiceCityMetadata({
+  cityName,
+  serviceName,
+  title,
+  description,
+  path,
+}: {
+  cityName: string
+  serviceName: string
+  title?: string
+  description: string
+  path: string
+}): Metadata {
+  return buildSeoMetadata({
+    title: title || `${serviceName} en Tacna para pacientes de ${cityName} | HolaTacna`,
+    description,
+    path,
+  })
+}
