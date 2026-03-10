@@ -30,9 +30,9 @@ export const seoServices: SeoServiceDefinition[] = [
     titleBase: 'Dermatologia en Tacna para pacientes de Chile',
     descriptionBase: 'Evaluaciones dermatologicas, revision de manchas, acne y cuidado especializado de la piel.',
     benefits: [
-      'Comparacion comercial clara entre precios de Chile y Tacna.',
+      'Informacion clara para comparar opciones entre Chile y Tacna.',
       'Orientacion previa por WhatsApp antes de reservar tu evaluacion.',
-      'Derivacion hacia proveedores verificados segun tu necesidad comercial.',
+      'Conexion con clinicas y especialistas previamente revisados.',
     ],
     faq: [
       {
@@ -41,16 +41,16 @@ export const seoServices: SeoServiceDefinition[] = [
       },
       {
         question: 'HolaTacna es una clinica?',
-        answer: 'No. HolaTacna coordina la captacion comercial y conecta al paciente con proveedores verificados.',
+        answer: 'No. HolaTacna ayuda a coordinar el primer contacto con una clinica o especialista.',
       },
       {
         question: 'Puedo consultar precios antes de viajar?',
-        answer: 'Si. El formulario permite dejar tu caso y solicitar una referencia comercial antes de programar la visita.',
+        answer: 'Si. El formulario permite dejar tu caso y solicitar una orientacion inicial antes de programar la visita.',
       },
     ],
     process: [
       'Dejas tu caso o consulta inicial en el formulario.',
-      'El equipo comercial valida el interes y ordena la derivacion.',
+      'Revisamos tu consulta y te orientamos antes del viaje.',
       'Recibes coordinacion por WhatsApp antes de viajar a Tacna.',
     ],
     commercialBlock: 'Ideal para pacientes que quieren comparar alternativas dermatologicas en Tacna antes de decidir su viaje.',
@@ -66,32 +66,32 @@ export const seoServices: SeoServiceDefinition[] = [
     serviceSlug: 'estetica',
     serviceName: 'Estetica',
     titleBase: 'Tratamientos esteticos en Tacna para pacientes de Chile',
-    descriptionBase: 'Tratamientos esteticos con coordinacion comercial, cotizacion previa y soporte por WhatsApp.',
+    descriptionBase: 'Tratamientos esteticos con coordinacion previa, cotizacion inicial y soporte por WhatsApp.',
     benefits: [
-      'Mayor claridad comercial para comparar opciones esteticas.',
+      'Mas claridad para comparar opciones esteticas.',
       'Coordinacion previa para resolver dudas antes del viaje.',
-      'Derivacion a proveedores que atienden pacientes de Chile.',
+      'Contacto con clinicas o especialistas que atienden pacientes de Chile.',
     ],
     faq: [
       {
         question: 'Puedo pedir una orientacion antes de elegir tratamiento?',
-        answer: 'Si. Puedes dejar tus dudas, objetivos o referencias y el equipo comercial ordena la derivacion.',
+        answer: 'Si. Puedes dejar tus dudas, objetivos o referencias y recibir una orientacion inicial antes de viajar.',
       },
       {
         question: 'Se puede coordinar por WhatsApp?',
-        answer: 'Si. El flujo de captacion esta preparado para continuar la conversacion por WhatsApp.',
+        answer: 'Si. El proceso de atencion inicial esta preparado para continuar la conversacion por WhatsApp.',
       },
       {
         question: 'Atienden pacientes de distintas ciudades de Chile?',
-        answer: 'Si. La pagina esta pensada para captar pacientes de Chile interesados en atenderse en Tacna.',
+        answer: 'Si. La pagina entrega informacion a pacientes de Chile interesados en atenderse en Tacna.',
       },
     ],
     process: [
       'Dejas tus dudas o el tratamiento que deseas consultar.',
-      'HolaTacna ordena el lead y confirma si la atencion aplica para tu caso.',
-      'Se coordina el contacto comercial por WhatsApp con el proveedor.',
+      'HolaTacna revisa tu consulta y confirma si la atencion aplica para tu caso.',
+      'Se coordina el contacto inicial por WhatsApp con la clinica o especialista.',
     ],
-    commercialBlock: 'Pensado para captar leads que comparan precios, tiempos y opciones esteticas entre Chile y Tacna.',
+    commercialBlock: 'Ideal para pacientes que quieren comparar precios, tiempos y alternativas esteticas antes de viajar.',
     primaryHref: '/estetica',
     primaryLabel: 'Ver servicio principal',
     formHeading: 'Solicita una orientacion estetica',
@@ -104,7 +104,7 @@ export const seoServices: SeoServiceDefinition[] = [
     serviceSlug: 'oftalmologia',
     serviceName: 'Oftalmologia',
     titleBase: 'Operacion de ojos en Tacna para pacientes de Chile',
-    descriptionBase: 'Evaluaciones visuales y orientacion comercial para pacientes interesados en oftalmologia en Tacna.',
+    descriptionBase: 'Evaluaciones visuales y orientacion inicial para pacientes interesados en oftalmologia en Tacna.',
     benefits: [
       'Comparacion rapida de precios entre Chile y Tacna.',
       'Mayor orden comercial para consultas visuales y tratamientos.',
@@ -116,20 +116,20 @@ export const seoServices: SeoServiceDefinition[] = [
         answer: 'Si. Puedes dejar tu caso visual o el tipo de evaluacion que deseas y el equipo comercial responde antes de coordinar.',
       },
       {
-        question: 'La derivacion incluye seguimiento comercial?',
-        answer: 'Si. El lead queda en el CRM para continuar la coordinacion por WhatsApp.',
+        question: 'Puedo recibir seguimiento despues de enviar mi consulta?',
+        answer: 'Si. Tu consulta queda registrada para continuar la coordinacion por WhatsApp.',
       },
       {
         question: 'Esta pagina reemplaza la landing principal?',
-        answer: 'No. Esta pagina es complementaria y convive con las landings existentes para captar trafico SEO por ciudad.',
+        answer: 'No. Esta pagina es complementaria y convive con las landings existentes para informar a pacientes de distintas ciudades.',
       },
     ],
     process: [
       'Dejas tu consulta visual o el tipo de evaluacion que buscas.',
-      'HolaTacna ordena el lead y confirma el encaje comercial.',
+      'HolaTacna revisa tu consulta y confirma si la atencion es adecuada para tu caso.',
       'Recibes seguimiento por WhatsApp antes de viajar a Tacna.',
     ],
-    commercialBlock: 'En SEO se trabaja con el termino operacion de ojos, pero el lead se deriva usando el servicio canonico de oftalmologia.',
+    commercialBlock: 'Muchos pacientes de Chile viajan a Tacna para cirugia ocular o evaluacion visual especializada. Puedes solicitar una evaluacion inicial y recibir orientacion antes de viajar.',
     primaryHref: '/oftalmologia',
     primaryLabel: 'Ver servicio principal',
     formHeading: 'Solicita una evaluacion oftalmologica',
@@ -142,16 +142,16 @@ export const seoServices: SeoServiceDefinition[] = [
     serviceSlug: 'implantes-dentales',
     serviceName: 'Implantes Dentales',
     titleBase: 'Implantes dentales en Tacna para pacientes de Chile',
-    descriptionBase: 'Implantes dentales y evaluacion odontologica con ahorro comercial para pacientes de Chile.',
+    descriptionBase: 'Implantes dentales y evaluacion odontologica con ahorro frente a alternativas en Chile.',
     benefits: [
       'Ahorro relevante frente a valores habituales en Chile.',
       'Orientacion previa para evaluar presupuesto y tiempos.',
-      'Derivacion a proveedores verificados para implantes y rehabilitacion oral.',
+      'Contacto con clinicas odontologicas revisadas previamente.',
     ],
     faq: [
       {
         question: 'Puedo pedir una evaluacion inicial antes de viajar?',
-        answer: 'Si. Puedes dejar tus antecedentes y solicitar contacto comercial para ordenar tu caso antes de programar.',
+        answer: 'Si. Puedes dejar tus antecedentes y solicitar contacto inicial para ordenar tu caso antes de programar.',
       },
       {
         question: 'HolaTacna hace el tratamiento directamente?',
@@ -159,15 +159,15 @@ export const seoServices: SeoServiceDefinition[] = [
       },
       {
         question: 'Se puede comparar precio estimado con Chile?',
-        answer: 'Si. La pagina esta armada para captar leads interesados en comparar implantes dentales entre Chile y Tacna.',
+        answer: 'Si. La pagina esta pensada para pacientes interesados en comparar implantes dentales entre Chile y Tacna.',
       },
     ],
     process: [
       'Dejas tu caso o tus dudas sobre implantes dentales.',
-      'El equipo valida el lead y ordena el contacto comercial.',
+      'El equipo revisa tu consulta y ordena el contacto inicial.',
       'Se coordina el siguiente paso por WhatsApp con el proveedor.',
     ],
-    commercialBlock: 'Orientado a pacientes de Chile que comparan implantes dentales en Tacna y necesitan una derivacion comercial ordenada.',
+    commercialBlock: 'Ideal para pacientes de Chile que comparan implantes dentales en Tacna y necesitan informacion clara antes de viajar.',
     primaryHref: '/implantes-dentales',
     primaryLabel: 'Ver servicio principal',
     formHeading: 'Solicita una evaluacion dental',

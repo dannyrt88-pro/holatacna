@@ -4,21 +4,21 @@ const premiumMedicalServices = [
   {
     name: 'Implantes Dentales',
     description:
-      'Tratamiento dental con ahorro frente a Chile, evaluacion comercial rapida y coordinacion previa antes de viajar a Tacna.',
+      'Tratamiento dental con ahorro frente a Chile, evaluacion inicial rapida e informacion clara antes de viajar a Tacna.',
     href: '/implantes-dentales-tacna',
     cta: 'Solicitar evaluacion',
   },
   {
     name: 'Operacion de Ojos',
     description:
-      'Atencion oftalmologica para clientes de Chile con enfoque en ahorro, rapidez y agenda comercial clara en Tacna.',
+      'Atencion oftalmologica para pacientes de Chile con enfoque en ahorro, rapidez e informacion clara antes de viajar a Tacna.',
     href: '/operacion-ojos-tacna',
     cta: 'Solicitar evaluacion',
   },
   {
     name: 'Estetica',
     description:
-      'Procedimientos esteticos con coordinacion por WhatsApp, seguimiento comercial y clinicas verificadas en Tacna.',
+      'Procedimientos esteticos con coordinacion por WhatsApp, informacion clara antes de viajar y clinicas verificadas en Tacna.',
     href: '/estetica-tacna',
     cta: 'Solicitar evaluacion',
   },
@@ -35,7 +35,7 @@ const chileBenefits = [
   'Ahorro frente a Chile en servicios medicos prioritarios',
   'Tacna esta a minutos de la frontera',
   'Coordinacion previa por WhatsApp antes del viaje',
-  'Clinicas verificadas y soporte comercial de HolaTacna',
+  'Clinicas verificadas e informacion clara antes de viajar',
 ]
 
 const chileCities = [
@@ -50,14 +50,14 @@ const chileCities = [
   },
   {
     city: 'Antofagasta',
-    description: 'Casos que buscan ahorro, soporte comercial y derivacion confiable antes del viaje.',
+    description: 'Pacientes que buscan ahorrar, resolver sus dudas y recibir orientacion antes de viajar.',
   },
 ]
 
 const trustPoints = [
   {
     title: 'Clinicas verificadas',
-    description: 'Trabajamos con proveedores y clinicas evaluadas antes de entrar al flujo comercial.',
+    description: 'Trabajamos con clinicas y especialistas revisados antes de ser recomendados a pacientes.',
   },
   {
     title: 'Coordinacion por WhatsApp',
@@ -72,25 +72,25 @@ const trustPoints = [
 const chileSeoAccesses = [
   {
     title: 'Implantes Dentales en Tacna',
-    description: 'Landing principal para captar pacientes de Chile que buscan evaluacion dental en Tacna.',
+    description: 'Informacion principal para pacientes de Chile que buscan evaluacion dental en Tacna.',
     href: '/implantes-dentales-tacna',
     cta: 'Ver implantes dentales',
   },
   {
     title: 'Implantes Dentales Tacna vs Chile',
-    description: 'Comparativa comercial para pacientes que siguen evaluando ahorro, cercania y tiempos.',
+    description: 'Comparativa para pacientes que quieren evaluar ahorro, cercania y tiempos antes de viajar.',
     href: '/implantes-dentales-tacna-vs-chile',
     cta: 'Comparar con Chile',
   },
   {
     title: 'Operacion de Ojos en Tacna',
-    description: 'Landing principal para consultas oftalmologicas con coordinacion previa.',
+    description: 'Informacion principal sobre consultas oftalmologicas con coordinacion previa.',
     href: '/operacion-ojos-tacna',
     cta: 'Ver operacion de ojos',
   },
   {
     title: 'Operacion de Ojos Tacna vs Chile',
-    description: 'Pagina comparativa para ayudar a cerrar la decision comercial antes del viaje.',
+    description: 'Pagina comparativa para ayudar a tomar una decision con mas claridad antes del viaje.',
     href: '/operacion-ojos-tacna-vs-chile',
     cta: 'Comparar con Chile',
   },
@@ -102,7 +102,7 @@ const chileSeoAccesses = [
   },
   {
     title: 'Estetica Tacna vs Chile',
-    description: 'Comparativa comercial para pacientes que quieren validar ahorro y cercania.',
+    description: 'Comparativa para pacientes que quieren validar ahorro y cercania.',
     href: '/estetica-tacna-vs-chile',
     cta: 'Comparar con Chile',
   },
@@ -121,49 +121,49 @@ const chileSeoAccesses = [
   {
     title: 'Operacion de Ojos en Tacna para Iquique',
     description:
-      'Landing SEO para pacientes de Iquique que buscan atencion oftalmologica mas accesible y coordinacion previa.',
+      'Informacion para pacientes de Iquique que buscan atencion oftalmologica mas accesible y coordinacion previa.',
     href: '/iquique/operacion-ojos-tacna',
     cta: 'Ver opcion para Iquique',
   },
   {
     title: 'Estetica en Tacna para Iquique',
     description:
-      'Landing SEO para pacientes de Iquique que buscan tratamientos esteticos con alternativa mas accesible y coordinacion por WhatsApp.',
+      'Informacion para pacientes de Iquique que buscan tratamientos esteticos con alternativa mas accesible y coordinacion por WhatsApp.',
     href: '/iquique/estetica-tacna',
     cta: 'Ver opcion de estetica',
   },
   {
     title: 'Dermatologia en Tacna para Iquique',
     description:
-      'Landing SEO para pacientes de Iquique que buscan tratamientos dermatologicos con alternativa mas accesible y coordinacion por WhatsApp.',
+      'Informacion para pacientes de Iquique que buscan tratamientos dermatologicos con alternativa mas accesible y coordinacion por WhatsApp.',
     href: '/iquique/dermatologia-tacna',
     cta: 'Ver opcion de dermatologia',
   },
   {
     title: 'Operacion de Ojos en Tacna para Arica',
     description:
-      'Landing SEO para pacientes de Arica que buscan atencion oftalmologica mas accesible, rapida y cercana a la frontera.',
+      'Informacion para pacientes de Arica que buscan atencion oftalmologica mas accesible, rapida y cercana a la frontera.',
     href: '/arica/operacion-ojos-tacna',
     cta: 'Ver opcion de ojos',
   },
   {
     title: 'Estetica en Tacna para Antofagasta',
     description:
-      'Landing SEO para pacientes de Antofagasta que buscan tratamientos esteticos con coordinacion previa.',
+      'Informacion para pacientes de Antofagasta que buscan tratamientos esteticos con coordinacion previa.',
     href: '/antofagasta/estetica-tacna',
     cta: 'Ver opcion para Antofagasta',
   },
   {
     title: 'Dermatologia en Tacna para Antofagasta',
     description:
-      'Landing SEO para pacientes de Antofagasta que buscan tratamientos dermatologicos con coordinacion previa.',
+      'Informacion para pacientes de Antofagasta que buscan tratamientos dermatologicos con coordinacion previa.',
     href: '/antofagasta/dermatologia-tacna',
     cta: 'Ver opcion de dermatologia',
   },
   {
     title: 'Implantes Dentales en Tacna para Antofagasta',
     description:
-      'Landing SEO para pacientes de Antofagasta que buscan implantes dentales con alternativa mas accesible y coordinacion por WhatsApp.',
+      'Informacion para pacientes de Antofagasta que buscan implantes dentales con alternativa mas accesible y coordinacion por WhatsApp.',
     href: '/antofagasta/implantes-dentales-tacna',
     cta: 'Ver opcion de implantes',
   },
@@ -233,8 +233,8 @@ export default function HomePage() {
               ))}
             </div>
             <div className="mt-5 rounded-2xl border border-emerald-300/20 bg-emerald-300/10 px-4 py-4 text-sm font-semibold leading-6 text-white/90">
-              La portada prioriza la captacion medica para clientes de Chile, con foco comercial en
-              Implantes Dentales, Operacion de Ojos, Estetica y Dermatologia.
+              Aqui puedes encontrar las principales opciones medicas que hoy consultan pacientes de
+              Chile antes de viajar a Tacna.
             </div>
           </div>
         </div>
@@ -247,12 +247,11 @@ export default function HomePage() {
               Servicios medicos destacados
             </div>
             <h2 className="mb-3 text-3xl font-bold sm:text-4xl">
-              Cuatro verticales medicas destacadas para clientes de Chile
+              Servicios medicos mas consultados
             </h2>
             <p className="text-base leading-7 text-slate-600 sm:text-lg">
-              La home mantiene el enfoque general de la plataforma y muestra con claridad las
-              verticales de mayor demanda: Implantes Dentales, Operacion de Ojos, Estetica y
-              Dermatologia.
+              Estas son algunas de las consultas medicas mas frecuentes entre pacientes de Chile
+              que evaluan atenderse en Tacna.
             </p>
           </div>
 
@@ -264,7 +263,7 @@ export default function HomePage() {
               >
                 <div className="mb-4 flex items-center justify-between gap-3">
                   <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-emerald-700">
-                    Vertical premium
+                    Servicio destacado
                   </span>
                 </div>
 
@@ -289,10 +288,10 @@ export default function HomePage() {
             <div className="mb-4 inline-block rounded-full bg-blue-100 px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-blue-700">
               Pacientes desde Chile
             </div>
-            <h2 className="mb-3 text-3xl font-bold sm:text-4xl">Ciudades con mayor interes comercial</h2>
+            <h2 className="mb-3 text-3xl font-bold sm:text-4xl">Ciudades desde donde mas nos consultan</h2>
             <p className="text-base leading-7 text-slate-600 sm:text-lg">
-              HolaTacna concentra su comunicacion en clientes de Chile que buscan rapidez, confianza
-              y una alternativa medica mas accesible en Tacna.
+              Pacientes de distintas ciudades de Chile consultan por atencion medica en Tacna
+              buscando cercania, ahorro y rapidez.
             </p>
           </div>
 
@@ -318,11 +317,10 @@ export default function HomePage() {
             <div className="mb-4 inline-block rounded-full bg-emerald-100 px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-emerald-700">
               Pacientes desde Chile
             </div>
-            <h2 className="mb-3 text-3xl font-bold sm:text-4xl">Accesos comerciales y paginas SEO activas</h2>
+            <h2 className="mb-3 text-3xl font-bold sm:text-4xl">Paginas y opciones de atencion disponibles</h2>
             <p className="text-base leading-7 text-slate-600 sm:text-lg">
-              La home mantiene visibles las landings principales, sus comparativas con Chile y un
-              acceso especifico para pacientes desde Arica, Iquique y Antofagasta que buscan
-              atencion medica en Tacna.
+              Desde aqui puedes revisar nuestras paginas principales, comparativas y opciones
+              pensadas para pacientes de Arica, Iquique y Antofagasta.
             </p>
           </div>
 
@@ -493,8 +491,9 @@ export default function HomePage() {
               </div>
               <h2 className="text-3xl font-bold sm:text-4xl">Por que HolaTacna</h2>
               <p className="mt-4 text-base leading-7 text-slate-600 sm:text-lg">
-                La propuesta comercial combina ahorro frente a Chile, cercania con Tacna,
-                coordinacion por WhatsApp y una red de clinicas verificadas.
+                HolaTacna te ayuda a encontrar una opcion medica confiable en Tacna, con
+                orientacion antes del viaje, coordinacion previa a la atencion y clinicas
+                verificadas.
               </p>
             </div>
 
@@ -516,13 +515,9 @@ export default function HomePage() {
       <section className="bg-slate-950 px-5 py-14 text-white sm:px-6 sm:py-16">
         <div className="mx-auto flex max-w-7xl flex-col gap-5 rounded-[28px] border border-white/10 bg-white/5 px-6 py-8 sm:px-8 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <div className="mb-2 text-xs font-bold uppercase tracking-[0.12em] text-white/65">
-              Acceso interno
-            </div>
-            <h2 className="text-2xl font-bold">CRM operativo</h2>
+            <h2 className="text-2xl font-bold">Acceso para el equipo</h2>
             <p className="mt-2 max-w-2xl text-sm leading-7 text-white/75">
-              El acceso al CRM se mantiene disponible para la operacion comercial, sin quitar
-              protagonismo a la captacion medica desde la home.
+              Esta seccion es solo para el equipo de gestion de HolaTacna.
             </p>
           </div>
 
@@ -530,7 +525,7 @@ export default function HomePage() {
             href="/dashboard"
             className="w-fit rounded-xl border border-white/20 bg-white/10 px-5 py-3 font-bold text-white transition hover:bg-white/15"
           >
-            Ir al CRM
+            Ingresar al panel
           </Link>
         </div>
       </section>

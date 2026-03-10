@@ -20,7 +20,7 @@ export function ServiceCityPage({ landing }: ServiceCityPageProps) {
         <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
           <div>
             <div className="mb-5 inline-flex rounded-full bg-white/15 px-4 py-2 text-sm font-semibold tracking-[0.24em] uppercase">
-              SEO Programatico | {city.name}
+              Atencion medica en Tacna para pacientes de {city.name}
             </div>
             <h1 className="mb-4 text-4xl font-bold leading-tight sm:text-5xl">
               {service.name} en Tacna para pacientes de {city.name}
@@ -30,9 +30,9 @@ export function ServiceCityPage({ landing }: ServiceCityPageProps) {
             </p>
 
             <div className="grid gap-3 text-base leading-7 text-white/90 sm:text-lg">
-              <div>Ciudad objetivo: {city.name}, {city.region}.</div>
-              <div>Servicio consultado: {service.serviceName}.</div>
-              <div>HolaTacna ordena la captacion comercial y conecta al lead con el proveedor adecuado.</div>
+              <div>Atendemos consultas de pacientes de {city.name} y otras ciudades del norte de Chile.</div>
+              <div>Recibe orientacion antes del viaje y resuelve tus dudas antes de viajar a Tacna.</div>
+              <div>Te ayudamos a entender tus opciones con informacion clara antes de tomar una decision.</div>
             </div>
 
             <div className="mt-8 flex flex-wrap gap-3">
@@ -93,7 +93,7 @@ export function ServiceCityPage({ landing }: ServiceCityPageProps) {
           <h2 className="mb-4 text-3xl font-bold">
             {service.slug === 'operacion-ojos'
               ? `Evaluacion oftalmologica para pacientes de ${city.name}`
-              : 'Bloque comercial'}
+              : `Atencion para pacientes de ${city.name}`}
           </h2>
           <p className="text-lg leading-8">{commercialCopy}</p>
         </div>

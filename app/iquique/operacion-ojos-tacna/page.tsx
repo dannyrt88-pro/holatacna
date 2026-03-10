@@ -73,7 +73,7 @@ export default function IquiqueOperacionOjosTacnaPage() {
           <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
             <div className="rounded-[28px] bg-white p-8 shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
               <div className="mb-4 inline-block rounded-full bg-sky-100 px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-sky-700">
-                Iquique y Tacna oftalmologia
+                Pacientes de Iquique
               </div>
               <h1 className="mb-4 text-4xl font-bold leading-tight sm:text-5xl">
                 Operacion de Ojos en Tacna para Pacientes de Iquique
@@ -83,9 +83,8 @@ export default function IquiqueOperacionOjosTacnaPage() {
                 mas accesible y rapida.
               </p>
               <p className="text-base leading-8 text-slate-600 sm:text-lg">
-                Esta landing esta pensada para busquedas como operacion ojos Tacna Iquique,
-                oftalmologia Tacna para pacientes de Iquique y cirugia ocular Tacna Iquique, con
-                coordinacion previa por WhatsApp y enfoque comercial claro.
+                Si vives en Iquique y estas evaluando una atencion oftalmologica en Tacna, puedes
+                solicitar una orientacion inicial y resolver tus dudas antes de viajar.
               </p>
               <button
                 type="button"
@@ -138,7 +137,7 @@ export default function IquiqueOperacionOjosTacnaPage() {
 
           <div className="rounded-[28px] border border-emerald-100 bg-emerald-50/70 p-8 shadow-[0_18px_40px_rgba(15,23,42,0.06)]">
             <div className="mb-3 inline-block rounded-full bg-white px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-emerald-700">
-              SEO local
+              Atencion cercana
             </div>
             <h2 className="mb-4 text-3xl font-bold">Cirugia ocular cerca de Iquique</h2>
             <p className="mb-4 text-base leading-8 text-slate-700 sm:text-lg">
