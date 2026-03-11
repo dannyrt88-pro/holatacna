@@ -41,6 +41,14 @@ export const services: ServiceDefinition[] = [
     priority: "high",
   },
   {
+    slug: "cirugia-plastica",
+    name: "Cirugía plástica",
+    shortDescription: "Orientación inicial para cirugía plástica en Tacna con evaluación previa y apoyo antes del viaje.",
+    href: "/cirugia-plastica-tacna",
+    category: "clinico",
+    priority: "high",
+  },
+  {
     slug: "hoteles",
     name: "Hoteles",
     shortDescription: "Hospedaje en Tacna con apoyo comercial para reservas y derivacion a hoteles.",

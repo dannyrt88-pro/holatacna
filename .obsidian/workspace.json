@@ -182,6 +182,8 @@
   },
   "active": "04c5fd80ecad5e5b",
   "lastOpenFiles": [
+    "app/cirugia-plastica-tacna/page.tsx",
+    "app/cirugia-plastica-tacna",
     "app/hoteles-tacna/page.tsx",
     "app/restaurantes-tacna/page.tsx",
     "app/transporte-tacna/page.tsx",
@@ -191,8 +193,6 @@
     "components/guide/guide-trust-block.tsx",
     "components/guide/guide-hero.tsx",
     "components/guide/guide-cta-strip.tsx",
-    "components/guide/guide-card-grid.tsx",
-    "components/guide",
     "Excalidraw/holatacna-full-system.excalidraw.md",
     "Diagrams/holatacna-full-system.excalidraw.md",
     "AI_AGENT_PLAYBOOK.md",

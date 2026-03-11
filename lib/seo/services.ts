@@ -39,6 +39,63 @@ export type SeoServiceDefinition = {
 
 export const seoServices: SeoServiceDefinition[] = [
   {
+    slug: 'cirugia-plastica',
+    name: 'Cirugía plástica',
+    serviceSlug: 'cirugia-plastica',
+    serviceName: 'Cirugía plástica',
+    titleBase: 'Cirugía plástica en Tacna para pacientes de Chile',
+    descriptionBase:
+      'Información sobre cirugía plástica en Tacna para pacientes que viajan desde Chile.',
+    benefits: [
+      'Orientación inicial para entender opciones antes de viajar a Tacna.',
+      'Información clara para comparar alternativas desde Chile.',
+      'Contacto con clínicas y especialistas previamente revisados.',
+    ],
+    faq: [
+      {
+        question: '¿Puedo resolver dudas antes de viajar?',
+        answer:
+          'Sí. Puedes dejar tu consulta para recibir orientación inicial antes de coordinar una evaluación en Tacna.',
+      },
+      {
+        question: '¿HolaTacna realiza la cirugía?',
+        answer:
+          'No. HolaTacna ayuda a ordenar el primer contacto con clínicas o especialistas que atienden pacientes de Chile.',
+      },
+      {
+        question: '¿Puedo consultar tiempos y pasos del proceso?',
+        answer:
+          'Sí. La idea es que tengas una visión más clara del tratamiento antes de programar tu viaje.',
+      },
+    ],
+    process: [
+      'Dejas tu consulta y el tipo de tratamiento que deseas evaluar.',
+      'Revisamos tu caso y te orientamos antes del viaje.',
+      'Se coordina el siguiente paso por WhatsApp con la clínica o especialista.',
+    ],
+    commercialBlock:
+      'Ideal para pacientes de Chile que quieren evaluar cirugía plástica en Tacna con mayor claridad antes de viajar.',
+    primaryHref: '/cirugia-plastica-tacna',
+    primaryLabel: 'Ver servicio principal',
+    formHeading: 'Solicita una evaluación de cirugía plástica',
+    messagePlaceholder:
+      'Cuéntanos qué tratamiento de cirugía plástica deseas evaluar o qué dudas quieres resolver antes de viajar.',
+    gradientClass: 'bg-[linear-gradient(135deg,#3f1d2e,#c2410c)]',
+    cityFormOverrides: {
+      default: {
+        includeAdditionalServices: true,
+        additionalServicesLabel: 'Servicios útiles para tu visita en Tacna',
+        additionalServicesHelperText:
+          'Si lo deseas, también podemos orientarte sobre opciones útiles durante tu visita.',
+        additionalServicesOptions: [
+          'Hoteles cercanos a la clínica',
+          'Restaurantes recomendados',
+          'Transporte desde la frontera',
+        ],
+      },
+    },
+  },
+  {
     slug: 'dermatologia',
     name: 'Dermatologia',
     serviceSlug: 'dermatologia',
