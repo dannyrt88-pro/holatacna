@@ -11,12 +11,10 @@
             "id": "04c5fd80ecad5e5b",
             "type": "leaf",
             "state": {
-              "type": "excalidraw",
-              "state": {
-                "file": "Excalidraw/holatacna-full-system.excalidraw.md"
-              },
-              "icon": "excalidraw-icon",
-              "title": "holatacna-full-system.excalidraw"
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Vista gráfica"
             }
           }
         ]
@@ -184,8 +182,9 @@
   },
   "active": "04c5fd80ecad5e5b",
   "lastOpenFiles": [
-    "Diagrams/holatacna-full-system.excalidraw.md",
+    "app/tratamientos/page.tsx",
     "Excalidraw/holatacna-full-system.excalidraw.md",
+    "Diagrams/holatacna-full-system.excalidraw.md",
     "Excalidraw",
     "Diagrams",
     "Nueva carpeta",
