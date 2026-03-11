@@ -182,6 +182,8 @@
   },
   "active": "04c5fd80ecad5e5b",
   "lastOpenFiles": [
+    "app/red/page.tsx",
+    "app/red",
     "app/home-completa/page.tsx",
     "app/antofagasta/page.tsx",
     "app/iquique/page.tsx",
@@ -217,7 +219,6 @@
     "public/file.svg",
     "public/globe.svg",
     "public/next.svg",
-    "public/notification.mp3",
     "public/qr-holatacna.svg",
     "public/qr-provider-register.svg",
     "public/vercel.svg",

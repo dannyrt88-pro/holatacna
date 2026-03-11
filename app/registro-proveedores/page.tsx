@@ -96,6 +96,25 @@ export default function ProviderRegistrationPage() {
           </div>
         </section>
 
+        <section className="mb-6 rounded-[24px] border border-slate-200 bg-white p-6 shadow-lg sm:p-8">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
+                Informacion institucional
+              </div>
+              <p className="text-base font-semibold text-slate-900">
+                Quieres entender mejor como funciona la red antes de postular?
+              </p>
+            </div>
+            <Link
+              href="/red"
+              className="inline-flex rounded-xl border border-slate-300 bg-slate-50 px-5 py-3 font-semibold text-slate-800 transition hover:bg-slate-100"
+            >
+              Conocer la red
+            </Link>
+          </div>
+        </section>
+
         <ProviderOnboardingForm
           mode="provider-self-service"
           title="Comparte la informacion principal de tu negocio"

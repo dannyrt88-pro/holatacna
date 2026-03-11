@@ -101,6 +101,25 @@ export default function AlliancesHubPage() {
           </p>
         </section>
 
+        <section className="mb-6 rounded-[24px] border border-slate-200 bg-white p-6 shadow-lg sm:p-8">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
+                Apoyo institucional
+              </div>
+              <p className="text-base font-semibold text-slate-900">
+                Conoce la vision general de la red HolaTacna
+              </p>
+            </div>
+            <Link
+              href="/red"
+              className="inline-flex rounded-xl border border-slate-300 bg-slate-50 px-5 py-3 font-semibold text-slate-800 transition hover:bg-slate-100"
+            >
+              Ver la red
+            </Link>
+          </div>
+        </section>
+
         <section className="mb-6 rounded-[28px] border border-emerald-200 bg-[linear-gradient(180deg,#ecfdf5_0%,#ffffff_100%)] p-8 shadow-lg sm:p-10">
           <div className="mb-4 inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-emerald-700">
             Confianza
