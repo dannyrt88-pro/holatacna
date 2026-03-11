@@ -104,6 +104,28 @@ export default function HomePage() {
           </div>
         </section>
 
+        <section className="mb-6 rounded-[28px] border border-slate-200 bg-white px-8 py-8 shadow-[0_14px_36px_rgba(15,23,42,0.06)] sm:px-10">
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="mb-4 inline-flex rounded-full bg-slate-100 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-slate-700">
+              Explora alianzas
+            </div>
+            <h2 className="text-2xl font-bold sm:text-3xl">Conoce nuestras alianzas por categoria</h2>
+            <p className="mt-4 text-base leading-8 text-slate-600 sm:text-lg">
+              Si quieres conocer como trabajamos con clinicas, hoteles, transporte, restaurantes o
+              departamentos por dia, puedes explorar nuestras paginas de alianzas.
+            </p>
+
+            <div className="mt-6">
+              <Link
+                href="/alianzas"
+                className="inline-flex rounded-xl border border-slate-300 bg-slate-50 px-5 py-3 font-semibold text-slate-800 transition hover:bg-slate-100"
+              >
+                Explorar alianzas
+              </Link>
+            </div>
+          </div>
+        </section>
+
         <section className="rounded-[32px] border border-emerald-200 bg-[linear-gradient(180deg,#ecfdf5_0%,#ffffff_100%)] px-8 py-10 shadow-[0_18px_50px_rgba(15,23,42,0.08)] sm:px-10">
           <div className="mx-auto max-w-4xl text-center">
             <div className="mb-4 inline-flex rounded-full bg-emerald-100 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">
