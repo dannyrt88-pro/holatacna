@@ -182,11 +182,11 @@
   },
   "active": "04c5fd80ecad5e5b",
   "lastOpenFiles": [
+    "app/hoteles-tacna/page.tsx",
     "app/restaurantes-tacna/page.tsx",
     "app/transporte-tacna/page.tsx",
     "app/restaurantes-tacna",
     "app/transporte-tacna",
-    "app/hoteles-tacna/page.tsx",
     "app/hoteles-tacna",
     "components/guide/guide-trust-block.tsx",
     "components/guide/guide-hero.tsx",

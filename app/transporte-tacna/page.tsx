@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import { GuideCardGrid } from '@/components/guide/guide-card-grid'
 import { GuideCtaStrip } from '@/components/guide/guide-cta-strip'
 import { GuideHero } from '@/components/guide/guide-hero'
@@ -43,16 +43,39 @@ export default function TransporteTacnaPage() {
           description="Opciones de movilidad útiles para llegar desde la frontera, moverse por la ciudad y conectar clínicas, hoteles y zonas centrales."
         />
 
-        <GuideCardGrid
-          badge="Opciones de transporte"
-          title="Alternativas para moverte mejor durante tu visita"
-          items={transportCategories}
-        />
+        <div id="categorias-transporte-grid">
+          <GuideCardGrid
+            badge="Opciones de transporte"
+            title="Alternativas para moverte mejor durante tu visita"
+            items={transportCategories}
+          />
+        </div>
 
         <GuideTrustBlock
           title="Movilidad pensada para reducir fricción en tu viaje"
           description="HolaTacna busca recomendar opciones de transporte que ayuden a pacientes, acompañantes y visitantes chilenos a organizar mejor sus traslados dentro de Tacna."
         />
+
+        <section className="rounded-[28px] bg-white p-8 shadow-lg sm:p-10">
+          <div className="mb-4 inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-slate-700">
+            Para tu visita
+          </div>
+          <h2 className="text-3xl font-bold sm:text-4xl">
+            Conoce opciones de movilidad útiles en Tacna
+          </h2>
+          <p className="mt-4 max-w-4xl text-base leading-8 text-slate-600 sm:text-lg">
+            Para muchos visitantes, resolver cómo moverse entre frontera, clínicas, hoteles y zonas
+            centrales hace la visita mucho más simple.
+          </p>
+          <div className="mt-8">
+            <a
+              href="#categorias-transporte-grid"
+              className="inline-flex rounded-2xl bg-slate-950 px-6 py-4 text-base font-bold text-white transition hover:bg-slate-800"
+            >
+              Explorar opciones de movilidad
+            </a>
+          </div>
+        </section>
 
         <GuideCtaStrip
           title="¿Ofreces transporte o movilidad en Tacna?"
