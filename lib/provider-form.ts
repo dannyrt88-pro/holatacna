@@ -130,7 +130,6 @@ export function buildProviderRegistrationPayload(
     commission_rate: Number(form.commission_rate || 0),
     auto_assign: isAdminSource ? form.auto_assign : false,
     active: isAdminSource ? form.active : false,
-    is_active: isAdminSource ? form.active : false,
     priority: isAdminSource ? Number(form.priority || 0) : 0,
     score: isAdminSource ? Number(form.score || 0) : 0,
     city_scope: form.city_scope.trim() || null,

@@ -22,7 +22,6 @@ type ProviderEditableField =
   | 'website_url'
   | 'photo_url'
   | 'auto_assign'
-  | 'is_active'
   | 'active'
   | 'notes'
   | 'priority'
@@ -183,7 +182,7 @@ function ProvidersPageInner() {
 
     const payload =
       field === 'active'
-        ? { active: value, is_active: value }
+        ? { active: value }
         : { [field]: value }
 
     const { error } = await supabase
@@ -201,7 +200,7 @@ function ProvidersPageInner() {
       prev.map((provider) =>
         provider.id === id
           ? field === 'active'
-            ? { ...provider, active: Boolean(value), is_active: Boolean(value) }
+            ? { ...provider, active: Boolean(value) }
             : { ...provider, [field]: value }
           : provider
       )
@@ -310,7 +309,6 @@ function ProvidersPageInner() {
         commission_rate: Number(form.commission_rate || 0),
         auto_assign: form.auto_assign,
         active: form.active,
-        is_active: form.active,
         priority: Number(form.priority || 0),
         score: Number(form.score || 0),
         city_scope: form.city_scope,
