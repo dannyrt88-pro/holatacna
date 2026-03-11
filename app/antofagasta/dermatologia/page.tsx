@@ -7,7 +7,8 @@ const route = getMedicalSeoRoute('Antofagasta', 'dermatologia')
 
 export const metadata = buildMedicalCityMetadata(
   `${route?.pageTitle} | HolaTacna`,
-  'Dermatologia en Tacna para pacientes de Antofagasta con ahorro frente a Chile, coordinacion por WhatsApp y clinicas verificadas.'
+  'Dermatologia en Tacna para pacientes de Antofagasta con ahorro frente a Chile, coordinacion por WhatsApp y clinicas verificadas.',
+  '/antofagasta/dermatologia'
 )
 
 export default function AntofagastaDermatologiaPage() {

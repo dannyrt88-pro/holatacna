@@ -7,7 +7,8 @@ const route = getMedicalSeoRoute('Arica', 'implantes-dentales')
 
 export const metadata = buildMedicalCityMetadata(
   `${route?.pageTitle} | HolaTacna`,
-  'Implantes dentales en Tacna para pacientes de Arica con ahorro frente a Chile, coordinacion por WhatsApp y clinicas verificadas.'
+  'Implantes dentales en Tacna para pacientes de Arica con ahorro frente a Chile, coordinacion por WhatsApp y clinicas verificadas.',
+  '/arica/implantes-dentales'
 )
 
 export default function AricaImplantesDentalesPage() {

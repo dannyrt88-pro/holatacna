@@ -7,7 +7,8 @@ const route = getMedicalSeoRoute('Iquique', 'estetica')
 
 export const metadata = buildMedicalCityMetadata(
   `${route?.pageTitle} | HolaTacna`,
-  'Tratamientos de estetica en Tacna para pacientes de Iquique con ahorro frente a Chile, coordinacion por WhatsApp y clinicas verificadas.'
+  'Tratamientos de estetica en Tacna para pacientes de Iquique con ahorro frente a Chile, coordinacion por WhatsApp y clinicas verificadas.',
+  '/iquique/estetica'
 )
 
 export default function IquiqueEsteticaPage() {

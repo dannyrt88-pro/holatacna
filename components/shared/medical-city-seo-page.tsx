@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 import Link from 'next/link'
+import { buildSeoMetadata } from '@/lib/seo/metadata'
 
 type MedicalCitySeoPageProps = {
   badge: string
@@ -13,8 +14,20 @@ type MedicalCitySeoPageProps = {
   children: ReactNode
 }
 
-export function buildMedicalCityMetadata(title: string, description: string): Metadata {
-  return { title, description }
+export function buildMedicalCityMetadata(
+  title: string,
+  description: string,
+  path?: string
+): Metadata {
+  if (!path) {
+    return { title, description }
+  }
+
+  return buildSeoMetadata({
+    title,
+    description,
+    path,
+  })
 }
 
 export function MedicalCitySeoPage({

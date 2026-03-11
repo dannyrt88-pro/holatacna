@@ -7,7 +7,8 @@ const route = getMedicalSeoRoute('Arica', 'oftalmologia')
 
 export const metadata = buildMedicalCityMetadata(
   `${route?.pageTitle} | HolaTacna`,
-  'Oftalmologia en Tacna para pacientes de Arica con ahorro frente a Chile, coordinacion por WhatsApp y clinicas verificadas.'
+  'Oftalmologia en Tacna para pacientes de Arica con ahorro frente a Chile, coordinacion por WhatsApp y clinicas verificadas.',
+  '/arica/operacion-ojos'
 )
 
 export default function AricaOftalmologiaPage() {
