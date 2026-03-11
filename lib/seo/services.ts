@@ -76,19 +76,29 @@ export const seoServices: SeoServiceDefinition[] = [
     messagePlaceholder: 'Cuentanos tu caso dermatologico o el tratamiento que deseas consultar.',
     gradientClass: 'bg-[linear-gradient(135deg,#0f172a,#0f766e)]',
     cityFormOverrides: {
+      default: {
+        includeAdditionalServices: true,
+        additionalServicesLabel: 'Servicios útiles para tu visita en Tacna',
+        additionalServicesHelperText:
+          'Si lo deseas, también podemos orientarte sobre opciones útiles durante tu visita.',
+        additionalServicesOptions: [
+          'Hoteles cercanos a la clínica',
+          'Restaurantes recomendados',
+          'Transporte desde la frontera',
+        ],
+      },
       antofagasta: {
         formHeading: 'Solicita tu evaluacion desde Antofagasta',
         includePreferredDate: true,
         preferredDateLabel: 'Fecha estimada de viaje',
         includeAdditionalServices: true,
-        additionalServicesLabel: 'Servicios adicionales',
+        additionalServicesLabel: 'Servicios útiles para tu visita en Tacna',
         additionalServicesHelperText:
-          'Marca las opciones que tambien te interesan para que podamos orientar mejor tu caso antes del viaje.',
+          'Si lo deseas, también podemos orientarte sobre opciones útiles durante tu visita.',
         additionalServicesOptions: [
-          'Evaluacion dermatologica inicial',
-          'Revision de manchas o lesiones',
-          'Hospedaje en Tacna',
-          'Transporte en la ciudad',
+          'Hoteles cercanos a la clínica',
+          'Restaurantes recomendados',
+          'Transporte desde la frontera',
         ],
         messageLabel: 'Cuentanos tu caso',
         messagePlaceholder:
@@ -138,19 +148,29 @@ export const seoServices: SeoServiceDefinition[] = [
     messagePlaceholder: 'Cuentanos que tratamiento estetico buscas o que dudas quieres resolver.',
     gradientClass: 'bg-[linear-gradient(135deg,#4c1d95,#db2777)]',
     cityFormOverrides: {
+      default: {
+        includeAdditionalServices: true,
+        additionalServicesLabel: 'Servicios útiles para tu visita en Tacna',
+        additionalServicesHelperText:
+          'Si lo deseas, también podemos orientarte sobre opciones útiles durante tu visita.',
+        additionalServicesOptions: [
+          'Hoteles cercanos a la clínica',
+          'Restaurantes recomendados',
+          'Transporte desde la frontera',
+        ],
+      },
       iquique: {
         formHeading: 'Solicita tu orientacion desde Iquique',
         includePreferredDate: true,
         preferredDateLabel: 'Fecha estimada de viaje',
         includeAdditionalServices: true,
-        additionalServicesLabel: 'Servicios adicionales',
+        additionalServicesLabel: 'Servicios útiles para tu visita en Tacna',
         additionalServicesHelperText:
-          'Marca las opciones que tambien te interesan para ayudarnos a entender mejor tu plan antes del viaje.',
+          'Si lo deseas, también podemos orientarte sobre opciones útiles durante tu visita.',
         additionalServicesOptions: [
-          'Evaluacion inicial',
-          'Hospedaje en Tacna',
-          'Transporte en la ciudad',
-          'Orientacion previa por WhatsApp',
+          'Hoteles cercanos a la clínica',
+          'Restaurantes recomendados',
+          'Transporte desde la frontera',
         ],
         messageLabel: 'Cuentanos que buscas',
         messagePlaceholder:
@@ -199,6 +219,19 @@ export const seoServices: SeoServiceDefinition[] = [
     formHeading: 'Solicita una evaluacion oftalmologica',
     messagePlaceholder: 'Cuentanos tu caso visual o el tratamiento oftalmologico que deseas consultar.',
     gradientClass: 'bg-[linear-gradient(135deg,#0f172a,#1d4ed8)]',
+    cityFormOverrides: {
+      default: {
+        includeAdditionalServices: true,
+        additionalServicesLabel: 'Servicios útiles para tu visita en Tacna',
+        additionalServicesHelperText:
+          'Si lo deseas, también podemos orientarte sobre opciones útiles durante tu visita.',
+        additionalServicesOptions: [
+          'Hoteles cercanos a la clínica',
+          'Restaurantes recomendados',
+          'Transporte desde la frontera',
+        ],
+      },
+    },
   },
   {
     slug: 'implantes-dentales',
@@ -238,19 +271,29 @@ export const seoServices: SeoServiceDefinition[] = [
     messagePlaceholder: 'Cuentanos tu caso o tus dudas sobre implantes dentales en Tacna.',
     gradientClass: 'bg-[linear-gradient(135deg,#111827,#0f766e)]',
     cityFormOverrides: {
+      default: {
+        includeAdditionalServices: true,
+        additionalServicesLabel: 'Servicios útiles para tu visita en Tacna',
+        additionalServicesHelperText:
+          'Si lo deseas, también podemos orientarte sobre opciones útiles durante tu visita.',
+        additionalServicesOptions: [
+          'Hoteles cercanos a la clínica',
+          'Restaurantes recomendados',
+          'Transporte desde la frontera',
+        ],
+      },
       arica: {
         formHeading: 'Solicita tu evaluacion desde Arica',
         includePreferredDate: true,
         preferredDateLabel: 'Fecha estimada de viaje',
         includeAdditionalServices: true,
-        additionalServicesLabel: 'Servicios adicionales',
+        additionalServicesLabel: 'Servicios útiles para tu visita en Tacna',
         additionalServicesHelperText:
-          'Marca las opciones que tambien te interesan para que podamos entender mejor tu necesidad antes del viaje.',
+          'Si lo deseas, también podemos orientarte sobre opciones útiles durante tu visita.',
         additionalServicesOptions: [
-          'Evaluacion dental inicial',
-          'Radiografia o imagen diagnostica',
-          'Hospedaje en Tacna',
-          'Transporte en la ciudad',
+          'Hoteles cercanos a la clínica',
+          'Restaurantes recomendados',
+          'Transporte desde la frontera',
         ],
         messageLabel: 'Cuentanos tu caso',
         messagePlaceholder:

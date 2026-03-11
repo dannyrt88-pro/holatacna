@@ -9,7 +9,10 @@ type ServiceCityPageProps = {
 
 export function ServiceCityPage({ landing }: ServiceCityPageProps) {
   const { city, service, path } = landing
-  const formOverride = service.cityFormOverrides?.[city.slug]
+  const formOverride = {
+    ...service.cityFormOverrides?.default,
+    ...service.cityFormOverrides?.[city.slug],
+  }
   const resolvedBenefits = service.cityBenefitsOverrides?.[city.slug] || service.benefits
   const resolvedContextCopy =
     service.cityContextOverrides?.[city.slug] ||
