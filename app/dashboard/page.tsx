@@ -969,6 +969,7 @@ export default function Dashboard() {
                     <th style={thStyle}>Telefono</th>
                     <th style={thStyle}>Asignacion</th>
                     <th style={thStyle}>Ciudad</th>
+                    <th style={thStyle}>Fecha estimada</th>
                     <th style={thStyle}>Servicios extra</th>
                     <th style={thStyle}>Paquete</th>
                     <th style={thStyle}>Mensaje</th>
@@ -1045,6 +1046,7 @@ export default function Dashboard() {
                           </span>
                         </td>
                         <td style={tdStyle}>{lead.city_interest || '-'}</td>
+                        <td style={tdStyle}>{lead.preferred_date || '-'}</td>
                         <td style={tdStyle}>
                           {lead.additional_services?.length ? (
                             <div style={tagWrapStyle}>

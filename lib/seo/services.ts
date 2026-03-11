@@ -19,6 +19,22 @@ export type SeoServiceDefinition = {
   formHeading: string
   messagePlaceholder: string
   gradientClass: string
+  cityFormOverrides?: Record<
+    string,
+    {
+      formHeading?: string
+      includePreferredDate?: boolean
+      preferredDateLabel?: string
+      includeAdditionalServices?: boolean
+      additionalServicesLabel?: string
+      additionalServicesHelperText?: string
+      additionalServicesOptions?: string[]
+      messageLabel?: string
+      messagePlaceholder?: string
+    }
+  >
+  cityContextOverrides?: Record<string, string>
+  cityBenefitsOverrides?: Record<string, string[]>
 }
 
 export const seoServices: SeoServiceDefinition[] = [
@@ -59,6 +75,30 @@ export const seoServices: SeoServiceDefinition[] = [
     formHeading: 'Solicita una evaluacion dermatologica',
     messagePlaceholder: 'Cuentanos tu caso dermatologico o el tratamiento que deseas consultar.',
     gradientClass: 'bg-[linear-gradient(135deg,#0f172a,#0f766e)]',
+    cityFormOverrides: {
+      antofagasta: {
+        formHeading: 'Solicita tu evaluacion desde Antofagasta',
+        includePreferredDate: true,
+        preferredDateLabel: 'Fecha estimada de viaje',
+        includeAdditionalServices: true,
+        additionalServicesLabel: 'Servicios adicionales',
+        additionalServicesHelperText:
+          'Marca las opciones que tambien te interesan para que podamos orientar mejor tu caso antes del viaje.',
+        additionalServicesOptions: [
+          'Evaluacion dermatologica inicial',
+          'Revision de manchas o lesiones',
+          'Hospedaje en Tacna',
+          'Transporte en la ciudad',
+        ],
+        messageLabel: 'Cuentanos tu caso',
+        messagePlaceholder:
+          'Cuentanos tu caso dermatologico, tus dudas y cualquier antecedente importante antes de viajar.',
+      },
+    },
+    cityContextOverrides: {
+      antofagasta:
+        'Pacientes de Antofagasta viajan a Tacna para evaluar dermatologia con apoyo previo, clinicas verificadas y una alternativa de ahorro frente a Chile.',
+    },
   },
   {
     slug: 'estetica',
@@ -97,6 +137,30 @@ export const seoServices: SeoServiceDefinition[] = [
     formHeading: 'Solicita una orientacion estetica',
     messagePlaceholder: 'Cuentanos que tratamiento estetico buscas o que dudas quieres resolver.',
     gradientClass: 'bg-[linear-gradient(135deg,#4c1d95,#db2777)]',
+    cityFormOverrides: {
+      iquique: {
+        formHeading: 'Solicita tu orientacion desde Iquique',
+        includePreferredDate: true,
+        preferredDateLabel: 'Fecha estimada de viaje',
+        includeAdditionalServices: true,
+        additionalServicesLabel: 'Servicios adicionales',
+        additionalServicesHelperText:
+          'Marca las opciones que tambien te interesan para ayudarnos a entender mejor tu plan antes del viaje.',
+        additionalServicesOptions: [
+          'Evaluacion inicial',
+          'Hospedaje en Tacna',
+          'Transporte en la ciudad',
+          'Orientacion previa por WhatsApp',
+        ],
+        messageLabel: 'Cuentanos que buscas',
+        messagePlaceholder:
+          'Cuentanos que tratamiento estetico buscas, tus dudas y cualquier antecedente importante antes de viajar.',
+      },
+    },
+    cityContextOverrides: {
+      iquique:
+        'Muchas personas de Iquique buscan tratamientos esteticos en Tacna para ahorrar, coordinar por WhatsApp antes del viaje y atenderse con clinicas verificadas.',
+    },
   },
   {
     slug: 'operacion-ojos',
@@ -173,6 +237,30 @@ export const seoServices: SeoServiceDefinition[] = [
     formHeading: 'Solicita una evaluacion dental',
     messagePlaceholder: 'Cuentanos tu caso o tus dudas sobre implantes dentales en Tacna.',
     gradientClass: 'bg-[linear-gradient(135deg,#111827,#0f766e)]',
+    cityFormOverrides: {
+      arica: {
+        formHeading: 'Solicita tu evaluacion desde Arica',
+        includePreferredDate: true,
+        preferredDateLabel: 'Fecha estimada de viaje',
+        includeAdditionalServices: true,
+        additionalServicesLabel: 'Servicios adicionales',
+        additionalServicesHelperText:
+          'Marca las opciones que tambien te interesan para que podamos entender mejor tu necesidad antes del viaje.',
+        additionalServicesOptions: [
+          'Evaluacion dental inicial',
+          'Radiografia o imagen diagnostica',
+          'Hospedaje en Tacna',
+          'Transporte en la ciudad',
+        ],
+        messageLabel: 'Cuentanos tu caso',
+        messagePlaceholder:
+          'Cuentanos tu caso, tus dudas sobre implantes dentales y cualquier antecedente importante antes de viajar.',
+      },
+    },
+    cityContextOverrides: {
+      arica:
+        'Muchos pacientes de Arica viajan a Tacna para evaluar implantes dentales con clinicas verificadas, menor costo frente a Chile y coordinacion previa por WhatsApp.',
+    },
   },
 ]
 

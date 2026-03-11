@@ -69,12 +69,14 @@ export type LeadCapturePayload = {
   name: string | null
   phone: string | null
   tourist_phone: string | null
+  preferred_date?: string | null
   message: string | null
   service_slug: string | null
   service_name: string | null
   city_interest: string | null
   landing_path: string | null
   page_type: string | null
+  additional_services?: string[] | null
   utm_source: string | null
   utm_medium: string | null
   utm_campaign: string | null

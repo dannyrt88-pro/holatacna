@@ -40,6 +40,13 @@ export function MedicalCityLeadForm({
     )
   }
 
+  function sanitizeWhatsapp(value: string) {
+    const trimmed = value.replace(/\s+/g, '')
+    const hasPlus = trimmed.startsWith('+')
+    const digitsOnly = trimmed.replace(/\D/g, '')
+    return hasPlus ? `+${digitsOnly}` : digitsOnly
+  }
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
@@ -105,7 +112,13 @@ export function MedicalCityLeadForm({
 
         <div style={fieldStyle}>
           <label>WhatsApp</label>
-          <input required value={touristPhone} onChange={(e) => setTouristPhone(e.target.value)} style={inputStyle} />
+          <input
+            required
+            value={touristPhone}
+            onChange={(e) => setTouristPhone(sanitizeWhatsapp(e.target.value))}
+            style={inputStyle}
+            inputMode="tel"
+          />
         </div>
 
         <div style={fieldStyle}>

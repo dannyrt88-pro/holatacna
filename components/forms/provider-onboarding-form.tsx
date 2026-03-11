@@ -76,6 +76,13 @@ export function ProviderOnboardingForm({
     setForm((prev) => ({ ...prev, [field]: value }))
   }
 
+  function sanitizeWhatsapp(value: string) {
+    const trimmed = value.replace(/\s+/g, '')
+    const hasPlus = trimmed.startsWith('+')
+    const digitsOnly = trimmed.replace(/\D/g, '')
+    return hasPlus ? `+${digitsOnly}` : digitsOnly
+  }
+
   function handleOfferedServiceChange(
     index: number,
     field: keyof ProviderOfferedService,
@@ -402,9 +409,10 @@ export function ProviderOnboardingForm({
             <span className="text-sm font-semibold">WhatsApp</span>
             <input
               value={form.whatsapp}
-              onChange={(event) => handleFormChange('whatsapp', event.target.value)}
+              onChange={(event) => handleFormChange('whatsapp', sanitizeWhatsapp(event.target.value))}
               className="rounded-xl border border-slate-300 px-4 py-3"
               placeholder="+51999999999"
+              inputMode="tel"
             />
           </label>
 

@@ -9,10 +9,15 @@ type ServiceCityPageProps = {
 
 export function ServiceCityPage({ landing }: ServiceCityPageProps) {
   const { city, service, path } = landing
-  const commercialCopy =
-    service.slug === 'operacion-ojos'
+  const formOverride = service.cityFormOverrides?.[city.slug]
+  const resolvedBenefits = service.cityBenefitsOverrides?.[city.slug] || service.benefits
+  const resolvedContextCopy =
+    service.cityContextOverrides?.[city.slug] ||
+    (service.slug === 'operacion-ojos'
       ? `Muchos pacientes de ${city.name} viajan a Tacna para cirugia ocular o evaluacion visual especializada. Puedes solicitar una evaluacion inicial y recibir orientacion antes de viajar.`
-      : service.commercialBlock
+      : service.commercialBlock)
+  const commercialCopy =
+    resolvedContextCopy
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
@@ -45,7 +50,7 @@ export function ServiceCityPage({ landing }: ServiceCityPageProps) {
             </div>
           </div>
 
-          <div className="rounded-3xl bg-white p-6 text-slate-950 shadow-xl">
+          <div className="rounded-3xl bg-white p-6 text-slate-950 shadow-xl ring-1 ring-slate-200/80">
             <Suspense fallback={<div className="min-h-[320px] rounded-2xl bg-slate-50" />}>
               <LeadCaptureForm
                 serviceSlug={service.serviceSlug}
@@ -53,9 +58,17 @@ export function ServiceCityPage({ landing }: ServiceCityPageProps) {
                 cityInterest={city.name}
                 landingPath={path}
                 pageType="seo"
+                formHeading={formOverride?.formHeading}
                 heading={service.formHeading}
                 submitLabel="Solicitar informacion"
-                messagePlaceholder={service.messagePlaceholder}
+                messageLabel={formOverride?.messageLabel}
+                messagePlaceholder={formOverride?.messagePlaceholder || service.messagePlaceholder}
+                includePreferredDate={formOverride?.includePreferredDate}
+                preferredDateLabel={formOverride?.preferredDateLabel}
+                includeAdditionalServices={formOverride?.includeAdditionalServices}
+                additionalServicesLabel={formOverride?.additionalServicesLabel}
+                additionalServicesHelperText={formOverride?.additionalServicesHelperText}
+                additionalServicesOptions={formOverride?.additionalServicesOptions}
               />
             </Suspense>
           </div>
@@ -67,7 +80,7 @@ export function ServiceCityPage({ landing }: ServiceCityPageProps) {
           <article className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
             <h2 className="mb-5 text-3xl font-bold">Beneficios para pacientes de {city.name}</h2>
             <div className="grid gap-4 text-slate-700">
-              {service.benefits.map((benefit) => (
+              {resolvedBenefits.map((benefit) => (
                 <div key={benefit} className="rounded-2xl bg-slate-50 p-4">
                   {benefit}
                 </div>

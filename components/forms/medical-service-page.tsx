@@ -40,6 +40,13 @@ export function MedicalServicePage({
   const addOnOptions = getAddOnOptionsForService(serviceSlug)
   const messageEnabled = Boolean(messageLabel)
 
+  function sanitizeWhatsapp(value: string) {
+    const trimmed = value.replace(/\s+/g, '')
+    const hasPlus = trimmed.startsWith('+')
+    const digitsOnly = trimmed.replace(/\D/g, '')
+    return hasPlus ? `+${digitsOnly}` : digitsOnly
+  }
+
   function toggleAdditionalService(service: string) {
     setAdditionalServices((prev) =>
       prev.includes(service) ? prev.filter((item) => item !== service) : [...prev, service]
@@ -158,9 +165,10 @@ export function MedicalServicePage({
                 <input
                   required
                   value={touristPhone}
-                  onChange={(e) => setTouristPhone(e.target.value)}
+                  onChange={(e) => setTouristPhone(sanitizeWhatsapp(e.target.value))}
                   className="rounded-lg border border-slate-300 px-4 py-3"
                   placeholder="+56912345678"
+                  inputMode="tel"
                 />
               </label>
 
