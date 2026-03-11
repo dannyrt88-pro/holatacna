@@ -40,19 +40,19 @@ const cityAccess = [
     city: 'Arica',
     description:
       'Pacientes de Arica consultan tratamientos en Tacna por cercania, rapidez y coordinacion previa.',
-    href: '/arica/implantes-dentales-tacna',
+    href: '/arica',
   },
   {
     city: 'Iquique',
     description:
       'Pacientes de Iquique revisan opciones medicas en Tacna para resolver dudas antes de viajar.',
-    href: '/iquique/operacion-ojos-tacna',
+    href: '/iquique',
   },
   {
     city: 'Antofagasta',
     description:
       'Pacientes de Antofagasta buscan tratamientos medicos en Tacna con mas claridad y orientacion.',
-    href: '/antofagasta/dermatologia-tacna',
+    href: '/antofagasta',
   },
 ]
 

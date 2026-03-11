@@ -61,7 +61,13 @@ export function ProviderOnboardingForm({
     setForm((prev) => ({
       ...prev,
       offered_services: prev.offered_services.map((service, serviceIndex) =>
-        serviceIndex === index ? { ...service, [field]: value } : service
+        serviceIndex === index
+          ? {
+              ...service,
+              [field]: value,
+              ...(field === 'name' || field === 'description' ? { enabled: true } : {}),
+            }
+          : service
       ),
     }))
   }
@@ -69,7 +75,13 @@ export function ProviderOnboardingForm({
   function addOfferedService() {
     setForm((prev) => ({
       ...prev,
-      offered_services: [...prev.offered_services, getEmptyProviderOfferedService()],
+      offered_services: [
+        ...prev.offered_services,
+        {
+          ...getEmptyProviderOfferedService(),
+          enabled: true,
+        },
+      ],
     }))
   }
 
@@ -220,25 +232,43 @@ export function ProviderOnboardingForm({
               value={form.service_name}
               onChange={(event) => handleFormChange('service_name', event.target.value)}
               className="rounded-xl border border-slate-300 px-4 py-3"
-              placeholder="Implantes Dentales"
+              placeholder={isPublicRegistration ? 'Describe tu servicio principal' : 'Implantes Dentales'}
             />
           </label>
 
-          <label className="grid gap-2">
-            <span className="text-sm font-semibold">Service slug</span>
-            <select
-              value={form.service_slug}
-              onChange={(event) => handleServiceSelect(event.target.value)}
-              className="rounded-xl border border-slate-300 px-4 py-3"
-            >
-              <option value="">Seleccionar slug</option>
-              {serviceOptions.map((service) => (
-                <option key={service.slug} value={service.slug}>
-                  {service.name} · {service.slug}
-                </option>
-              ))}
-            </select>
-          </label>
+          {isPublicRegistration ? (
+            <label className="grid gap-2">
+              <span className="text-sm font-semibold">Categoria principal</span>
+              <select
+                value={form.service_slug}
+                onChange={(event) => handleServiceSelect(event.target.value)}
+                className="rounded-xl border border-slate-300 px-4 py-3"
+              >
+                <option value="">Selecciona la categoria que mejor te representa</option>
+                {serviceOptions.map((service) => (
+                  <option key={service.slug} value={service.slug}>
+                    {service.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : (
+            <label className="grid gap-2">
+              <span className="text-sm font-semibold">Service slug</span>
+              <select
+                value={form.service_slug}
+                onChange={(event) => handleServiceSelect(event.target.value)}
+                className="rounded-xl border border-slate-300 px-4 py-3"
+              >
+                <option value="">Seleccionar slug</option>
+                {serviceOptions.map((service) => (
+                  <option key={service.slug} value={service.slug}>
+                    {service.name} · {service.slug}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
 
           <div className="md:col-span-2 grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
@@ -278,24 +308,14 @@ export function ProviderOnboardingForm({
                   <div className="grid gap-3 md:grid-cols-2">
                     <label className="grid gap-2">
                       <span className="text-sm font-semibold">Nombre del servicio</span>
-                      <div className="flex items-center gap-3">
-                        <input
-                          type="checkbox"
-                          checked={service.enabled}
-                          onChange={(event) =>
-                            handleOfferedServiceChange(index, 'enabled', event.target.checked)
-                          }
-                        />
-                        <input
-                          value={service.name}
-                          onChange={(event) =>
-                            handleOfferedServiceChange(index, 'name', event.target.value)
-                          }
-                          className="w-full rounded-xl border border-slate-300 px-4 py-3"
-                          placeholder={`Servicio ${index + 1}`}
-                          disabled={!service.enabled}
-                        />
-                      </div>
+                      <input
+                        value={service.name}
+                        onChange={(event) =>
+                          handleOfferedServiceChange(index, 'name', event.target.value)
+                        }
+                        className="w-full rounded-xl border border-slate-300 px-4 py-3"
+                        placeholder={`Servicio ${index + 1}`}
+                      />
                     </label>
 
                     <label className="grid gap-2">
@@ -307,7 +327,6 @@ export function ProviderOnboardingForm({
                         }
                         className="rounded-xl border border-slate-300 px-4 py-3"
                         placeholder="Describe brevemente este servicio"
-                        disabled={!service.enabled}
                       />
                     </label>
                   </div>
@@ -356,20 +375,20 @@ export function ProviderOnboardingForm({
             />
           </label>
 
-          <label className="grid gap-2">
-            <span className="text-sm font-semibold">
-              {isPublicRegistration ? 'Comision comercial propuesta (%)' : 'Comision esperada'}
-            </span>
-            <input
-              type="number"
-              min="0"
-              max="1"
-              step="0.01"
-              value={form.commission_rate}
-              onChange={(event) => handleFormChange('commission_rate', event.target.value)}
-              className="rounded-xl border border-slate-300 px-4 py-3"
-            />
-          </label>
+          {mode === 'admin' ? (
+            <label className="grid gap-2">
+              <span className="text-sm font-semibold">Comision esperada</span>
+              <input
+                type="number"
+                min="0"
+                max="1"
+                step="0.01"
+                value={form.commission_rate}
+                onChange={(event) => handleFormChange('commission_rate', event.target.value)}
+                className="rounded-xl border border-slate-300 px-4 py-3"
+              />
+            </label>
+          ) : null}
 
           {mode === 'admin' ? (
             <>
@@ -397,8 +416,8 @@ export function ProviderOnboardingForm({
             </>
           ) : (
             <div className="md:col-span-2 rounded-2xl border border-sky-200 bg-sky-50 px-4 py-4 text-sm text-sky-900">
-              La activacion, prioridad comercial y calificacion del proveedor se definen internamente segun el flujo
-              operativo de HolaTacna, la disponibilidad real y la calificacion del cliente.
+              Tu postulacion sera revisada por el equipo de HolaTacna. Si tu perfil encaja con la
+              red que estamos construyendo, nos pondremos en contacto contigo para continuar.
             </div>
           )}
 
@@ -424,18 +443,24 @@ export function ProviderOnboardingForm({
             </>
           ) : (
             <div className="md:col-span-2 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-900">
-              Al registrarte, tu perfil quedara pendiente de revision interna antes de activarse en el dashboard o de
-              entrar al flujo de asignacion de clientes.
+              Completar este formulario no implica incorporacion automatica. Primero revisaremos tu
+              informacion y evaluaremos si hay encaje con la red de aliados de HolaTacna.
             </div>
           )}
 
           <label className="md:col-span-2 grid gap-2">
-            <span className="text-sm font-semibold">Notas internas / descripcion</span>
+            <span className="text-sm font-semibold">
+              {isPublicRegistration ? 'Descripcion de tu negocio o servicio' : 'Notas internas / descripcion'}
+            </span>
             <textarea
               value={form.notes}
               onChange={(event) => handleFormChange('notes', event.target.value)}
               className="min-h-[120px] rounded-xl border border-slate-300 px-4 py-3"
-              placeholder="Servicios, horarios, fortalezas, cobertura, observaciones..."
+              placeholder={
+                isPublicRegistration
+                  ? 'Cuentanos que servicio ofreces, en que zona trabajas, tus horarios y cualquier dato util para revisar tu postulacion.'
+                  : 'Servicios, horarios, fortalezas, cobertura, observaciones...'
+              }
             />
           </label>
 
@@ -448,9 +473,9 @@ export function ProviderOnboardingForm({
                 className="mt-1"
               />
               <span>
-                La representada acepta que los datos ingresados son reales, que la comision declarada funciona como
-                base de acuerdo comercial preliminar y que la derivacion de casos depende del flujo interno de
-                HolaTacna y de la calificacion del cliente.
+                Declaro que la informacion ingresada es real y autorizo a HolaTacna a revisarla para
+                evaluar mi postulacion, contactarme y considerar una posible incorporacion a su red
+                de aliados.
               </span>
             </label>
           ) : null}

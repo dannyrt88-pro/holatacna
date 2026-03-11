@@ -155,6 +155,25 @@ function ProvidersPageInner() {
     }
   }, [isPublicRegistration, loadProviders, router, supabase])
 
+  useEffect(() => {
+    if (isPublicRegistration || role !== 'admin') return
+
+    function handleFocus() {
+      void loadProviders()
+    }
+
+    const intervalId = window.setInterval(() => {
+      void loadProviders()
+    }, 15000)
+
+    window.addEventListener('focus', handleFocus)
+
+    return () => {
+      window.removeEventListener('focus', handleFocus)
+      window.clearInterval(intervalId)
+    }
+  }, [isPublicRegistration, loadProviders, role])
+
   async function updateProvider(
     id: string,
     field: ProviderEditableField,
@@ -361,23 +380,73 @@ function ProvidersPageInner() {
     return (
       <main className="min-h-screen bg-slate-100 px-6 py-10 text-slate-950">
         <div className="mx-auto max-w-6xl">
-          <section className="mb-6 rounded-[28px] bg-slate-950 p-8 text-white shadow-xl">
+          <section className="mb-6 rounded-[28px] bg-[linear-gradient(135deg,#0f172a_0%,#0f766e_100%)] p-8 text-white shadow-xl">
             <div className="mb-3 inline-block rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em]">
-              Registro externo
+              Registro de aliados
             </div>
-            <h1 className="mb-2 text-4xl font-bold">Registro de proveedores HolaTacna</h1>
-            <p className="max-w-3xl text-sm text-slate-200">
-              Completa tu informacion comercial y operativa. El equipo de HolaTacna revisara el perfil, validara los
-              datos y definira la activacion segun flujo interno, disponibilidad y calificacion del cliente.
+            <h1 className="mb-3 text-4xl font-bold">Unete como proveedor aliado de HolaTacna</h1>
+            <p className="max-w-3xl text-base leading-7 text-slate-100">
+              Si representas una clinica, alojamiento, transporte, restaurante u otro servicio en
+              Tacna, puedes postular para formar parte de nuestra red de aliados.
             </p>
+          </section>
+
+          <section className="mb-6 grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="rounded-[28px] bg-white p-6 shadow-lg">
+              <div className="mb-4 inline-block rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-emerald-700">
+                Beneficios
+              </div>
+              <div className="grid gap-4">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <h2 className="text-lg font-bold">Mayor visibilidad</h2>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    Presenta tu negocio ante personas que buscan opciones confiables en Tacna.
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <h2 className="text-lg font-bold">Oportunidades de contacto</h2>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    Conecta con pacientes y visitantes de Chile interesados en resolver su viaje con
+                    mayor claridad.
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <h2 className="text-lg font-bold">Red confiable en Tacna</h2>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    Postula para integrarte a una red enfocada en una experiencia ordenada y
+                    profesional para el usuario final.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-[28px] bg-white p-6 shadow-lg">
+              <div className="mb-4 inline-block rounded-full bg-sky-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-sky-700">
+                Como funciona
+              </div>
+              <div className="grid gap-4">
+                {[
+                  'Completa tu registro',
+                  'Revisamos tu informacion',
+                  'Si hay encaje, te incorporamos como aliado',
+                ].map((step, index) => (
+                  <div key={step} className="flex gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-950 font-bold text-white">
+                      {index + 1}
+                    </div>
+                    <p className="text-sm font-semibold leading-6 text-slate-800">{step}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </section>
 
           <ProviderOnboardingForm
             mode="provider-self-service"
-            title="Completa tu perfil"
-            description="Esta vista permite registrar nuevos proveedores sin acceso al listado interno ni a la relacion comercial actual. La prioridad y el score se definen internamente, no por el proveedor."
-            submitLabel="Enviar registro formal"
-            successMessage="Registro enviado. HolaTacna recibio tu informacion, revisara el perfil y dejo listo tu acuerdo preliminar descargable."
+            title="Completa tu postulacion"
+            description="Comparte la informacion principal de tu negocio o servicio para que el equipo de HolaTacna pueda revisarla y evaluar si existe encaje con la red de aliados."
+            submitLabel="Enviar postulacion"
+            successMessage="Postulacion enviada. Revisaremos tu informacion y, si existe encaje, nos pondremos en contacto contigo."
           />
         </div>
       </main>

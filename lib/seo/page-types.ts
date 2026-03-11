@@ -14,11 +14,11 @@ export const seoPageTypes: SeoIntentDefinition[] = [
     name: 'Precio',
     titlePattern: '{service} en Tacna: precios para pacientes de {city}',
     descriptionPattern:
-      'Revisa informacion sobre precios de {service} en Tacna para pacientes de {city} y compara opciones antes de viajar desde Chile.',
-    ctaContext: 'Solicita orientacion para revisar precios aproximados y resolver dudas antes de viajar.',
+      'Revisa información sobre precios de {service} en Tacna para pacientes de {city} y compara opciones antes de viajar desde Chile.',
+    ctaContext: 'Solicita orientación para revisar precios aproximados y resolver dudas antes de viajar.',
     copyHints: [
-      'Enfatizar comparacion de precios y presupuesto estimado.',
-      'Hablar de orientacion previa antes del viaje.',
+      'Enfatizar comparación de precios y ahorro potencial.',
+      'Hablar de orientación previa antes del viaje.',
       'Mantener lenguaje claro para pacientes de Chile.',
     ],
     pageType: 'seo-price',
@@ -28,12 +28,12 @@ export const seoPageTypes: SeoIntentDefinition[] = [
     name: 'Vs Chile',
     titlePattern: '{service} en Tacna vs Chile para pacientes de {city}',
     descriptionPattern:
-      'Compara {service} en Tacna vs Chile si viajas desde {city} y revisa diferencias de costos, tiempos y orientacion previa.',
-    ctaContext: 'Solicita una comparacion inicial y recibe orientacion antes de decidir tu viaje a Tacna.',
+      'Compara {service} en Tacna vs Chile si viajas desde {city} y revisa diferencias de costos, tiempos y orientación previa.',
+    ctaContext: 'Solicita una comparación inicial y recibe orientación antes de decidir tu viaje a Tacna.',
     copyHints: [
-      'Enfatizar comparacion entre Tacna y Chile.',
-      'Mencionar costos, tiempos y cercania.',
-      'Mantener foco en informacion previa para el paciente.',
+      'Enfatizar comparación entre Tacna y Chile.',
+      'Mencionar costos, tiempos y cercanía.',
+      'Mantener foco en información previa para el paciente.',
     ],
     pageType: 'seo-comparison',
   },

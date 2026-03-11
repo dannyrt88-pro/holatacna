@@ -14,8 +14,8 @@ function HolaTacnaLogo() {
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,#eff6ff_0%,#f8fafc_42%,#e2e8f0_100%)] px-6 py-10 text-slate-950 sm:px-8 sm:py-14">
-      <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-5xl items-center justify-center">
-        <section className="w-full rounded-[36px] border border-white/70 bg-white/80 px-8 py-12 text-center shadow-[0_30px_80px_rgba(15,23,42,0.12)] backdrop-blur sm:px-12 sm:py-16">
+      <div className="mx-auto max-w-4xl">
+        <section className="rounded-[36px] border border-white/70 bg-white/80 px-8 py-12 text-center shadow-[0_30px_80px_rgba(15,23,42,0.12)] backdrop-blur sm:px-12 sm:py-16">
           <div className="mb-8 flex justify-center">
             <HolaTacnaLogo />
           </div>

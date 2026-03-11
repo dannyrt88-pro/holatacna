@@ -30,13 +30,7 @@ export default function ProviderRegistrationPage() {
               href="/"
               className="rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/15"
             >
-              Volver a la landing
-            </Link>
-            <Link
-              href="/home-completa"
-              className="rounded-xl bg-white px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-slate-100"
-            >
-              Ver home actual
+              Volver a HolaTacna
             </Link>
           </div>
         </section>

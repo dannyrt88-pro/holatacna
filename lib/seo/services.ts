@@ -30,9 +30,9 @@ export const seoServices: SeoServiceDefinition[] = [
     titleBase: 'Dermatologia en Tacna para pacientes de Chile',
     descriptionBase: 'Evaluaciones dermatologicas, revision de manchas, acne y cuidado especializado de la piel.',
     benefits: [
-      'Informacion clara para comparar opciones entre Chile y Tacna.',
-      'Orientacion previa por WhatsApp antes de reservar tu evaluacion.',
-      'Conexion con clinicas y especialistas previamente revisados.',
+      'Información clara para comparar opciones entre Chile y Tacna.',
+      'Orientación previa por WhatsApp antes de reservar tu evaluación.',
+      'Contacto con clínicas y especialistas previamente revisados.',
     ],
     faq: [
       {
@@ -68,9 +68,9 @@ export const seoServices: SeoServiceDefinition[] = [
     titleBase: 'Tratamientos esteticos en Tacna para pacientes de Chile',
     descriptionBase: 'Tratamientos esteticos con coordinacion previa, cotizacion inicial y soporte por WhatsApp.',
     benefits: [
-      'Mas claridad para comparar opciones esteticas.',
-      'Coordinacion previa para resolver dudas antes del viaje.',
-      'Contacto con clinicas o especialistas que atienden pacientes de Chile.',
+      'Más claridad para comparar opciones estéticas.',
+      'Coordinación previa para resolver dudas antes del viaje.',
+      'Contacto con clínicas o especialistas que atienden pacientes de Chile.',
     ],
     faq: [
       {
@@ -106,9 +106,9 @@ export const seoServices: SeoServiceDefinition[] = [
     titleBase: 'Operacion de ojos en Tacna para pacientes de Chile',
     descriptionBase: 'Evaluaciones visuales y orientacion inicial para pacientes interesados en oftalmologia en Tacna.',
     benefits: [
-      'Comparacion rapida de precios entre Chile y Tacna.',
-      'Mayor orden comercial para consultas visuales y tratamientos.',
-      'Contacto directo para coordinar evaluacion con anticipacion.',
+      'Comparación clara de precios entre Chile y Tacna.',
+      'Orientación inicial para resolver dudas sobre consultas visuales y tratamientos.',
+      'Contacto directo para coordinar una evaluación con anticipación.',
     ],
     faq: [
       {
@@ -144,9 +144,9 @@ export const seoServices: SeoServiceDefinition[] = [
     titleBase: 'Implantes dentales en Tacna para pacientes de Chile',
     descriptionBase: 'Implantes dentales y evaluacion odontologica con ahorro frente a alternativas en Chile.',
     benefits: [
-      'Ahorro relevante frente a valores habituales en Chile.',
-      'Orientacion previa para evaluar presupuesto y tiempos.',
-      'Contacto con clinicas odontologicas revisadas previamente.',
+      'Muchos pacientes comparan Tacna porque buscan una alternativa más accesible que en Chile.',
+      'Orientación previa para entender tiempos, pasos y costos referenciales.',
+      'Contacto con clínicas odontológicas revisadas previamente.',
     ],
     faq: [
       {
