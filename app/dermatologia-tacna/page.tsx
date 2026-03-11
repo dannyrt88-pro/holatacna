@@ -170,12 +170,17 @@ export default function DermatologiaTacnaPage() {
             >
               Ver comparacion Tacna vs Chile
             </Link>
-            <Link
-              href="/dermatologia-tacna-vs-chile"
+            <button
+              type="button"
+              onClick={() =>
+                document
+                  .getElementById('formulario-evaluacion')
+                  ?.scrollIntoView({ behavior: 'smooth' })
+              }
               className="inline-flex items-center rounded-xl border border-slate-300 bg-white px-5 py-3 font-bold text-slate-700 transition hover:border-slate-400 hover:text-slate-950"
             >
-              Conviene atenderse en Tacna?
-            </Link>
+              Solicitar evaluacion
+            </button>
           </div>
         </div>
       </section>
