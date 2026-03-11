@@ -1,23 +1,23 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 
 const cityServices = [
   {
     name: 'Implantes dentales',
     description:
       'Opciones para pacientes de Antofagasta que buscan implantes dentales en Tacna con orientación previa antes del viaje.',
-    href: '/antofagasta/implantes-dentales-tacna',
+    href: '/antofagasta/implantes-dentales',
   },
   {
     name: 'Operación de ojos',
     description:
-      'La información de operación de ojos para pacientes de Antofagasta estará disponible próximamente.',
-    href: null,
+      'Información para pacientes de Antofagasta que desean evaluar atención visual en Tacna antes de viajar.',
+    href: '/antofagasta/operacion-ojos',
   },
   {
     name: 'Estética',
     description:
       'Tratamientos estéticos en Tacna para pacientes de Antofagasta que buscan comparar opciones antes de viajar.',
-    href: '/antofagasta/estetica-tacna',
+    href: '/antofagasta/estetica',
   },
   {
     name: 'Dermatología',
@@ -78,18 +78,12 @@ export default function AntofagastaHubPage() {
               >
                 <h3 className="mb-3 text-2xl font-bold">{service.name}</h3>
                 <p className="mb-6 text-base leading-7 text-slate-600">{service.description}</p>
-                {service.href ? (
-                  <Link
-                    href={service.href}
-                    className="inline-flex rounded-xl bg-slate-950 px-4 py-3 font-bold text-white transition hover:bg-slate-800"
-                  >
-                    Ver información
-                  </Link>
-                ) : (
-                  <span className="inline-flex cursor-default rounded-xl border border-slate-200 bg-slate-100 px-4 py-3 font-bold text-slate-500">
-                    Próximamente
-                  </span>
-                )}
+                <Link
+                  href={service.href}
+                  className="inline-flex rounded-xl bg-slate-950 px-4 py-3 font-bold text-white transition hover:bg-slate-800"
+                >
+                  Ver información
+                </Link>
               </article>
             ))}
           </div>

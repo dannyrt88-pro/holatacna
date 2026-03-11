@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 
 const cityServices = [
   {
@@ -11,19 +11,19 @@ const cityServices = [
     name: 'Operación de ojos',
     description:
       'Información para pacientes de Arica que desean evaluar atención visual en Tacna y resolver dudas antes de viajar.',
-    href: '/arica/operacion-ojos-tacna',
+    href: '/arica/operacion-ojos',
   },
   {
     name: 'Estética',
     description:
       'Tratamientos estéticos en Tacna para pacientes de Arica que buscan orientación y cercanía antes de coordinar su atención.',
-    href: '/arica/estetica-tacna',
+    href: '/arica/estetica',
   },
   {
     name: 'Dermatología',
     description:
-      'La información de dermatología para pacientes de Arica estará disponible próximamente.',
-    href: null,
+      'Opciones dermatológicas en Tacna para pacientes de Arica que desean revisar alternativas antes de viajar.',
+    href: '/arica/dermatologia',
   },
 ]
 
@@ -76,18 +76,12 @@ export default function AricaHubPage() {
               >
                 <h3 className="mb-3 text-2xl font-bold">{service.name}</h3>
                 <p className="mb-6 text-base leading-7 text-slate-600">{service.description}</p>
-                {service.href ? (
-                  <Link
-                    href={service.href}
-                    className="inline-flex rounded-xl bg-slate-950 px-4 py-3 font-bold text-white transition hover:bg-slate-800"
-                  >
-                    Ver información
-                  </Link>
-                ) : (
-                  <span className="inline-flex cursor-default rounded-xl border border-slate-200 bg-slate-100 px-4 py-3 font-bold text-slate-500">
-                    Próximamente
-                  </span>
-                )}
+                <Link
+                  href={service.href}
+                  className="inline-flex rounded-xl bg-slate-950 px-4 py-3 font-bold text-white transition hover:bg-slate-800"
+                >
+                  Ver información
+                </Link>
               </article>
             ))}
           </div>

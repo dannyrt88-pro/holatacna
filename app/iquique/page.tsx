@@ -1,17 +1,17 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 
 const cityServices = [
   {
     name: 'Implantes dentales',
     description:
-      'La información de implantes dentales para pacientes de Iquique estará disponible próximamente.',
-    href: null,
+      'Opciones para pacientes de Iquique que buscan implantes dentales en Tacna con orientación previa antes del viaje.',
+    href: '/iquique/implantes-dentales',
   },
   {
     name: 'Operación de ojos',
     description:
       'Información para pacientes de Iquique que buscan atención visual en Tacna con orientación antes del viaje.',
-    href: '/iquique/operacion-ojos-tacna',
+    href: '/iquique/operacion-ojos',
   },
   {
     name: 'Estética',
@@ -23,7 +23,7 @@ const cityServices = [
     name: 'Dermatología',
     description:
       'Opciones dermatológicas en Tacna para pacientes de Iquique que desean comparar alternativas antes de viajar.',
-    href: '/iquique/dermatologia-tacna',
+    href: '/iquique/dermatologia',
   },
 ]
 
@@ -76,18 +76,12 @@ export default function IquiqueHubPage() {
               >
                 <h3 className="mb-3 text-2xl font-bold">{service.name}</h3>
                 <p className="mb-6 text-base leading-7 text-slate-600">{service.description}</p>
-                {service.href ? (
-                  <Link
-                    href={service.href}
-                    className="inline-flex rounded-xl bg-slate-950 px-4 py-3 font-bold text-white transition hover:bg-slate-800"
-                  >
-                    Ver información
-                  </Link>
-                ) : (
-                  <span className="inline-flex cursor-default rounded-xl border border-slate-200 bg-slate-100 px-4 py-3 font-bold text-slate-500">
-                    Próximamente
-                  </span>
-                )}
+                <Link
+                  href={service.href}
+                  className="inline-flex rounded-xl bg-slate-950 px-4 py-3 font-bold text-white transition hover:bg-slate-800"
+                >
+                  Ver información
+                </Link>
               </article>
             ))}
           </div>
