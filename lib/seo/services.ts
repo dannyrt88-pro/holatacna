@@ -39,6 +39,120 @@ export type SeoServiceDefinition = {
 
 export const seoServices: SeoServiceDefinition[] = [
   {
+    slug: 'ortodoncia',
+    name: 'Ortodoncia',
+    serviceSlug: 'ortodoncia',
+    serviceName: 'Ortodoncia',
+    titleBase: 'Ortodoncia en Tacna para pacientes de Chile',
+    descriptionBase:
+      'Brackets y alineadores en Tacna para pacientes de Chile que buscan orientacion confiable antes de viajar.',
+    benefits: [
+      'Orientacion inicial para comparar brackets y alineadores antes de viajar.',
+      'Informacion clara sobre tiempos del tratamiento y etapas de evaluacion.',
+      'Contacto con clinicas dentales que atienden pacientes de Chile.',
+    ],
+    faq: [
+      {
+        question: 'Puedo consultar si mi caso aplica antes de viajar?',
+        answer:
+          'Si. Puedes dejar tu consulta para recibir una orientacion inicial antes de coordinar una evaluacion en Tacna.',
+      },
+      {
+        question: 'Se puede consultar por brackets y alineadores?',
+        answer:
+          'Si. La pagina esta pensada para pacientes que quieren comparar distintas opciones de ortodoncia en Tacna.',
+      },
+      {
+        question: 'HolaTacna realiza el tratamiento?',
+        answer:
+          'No. HolaTacna ayuda a ordenar el primer contacto con una clinica dental que atiende pacientes de Chile.',
+      },
+    ],
+    process: [
+      'Dejas tu consulta y el tipo de tratamiento de ortodoncia que deseas evaluar.',
+      'Revisamos tu caso y te orientamos antes del viaje.',
+      'Se coordina el siguiente paso por WhatsApp con la clinica dental en Tacna.',
+    ],
+    commercialBlock:
+      'Ideal para pacientes chilenos que comparan ortodoncia en Tacna y buscan informacion clara antes de viajar.',
+    primaryHref: '/ortodoncia-tacna',
+    primaryLabel: 'Ver servicio principal',
+    formHeading: 'Solicita una evaluacion de ortodoncia',
+    messagePlaceholder:
+      'Cuentanos si buscas brackets, alineadores o una evaluacion de ortodoncia antes de viajar.',
+    gradientClass: 'bg-[linear-gradient(135deg,#0f172a,#0284c7)]',
+    cityFormOverrides: {
+      default: {
+        includeAdditionalServices: true,
+        additionalServicesLabel: 'Servicios utiles para tu visita en Tacna',
+        additionalServicesHelperText:
+          'Si lo deseas, tambien podemos orientarte sobre opciones utiles durante tu visita.',
+        additionalServicesOptions: [
+          'Hoteles cercanos a la clinica',
+          'Restaurantes recomendados',
+          'Transporte desde la frontera',
+        ],
+      },
+    },
+  },
+  {
+    slug: 'carillas-dentales',
+    name: 'Carillas dentales',
+    serviceSlug: 'carillas-dentales',
+    serviceName: 'Carillas dentales',
+    titleBase: 'Carillas dentales en Tacna para pacientes de Chile',
+    descriptionBase:
+      'Carillas dentales y diseno de sonrisa en Tacna para pacientes chilenos que comparan alternativas antes de viajar.',
+    benefits: [
+      'Informacion clara para comparar carillas dentales y resultados esperados.',
+      'Orientacion inicial antes de viajar desde Chile.',
+      'Contacto con clinicas dentales que revisan casos de pacientes chilenos.',
+    ],
+    faq: [
+      {
+        question: 'Puedo consultar si las carillas son adecuadas para mi caso?',
+        answer:
+          'Si. Puedes dejar tu consulta para recibir una orientacion inicial antes de programar una evaluacion en Tacna.',
+      },
+      {
+        question: 'Tambien puedo consultar por diseno de sonrisa?',
+        answer:
+          'Si. La landing permite consultar sobre carillas dentales y otros tratamientos esteticos dentales relacionados.',
+      },
+      {
+        question: 'Puedo resolver dudas antes de viajar?',
+        answer:
+          'Si. La idea es que tengas mas claridad sobre el tratamiento antes de coordinar tu visita a Tacna.',
+      },
+    ],
+    process: [
+      'Dejas tu consulta y el resultado estetico dental que deseas evaluar.',
+      'Revisamos tu caso y te orientamos antes del viaje.',
+      'Se coordina el contacto inicial por WhatsApp con la clinica dental en Tacna.',
+    ],
+    commercialBlock:
+      'Ideal para pacientes chilenos que comparan carillas dentales en Tacna y buscan orientacion previa antes de viajar.',
+    primaryHref: '/carillas-dentales-tacna',
+    primaryLabel: 'Ver servicio principal',
+    formHeading: 'Solicita una evaluacion de carillas dentales',
+    messagePlaceholder:
+      'Cuentanos si buscas carillas dentales, diseno de sonrisa o una evaluacion estetica dental antes de viajar.',
+    gradientClass: 'bg-[linear-gradient(135deg,#7c2d12,#db2777)]',
+    cityFormOverrides: {
+      default: {
+        includeAdditionalServices: true,
+        additionalServicesLabel: 'Servicios utiles para tu visita en Tacna',
+        additionalServicesHelperText:
+          'Si lo deseas, tambien podemos orientarte sobre opciones utiles durante tu visita.',
+        additionalServicesOptions: [
+          'Hoteles cercanos a la clinica',
+          'Restaurantes recomendados',
+          'Transporte desde la frontera',
+        ],
+      },
+    },
+  },
+  {
     slug: 'cirugia-plastica',
     name: 'Cirugía plástica',
     serviceSlug: 'cirugia-plastica',

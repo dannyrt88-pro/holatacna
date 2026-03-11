@@ -41,6 +41,22 @@ export const services: ServiceDefinition[] = [
     priority: "high",
   },
   {
+    slug: "ortodoncia",
+    name: "Ortodoncia",
+    shortDescription: "Brackets y alineadores con orientacion previa para pacientes de Chile.",
+    href: "/ortodoncia-tacna",
+    category: "clinico",
+    priority: "high",
+  },
+  {
+    slug: "carillas-dentales",
+    name: "Carillas dentales",
+    shortDescription: "Carillas dentales y diseno de sonrisa con informacion clara antes de viajar.",
+    href: "/carillas-dentales-tacna",
+    category: "clinico",
+    priority: "high",
+  },
+  {
     slug: "cirugia-plastica",
     name: "Cirugía plástica",
     shortDescription: "Orientación inicial para cirugía plástica en Tacna con evaluación previa y apoyo antes del viaje.",

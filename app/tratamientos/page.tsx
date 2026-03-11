@@ -1,30 +1,82 @@
 import Link from 'next/link'
 
-const treatments = [
+const treatmentClusters = [
   {
-    title: 'Implantes dentales',
+    title: 'Odontología',
     description:
-      'Conoce opciones de implantes dentales en Tacna con información clara y orientación antes de viajar.',
-    href: '/implantes-dentales-tacna',
+      'Tratamientos dentales frecuentes para pacientes chilenos que comparan evaluación, tiempos y opciones antes de viajar a Tacna.',
+    services: [
+      {
+        title: 'Implantes dentales',
+        description:
+          'Conoce opciones de implantes dentales en Tacna con información clara y orientación antes de viajar.',
+        href: '/implantes-dentales-tacna',
+      },
+      {
+        title: 'Ortodoncia',
+        description:
+          'Revisa alternativas de brackets y alineadores en Tacna con orientación previa para pacientes de Chile.',
+        href: '/ortodoncia-tacna',
+      },
+      {
+        title: 'Carillas dentales',
+        description:
+          'Explora opciones de carillas dentales y diseño de sonrisa en Tacna antes de coordinar tu viaje.',
+        href: '/carillas-dentales-tacna',
+      },
+    ],
   },
   {
-    title: 'Operación de ojos',
+    title: 'Oftalmología',
     description:
-      'Revisa alternativas para operación de ojos en Tacna con una visión más clara antes de coordinar tu atención.',
-    href: '/operacion-ojos-tacna',
-  },
-  {
-    title: 'Estética',
-    description:
-      'Explora tratamientos estéticos en Tacna pensados para pacientes que buscan orientación previa y cercanía.',
-    href: '/estetica-tacna',
+      'Opciones para pacientes que buscan evaluación visual y cirugía ocular en Tacna con una orientación más clara antes de viajar.',
+    services: [
+      {
+        title: 'Operación de ojos',
+        description:
+          'Encuentra información sobre operación de ojos en Tacna y compara alternativas antes de coordinar tu atención.',
+        href: '/operacion-ojos-tacna',
+      },
+    ],
   },
   {
     title: 'Dermatología',
     description:
-      'Encuentra opciones de dermatología en Tacna con información útil para comparar antes de viajar.',
-    href: '/dermatologia-tacna',
+      'Tratamientos y evaluaciones dermatológicas para pacientes que desean revisar opciones en Tacna antes de viajar desde Chile.',
+    services: [
+      {
+        title: 'Dermatología',
+        description:
+          'Revisa opciones de dermatología en Tacna con información útil para comparar antes de viajar.',
+        href: '/dermatologia-tacna',
+      },
+    ],
   },
+  {
+    title: 'Estética y cirugía plástica',
+    description:
+      'Alternativas para pacientes que buscan tratamientos estéticos o cirugía plástica con orientación previa y mayor claridad antes del viaje.',
+    services: [
+      {
+        title: 'Estética',
+        description:
+          'Explora tratamientos estéticos en Tacna pensados para pacientes que buscan orientación previa y cercanía.',
+        href: '/estetica-tacna',
+      },
+      {
+        title: 'Cirugía plástica',
+        description:
+          'Conoce opciones de cirugía plástica en Tacna con información inicial antes de coordinar una evaluación.',
+        href: '/cirugia-plastica-tacna',
+      },
+    ],
+  },
+]
+
+const cityLinks = [
+  { city: 'Arica', href: '/arica' },
+  { city: 'Iquique', href: '/iquique' },
+  { city: 'Antofagasta', href: '/antofagasta' },
 ]
 
 export default function TreatmentsPage() {
@@ -36,50 +88,94 @@ export default function TreatmentsPage() {
             Tratamientos
           </div>
           <h1 className="max-w-4xl text-4xl font-bold leading-tight sm:text-5xl">
-            Tratamientos médicos en Tacna para pacientes de Chile
+            Tratamientos médicos en Tacna para pacientes chilenos
           </h1>
           <p className="mt-4 max-w-3xl text-base leading-8 text-white/85 sm:text-lg">
-            Explora tratamientos médicos en Tacna con orientación previa para resolver dudas antes
-            de viajar desde Arica, Iquique, Antofagasta u otras ciudades del norte de Chile.
+            Explora tratamientos médicos organizados por especialidad y encuentra opciones para
+            evaluar tu atención en Tacna con mayor claridad.
           </p>
+          <div className="mt-8">
+            <Link
+              href="/como-funciona"
+              className="inline-flex rounded-xl bg-white px-5 py-3 font-bold text-sky-800 transition hover:bg-sky-50"
+            >
+              ¿Cómo funciona?
+            </Link>
+          </div>
         </section>
 
         <section className="mb-6 rounded-[28px] bg-white p-8 shadow-lg sm:p-10">
           <div className="mb-4 inline-flex rounded-full bg-sky-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-sky-700">
-            Opciones médicas
+            Portafolio médico
           </div>
           <p className="max-w-4xl text-base leading-8 text-slate-600 sm:text-lg">
-            Cada vez más pacientes del norte de Chile comparan tratamientos en Tacna buscando
-            cercanía, claridad y una mejor orientación antes de tomar una decisión.
+            Muchos pacientes comparan tratamientos por especialidad antes de viajar a Tacna. Este
+            hub te ayuda a explorar opciones médicas con una estructura más clara y ordenada.
+          </p>
+        </section>
+
+        <div className="grid gap-6">
+          {treatmentClusters.map((cluster) => (
+            <section
+              key={cluster.title}
+              className="rounded-[28px] bg-white p-8 shadow-lg sm:p-10"
+            >
+              <h2 className="text-3xl font-bold sm:text-4xl">{cluster.title}</h2>
+              <p className="mt-3 max-w-4xl text-base leading-8 text-slate-600 sm:text-lg">
+                {cluster.description}
+              </p>
+
+              <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                {cluster.services.map((service) => (
+                  <article
+                    key={service.title}
+                    className="rounded-[24px] border border-slate-200 bg-slate-50 p-6"
+                  >
+                    <h3 className="text-2xl font-bold">{service.title}</h3>
+                    <p className="mt-3 text-base leading-7 text-slate-600">{service.description}</p>
+                    <Link
+                      href={service.href}
+                      className="mt-6 inline-flex rounded-xl bg-slate-950 px-4 py-3 font-bold text-white transition hover:bg-slate-800"
+                    >
+                      Ver información
+                    </Link>
+                  </article>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+
+        <section className="mt-6 rounded-[28px] border border-sky-200 bg-[linear-gradient(180deg,#eff6ff_0%,#ffffff_100%)] p-8 shadow-lg sm:p-10">
+          <h2 className="text-3xl font-bold sm:text-4xl">
+            ¿Quieres explorar opciones según tu ciudad de origen?
+          </h2>
+          <p className="mt-4 max-w-4xl text-base leading-8 text-slate-700 sm:text-lg">
+            Si viajas desde Arica, Iquique o Antofagasta, también puedes revisar páginas
+            específicas por ciudad y tratamiento antes de coordinar tu viaje.
           </p>
 
-          <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {treatments.map((treatment) => (
-              <article
-                key={treatment.title}
-                className="rounded-[24px] border border-slate-200 bg-slate-50 p-6"
+          <div className="mt-6 flex flex-wrap gap-3">
+            {cityLinks.map((item) => (
+              <Link
+                key={item.city}
+                href={item.href}
+                className="inline-flex rounded-xl border border-sky-200 bg-white px-4 py-3 font-bold text-sky-800 transition hover:bg-sky-50"
               >
-                <h2 className="text-2xl font-bold">{treatment.title}</h2>
-                <p className="mt-3 text-base leading-7 text-slate-600">{treatment.description}</p>
-                <Link
-                  href={treatment.href}
-                  className="mt-6 inline-flex rounded-xl bg-slate-950 px-4 py-3 font-bold text-white transition hover:bg-slate-800"
-                >
-                  Ver tratamiento
-                </Link>
-              </article>
+                {item.city}
+              </Link>
             ))}
           </div>
         </section>
 
-        <section className="rounded-[28px] border border-emerald-200 bg-[linear-gradient(180deg,#ecfdf5_0%,#ffffff_100%)] p-8 shadow-lg sm:p-10">
+        <section className="mt-6 rounded-[28px] border border-emerald-200 bg-[linear-gradient(180deg,#ecfdf5_0%,#ffffff_100%)] p-8 shadow-lg sm:p-10">
           <div className="mb-4 inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-emerald-700">
             Confianza
           </div>
           <h2 className="text-3xl font-bold sm:text-4xl">Orientación antes de viajar</h2>
           <p className="mt-4 max-w-4xl text-base leading-8 text-slate-700 sm:text-lg">
-            HolaTacna ayuda a pacientes de Chile a revisar opciones médicas en Tacna con una
-            visión más ordenada antes de coordinar su atención y su viaje.
+            HolaTacna ayuda a pacientes de Chile a revisar opciones médicas en Tacna con mayor
+            claridad, orientación previa y una red confiable antes de coordinar su atención.
           </p>
         </section>
       </div>
