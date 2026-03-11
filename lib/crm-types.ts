@@ -47,6 +47,7 @@ export type Lead = {
 
 export type Provider = {
   id: string
+  created_at: string
   name: string
   service_name: string | null
   service_slug?: string | null

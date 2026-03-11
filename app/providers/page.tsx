@@ -372,6 +372,29 @@ function ProvidersPageInner() {
     return true
   }
 
+  function formatProviderCreatedAt(value: string | null | undefined) {
+    if (!value) return 'Sin registro'
+
+    const normalizedValue =
+      /(?:Z|[+-]\d{2}:\d{2})$/.test(value) ? value : `${value}Z`
+
+    const date = new Date(normalizedValue)
+
+    if (Number.isNaN(date.getTime())) {
+      return value
+    }
+
+    return new Intl.DateTimeFormat('es-PE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'America/Lima',
+    }).format(date)
+  }
+
   if (loading) {
     return <p className="p-10">Cargando proveedores...</p>
   }
@@ -826,10 +849,11 @@ function ProvidersPageInner() {
           </div>
 
           <div className="overflow-x-auto px-6 py-6">
-            <table className="min-w-[1820px] border-collapse text-sm">
+            <table className="min-w-[1980px] border-collapse text-sm">
               <thead>
                 <tr className="bg-sky-50 text-left text-xs uppercase tracking-[0.12em] text-sky-900">
                   <th className="border-b border-sky-100 px-3 py-3">Foto</th>
+                  <th className="border-b border-sky-100 px-3 py-3">Ingreso</th>
                   <th className="border-b border-sky-100 px-3 py-3">Nombre</th>
                   <th className="border-b border-sky-100 px-3 py-3">Servicio</th>
                   <th className="border-b border-sky-100 px-3 py-3">Slug</th>
@@ -871,6 +895,11 @@ function ProvidersPageInner() {
                           className="w-48 rounded-lg border border-slate-300 px-3 py-2 disabled:cursor-not-allowed disabled:bg-slate-100"
                           placeholder="URL foto"
                         />
+                      </div>
+                    </td>
+                    <td className="border-b border-slate-200 px-3 py-3">
+                      <div className="w-32 rounded-lg bg-slate-50 px-3 py-2 font-medium text-slate-700">
+                        {formatProviderCreatedAt(provider.created_at)}
                       </div>
                     </td>
                     <td className="border-b border-slate-200 px-3 py-3">

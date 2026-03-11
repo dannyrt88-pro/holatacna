@@ -38,6 +38,29 @@ export function ProviderOnboardingForm({
   )
   const isPublicRegistration = mode === 'provider-self-service'
 
+  function getPublicServiceLabel(slug: string, name: string) {
+    switch (slug) {
+      case 'implantes-dentales':
+        return 'Clinica dental'
+      case 'oftalmologia':
+        return 'Oftalmologia'
+      case 'estetica':
+        return 'Estetica'
+      case 'dermatologia':
+        return 'Dermatologia'
+      case 'hoteles':
+        return 'Hotel / alojamiento'
+      case 'alquiler-departamentos':
+        return 'Departamento por dia'
+      case 'transporte':
+        return 'Transporte'
+      case 'restaurants':
+        return 'Restaurante'
+      default:
+        return name
+    }
+  }
+
   useEffect(() => {
     return () => {
       if (agreementDownloadUrl) {
@@ -262,7 +285,7 @@ export function ProviderOnboardingForm({
                 <option value="">Selecciona la categoria que mejor te representa</option>
                 {serviceOptions.map((service) => (
                   <option key={service.slug} value={service.slug}>
-                    {service.name}
+                    {getPublicServiceLabel(service.slug, service.name)}
                   </option>
                 ))}
               </select>
