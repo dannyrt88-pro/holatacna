@@ -204,13 +204,26 @@ export function ProviderOnboardingForm({
 
       <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="grid gap-4 md:grid-cols-2">
+          {isPublicRegistration ? (
+            <div className="md:col-span-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+              <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
+                Datos del negocio
+              </div>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Queremos entender quien eres, que servicio ofreces y bajo que nombre operas.
+              </p>
+            </div>
+          ) : null}
+
           <label className="grid gap-2">
-            <span className="text-sm font-semibold">Nombre</span>
+            <span className="text-sm font-semibold">
+              {isPublicRegistration ? 'Nombre del negocio o marca' : 'Nombre'}
+            </span>
             <input
               value={form.name}
               onChange={(event) => handleFormChange('name', event.target.value)}
               className="rounded-xl border border-slate-300 px-4 py-3"
-              placeholder="Clinica o proveedor"
+              placeholder={isPublicRegistration ? 'Clinica, hotel, transporte o negocio' : 'Clinica o proveedor'}
             />
           </label>
 
@@ -227,7 +240,9 @@ export function ProviderOnboardingForm({
           ) : null}
 
           <label className="grid gap-2">
-            <span className="text-sm font-semibold">Servicio</span>
+            <span className="text-sm font-semibold">
+              {isPublicRegistration ? 'Servicio principal' : 'Servicio'}
+            </span>
             <input
               value={form.service_name}
               onChange={(event) => handleFormChange('service_name', event.target.value)}
@@ -270,13 +285,26 @@ export function ProviderOnboardingForm({
             </label>
           )}
 
+          {isPublicRegistration ? (
+            <div className="md:col-span-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+              <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
+                Servicios
+              </div>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Indicanos tu categoria principal y, si corresponde, otros servicios que tambien
+                ofreces.
+              </p>
+            </div>
+          ) : null}
+
           <div className="md:col-span-2 grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <div className="text-sm font-semibold text-slate-900">Servicios que brinda</div>
                 <div className="text-sm text-slate-600">
-                  Puedes habilitar uno o varios servicios adicionales y describir cada uno sin
-                  afectar el servicio principal del sistema.
+                  {isPublicRegistration
+                    ? 'Si ofreces mas de un servicio, puedes agregarlo aqui para que tengamos una vision mas completa de tu propuesta.'
+                    : 'Puedes habilitar uno o varios servicios adicionales y describir cada uno sin afectar el servicio principal del sistema.'}
                 </div>
               </div>
 
@@ -335,6 +363,18 @@ export function ProviderOnboardingForm({
             </div>
           </div>
 
+          {isPublicRegistration ? (
+            <div className="md:col-span-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+              <div className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
+                Contacto
+              </div>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Comparte los canales por donde podamos ubicarte si tu perfil avanza en la
+                revision.
+              </p>
+            </div>
+          ) : null}
+
           <label className="grid gap-2">
             <span className="text-sm font-semibold">WhatsApp</span>
             <input
@@ -356,22 +396,26 @@ export function ProviderOnboardingForm({
           </label>
 
           <label className="grid gap-2">
-            <span className="text-sm font-semibold">Website</span>
+            <span className="text-sm font-semibold">
+              {isPublicRegistration ? 'Sitio web o red principal' : 'Website'}
+            </span>
             <input
               value={form.website_url}
               onChange={(event) => handleFormChange('website_url', event.target.value)}
               className="rounded-xl border border-slate-300 px-4 py-3"
-              placeholder="https://proveedor.com"
+              placeholder="https://tu-sitio.com"
             />
           </label>
 
           <label className="grid gap-2">
-            <span className="text-sm font-semibold">Scope de ciudad</span>
+            <span className="text-sm font-semibold">
+              {isPublicRegistration ? 'Zona de cobertura' : 'Scope de ciudad'}
+            </span>
             <input
               value={form.city_scope}
               onChange={(event) => handleFormChange('city_scope', event.target.value)}
               className="rounded-xl border border-slate-300 px-4 py-3"
-              placeholder="arica, tacna, all"
+              placeholder={isPublicRegistration ? 'Tacna, Arica, todo Tacna, etc.' : 'arica, tacna, all'}
             />
           </label>
 
@@ -483,9 +527,13 @@ export function ProviderOnboardingForm({
 
         <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-5">
           <div className="mb-4">
-            <h3 className="text-xl font-bold">Foto y preview</h3>
+            <h3 className="text-xl font-bold">
+              {isPublicRegistration ? 'Presencia visual' : 'Foto y preview'}
+            </h3>
             <p className="mt-1 text-sm text-slate-600">
-              Puedes pegar una URL o subir una imagen. La foto se guardara como `photo_url`.
+              {isPublicRegistration
+                ? 'Puedes compartir una foto o imagen representativa de tu negocio para que podamos identificar mejor tu perfil.'
+                : 'Puedes pegar una URL o subir una imagen. La foto se guardara como `photo_url`.'}
             </p>
           </div>
 
@@ -521,7 +569,11 @@ export function ProviderOnboardingForm({
               {saving ? 'Guardando proveedor...' : submitLabel}
             </button>
 
-            {feedback ? <p className="text-sm font-semibold text-emerald-700">{feedback}</p> : null}
+            {feedback ? (
+              <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm font-semibold leading-6 text-emerald-800">
+                {feedback}
+              </div>
+            ) : null}
 
             {agreementDownloadUrl ? (
               <a
