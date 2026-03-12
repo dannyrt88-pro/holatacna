@@ -33,6 +33,10 @@ export type Lead = {
   lead_score?: number | null
   lead_priority?: string | null
   suggested_package_slug?: string | null
+  suggested_provider_id?: string | null
+  top_provider_ids?: string[] | null
+  assignment_mode?: string | null
+  assignment_reason?: string | null
   service_name: string | null
   reference_code: string | null
   status: LeadStatus | null

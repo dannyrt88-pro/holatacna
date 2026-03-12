@@ -53,6 +53,10 @@ export async function middleware(request: NextRequest) {
   if (!user) {
     const loginUrl = new URL("/login", request.url)
     loginUrl.searchParams.set("error", "Sesion expirada")
+    loginUrl.searchParams.set(
+      "next",
+      `${request.nextUrl.pathname}${request.nextUrl.search}`
+    )
     return NextResponse.redirect(loginUrl)
   }
 
@@ -62,6 +66,10 @@ export async function middleware(request: NextRequest) {
   if (pathname.startsWith("/dashboard") && !canAccessDashboard(role)) {
     const loginUrl = new URL("/login", request.url)
     loginUrl.searchParams.set("error", "Sin permisos para dashboard")
+    loginUrl.searchParams.set(
+      "next",
+      `${request.nextUrl.pathname}${request.nextUrl.search}`
+    )
     return NextResponse.redirect(loginUrl)
   }
 

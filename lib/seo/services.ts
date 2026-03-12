@@ -39,6 +39,234 @@ export type SeoServiceDefinition = {
 
 export const seoServices: SeoServiceDefinition[] = [
   {
+    slug: 'lasik',
+    name: 'Lasik',
+    serviceSlug: 'lasik',
+    serviceName: 'Lasik',
+    titleBase: 'Lasik en Tacna para pacientes de Chile',
+    descriptionBase:
+      'Cirugia Lasik en Tacna para pacientes de Chile que buscan corregir su vision con orientacion previa antes de viajar.',
+    benefits: [
+      'Informacion inicial para comparar alternativas de correccion visual en Tacna.',
+      'Orientacion previa para resolver dudas sobre evaluacion, tiempos y recuperacion.',
+      'Contacto con clinicas que atienden pacientes de Chile.',
+    ],
+    faq: [
+      {
+        question: 'Puedo consultar si soy candidato a Lasik antes de viajar?',
+        answer:
+          'Si. Puedes dejar tu consulta para recibir orientacion inicial y saber si conviene avanzar con una evaluacion visual en Tacna.',
+      },
+      {
+        question: 'Se puede resolver dudas sobre tiempos de recuperacion?',
+        answer:
+          'Si. La idea es que tengas mayor claridad sobre los pasos del tratamiento antes de organizar tu viaje.',
+      },
+      {
+        question: 'HolaTacna realiza la cirugia?',
+        answer:
+          'No. HolaTacna ayuda a ordenar el primer contacto con clinicas y especialistas que atienden pacientes de Chile.',
+      },
+    ],
+    process: [
+      'Dejas tu consulta y el tipo de correccion visual que deseas evaluar.',
+      'Revisamos tu caso y te orientamos antes del viaje.',
+      'Se coordina el siguiente paso con la clinica oftalmologica en Tacna.',
+    ],
+    commercialBlock:
+      'Ideal para pacientes chilenos que comparan Lasik en Tacna y quieren resolver dudas antes de viajar.',
+    primaryHref: '/lasik-tacna',
+    primaryLabel: 'Ver servicio principal',
+    formHeading: 'Solicita una evaluacion para Lasik',
+    messagePlaceholder:
+      'Cuentanos si deseas evaluar cirugia Lasik, corregir miopia, astigmatismo u otra consulta visual antes de viajar.',
+    gradientClass: 'bg-[linear-gradient(135deg,#0f172a,#0369a1)]',
+    cityFormOverrides: {
+      default: {
+        includeAdditionalServices: true,
+        additionalServicesLabel: 'Servicios utiles para tu visita en Tacna',
+        additionalServicesHelperText:
+          'Si lo deseas, tambien podemos orientarte sobre opciones utiles durante tu visita.',
+        additionalServicesOptions: [
+          'Hoteles cercanos a la clinica',
+          'Restaurantes recomendados',
+          'Transporte desde la frontera',
+        ],
+      },
+    },
+  },
+  {
+    slug: 'botox',
+    name: 'Botox',
+    serviceSlug: 'botox',
+    serviceName: 'Botox',
+    titleBase: 'Botox en Tacna para pacientes de Chile',
+    descriptionBase:
+      'Botox en Tacna para pacientes de Chile que evaluan tratamientos de medicina estetica facial con orientacion previa.',
+    benefits: [
+      'Informacion clara para comparar botox facial en Tacna antes de viajar.',
+      'Orientacion inicial sobre zonas de aplicacion, tiempos y cuidados posteriores.',
+      'Contacto con especialistas que atienden pacientes de Chile.',
+    ],
+    faq: [
+      {
+        question: 'Puedo consultar por botox facial antes de viajar?',
+        answer:
+          'Si. Puedes dejar tu consulta para recibir orientacion inicial sobre botox y medicina estetica facial en Tacna.',
+      },
+      {
+        question: 'Esta pagina es para tratamientos faciales especificos?',
+        answer:
+          'Si. Esta landing esta enfocada en botox como tratamiento puntual de medicina estetica facial, no como una pagina generica de estetica.',
+      },
+      {
+        question: 'Se puede resolver dudas sobre sesiones y tiempos?',
+        answer:
+          'Si. Puedes consultar por tiempos, cuidados y coordinacion previa antes de viajar.',
+      },
+    ],
+    process: [
+      'Dejas tu consulta y la zona facial que deseas evaluar.',
+      'Revisamos tu caso y te orientamos antes del viaje.',
+      'Se coordina el contacto inicial con el especialista en Tacna.',
+    ],
+    commercialBlock:
+      'Ideal para pacientes chilenos que comparan botox en Tacna y buscan una orientacion puntual antes de viajar.',
+    primaryHref: '/botox-tacna',
+    primaryLabel: 'Ver servicio principal',
+    formHeading: 'Solicita una evaluacion de botox',
+    messagePlaceholder:
+      'Cuentanos si deseas evaluar botox facial, resolver dudas sobre zonas de aplicacion o conocer el proceso antes de viajar.',
+    gradientClass: 'bg-[linear-gradient(135deg,#581c87,#db2777)]',
+    cityFormOverrides: {
+      default: {
+        includeAdditionalServices: true,
+        additionalServicesLabel: 'Servicios utiles para tu visita en Tacna',
+        additionalServicesHelperText:
+          'Si lo deseas, tambien podemos orientarte sobre opciones utiles durante tu visita.',
+        additionalServicesOptions: [
+          'Hoteles cercanos a la clinica',
+          'Restaurantes recomendados',
+          'Transporte desde la frontera',
+        ],
+      },
+    },
+  },
+  {
+    slug: 'rinoplastia',
+    name: 'Rinoplastia',
+    serviceSlug: 'rinoplastia',
+    serviceName: 'Rinoplastia',
+    titleBase: 'Rinoplastia en Tacna para pacientes de Chile',
+    descriptionBase:
+      'Rinoplastia en Tacna para pacientes de Chile que buscan orientacion inicial antes de evaluar una cirugia facial.',
+    benefits: [
+      'Informacion inicial para comparar opciones de rinoplastia en Tacna.',
+      'Orientacion previa para resolver dudas sobre evaluacion, pasos y recuperacion.',
+      'Contacto con clinicas que atienden pacientes de Chile.',
+    ],
+    faq: [
+      {
+        question: 'Puedo consultar si mi caso aplica antes de viajar?',
+        answer:
+          'Si. Puedes dejar tu consulta para recibir una orientacion inicial antes de coordinar una evaluacion en Tacna.',
+      },
+      {
+        question: 'Se puede consultar por tiempos de recuperacion?',
+        answer:
+          'Si. La idea es que tengas una vision mas clara del proceso antes de organizar tu viaje.',
+      },
+      {
+        question: 'HolaTacna realiza la cirugia?',
+        answer:
+          'No. HolaTacna ayuda a ordenar el primer contacto con clinicas o especialistas que atienden pacientes de Chile.',
+      },
+    ],
+    process: [
+      'Dejas tu consulta y el tipo de cambio que deseas evaluar.',
+      'Revisamos tu caso y te orientamos antes del viaje.',
+      'Se coordina el siguiente paso con la clinica o especialista en Tacna.',
+    ],
+    commercialBlock:
+      'Ideal para pacientes chilenos que comparan rinoplastia en Tacna y necesitan orientacion previa antes de viajar.',
+    primaryHref: '/rinoplastia-tacna',
+    primaryLabel: 'Ver servicio principal',
+    formHeading: 'Solicita una evaluacion de rinoplastia',
+    messagePlaceholder:
+      'Cuentanos que deseas evaluar sobre rinoplastia y que dudas quieres resolver antes de viajar.',
+    gradientClass: 'bg-[linear-gradient(135deg,#3f1d2e,#c2410c)]',
+    cityFormOverrides: {
+      default: {
+        includeAdditionalServices: true,
+        additionalServicesLabel: 'Servicios utiles para tu visita en Tacna',
+        additionalServicesHelperText:
+          'Si lo deseas, tambien podemos orientarte sobre opciones utiles durante tu visita.',
+        additionalServicesOptions: [
+          'Hoteles cercanos a la clinica',
+          'Restaurantes recomendados',
+          'Transporte desde la frontera',
+        ],
+      },
+    },
+  },
+  {
+    slug: 'tratamiento-acne',
+    name: 'Tratamiento de acne',
+    serviceSlug: 'tratamiento-acne',
+    serviceName: 'Tratamiento de acne',
+    titleBase: 'Tratamiento de acne en Tacna para pacientes de Chile',
+    descriptionBase:
+      'Tratamiento de acne en Tacna para pacientes de Chile que buscan evaluacion dermatologica especifica antes de viajar.',
+    benefits: [
+      'Informacion puntual para pacientes que comparan opciones dermatologicas para acne en Tacna.',
+      'Orientacion inicial sobre evaluacion de acne, piel grasa y cuidados recomendados.',
+      'Contacto con clinicas y especialistas que revisan casos de pacientes de Chile.',
+    ],
+    faq: [
+      {
+        question: 'Esta pagina es solo para acne?',
+        answer:
+          'Si. Esta landing esta enfocada en tratamiento de acne como consulta dermatologica especifica, no como una pagina general de dermatologia.',
+      },
+      {
+        question: 'Puedo consultar si mi caso conviene evaluarlo en Tacna?',
+        answer:
+          'Si. Puedes dejar tu caso para recibir una orientacion inicial antes de coordinar la consulta dermatologica.',
+      },
+      {
+        question: 'Se puede consultar por manchas post acne o secuelas?',
+        answer:
+          'Si. Puedes mencionar acne activo, marcas, manchas o dudas sobre el tratamiento que deseas evaluar.',
+      },
+    ],
+    process: [
+      'Dejas tu consulta y explicas tu caso dermatologico relacionado con acne.',
+      'Revisamos tu consulta y te orientamos antes del viaje.',
+      'Se coordina el contacto inicial con la clinica o especialista en Tacna.',
+    ],
+    commercialBlock:
+      'Ideal para pacientes chilenos que buscan tratamiento de acne en Tacna con una orientacion dermatologica especifica antes de viajar.',
+    primaryHref: '/tratamiento-acne-tacna',
+    primaryLabel: 'Ver servicio principal',
+    formHeading: 'Solicita una evaluacion para tratamiento de acne',
+    messagePlaceholder:
+      'Cuentanos tu caso de acne, manchas o secuelas y que dudas quieres resolver antes de viajar.',
+    gradientClass: 'bg-[linear-gradient(135deg,#14532d,#0f766e)]',
+    cityFormOverrides: {
+      default: {
+        includeAdditionalServices: true,
+        additionalServicesLabel: 'Servicios utiles para tu visita en Tacna',
+        additionalServicesHelperText:
+          'Si lo deseas, tambien podemos orientarte sobre opciones utiles durante tu visita.',
+        additionalServicesOptions: [
+          'Hoteles cercanos a la clinica',
+          'Restaurantes recomendados',
+          'Transporte desde la frontera',
+        ],
+      },
+    },
+  },
+  {
     slug: 'ortodoncia',
     name: 'Ortodoncia',
     serviceSlug: 'ortodoncia',

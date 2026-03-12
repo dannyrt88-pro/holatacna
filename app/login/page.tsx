@@ -8,6 +8,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = (await searchParams) ?? {}
   const rawError = params.error
   const error = Array.isArray(rawError) ? rawError[0] : rawError
+  const rawNext = params.next
+  const next = Array.isArray(rawNext) ? rawNext[0] : rawNext
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-100 px-6">
@@ -21,6 +23,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         </p>
 
         <form action="/auth/google" method="post" className="mb-5">
+          {next ? <input type="hidden" name="next" value={next} /> : null}
           <button
             type="submit"
             className="w-full rounded-lg border border-slate-300 bg-white p-3 font-semibold text-slate-900"

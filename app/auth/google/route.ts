@@ -4,6 +4,7 @@ import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
 
 async function startGoogleAuth(request: Request) {
+  const requestUrl = new URL(request.url)
   const cookieStore = await cookies()
 
   const supabase = createServerClient(
@@ -22,13 +23,21 @@ async function startGoogleAuth(request: Request) {
     }
   )
 
-  const origin = new URL(request.url).origin
-  const redirectTo = `${origin}/auth/callback`
+  const origin = requestUrl.origin
+  const next =
+    request.method === "POST"
+      ? ((await request.formData()).get("next") as string | null)
+      : requestUrl.searchParams.get("next")
+  const redirectToUrl = new URL("/auth/callback", origin)
+
+  if (next && next.startsWith("/")) {
+    redirectToUrl.searchParams.set("next", next)
+  }
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo,
+      redirectTo: redirectToUrl.toString(),
     },
   })
 

@@ -6,6 +6,7 @@ import { NextResponse } from "next/server"
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get("code")
+  const nextParam = requestUrl.searchParams.get("next")
 
   if (!code) {
     return NextResponse.redirect(
@@ -39,5 +40,6 @@ export async function GET(request: Request) {
     )
   }
 
-  return NextResponse.redirect(new URL("/dashboard", request.url))
+  const safeNext = nextParam && nextParam.startsWith("/") ? nextParam : "/dashboard"
+  return NextResponse.redirect(new URL(safeNext, request.url))
 }

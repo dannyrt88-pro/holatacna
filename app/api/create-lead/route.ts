@@ -53,7 +53,6 @@ export async function POST(req: Request) {
     const utm_term = getTrackingValue(body.utm_term)
     const landing_path = body.landing_path?.trim() || null
     const city_interest = body.city_interest?.trim() || null
-    const page_type = body.page_type?.trim() || null
     const additional_services = Array.isArray(body.additional_services)
       ? body.additional_services.map((item: unknown) => String(item || '').trim()).filter(Boolean)
       : []
@@ -65,6 +64,11 @@ export async function POST(req: Request) {
       direct_mode: false,
     })
     const suggested_package_slug = getSuggestedPackageSlugForSelection(service_slug, additional_services)
+    const assignment = await selectProviderForLead({
+      service_name,
+      city_interest,
+      service_slug,
+    })
 
     const leadPayload = {
       name,
@@ -75,10 +79,10 @@ export async function POST(req: Request) {
       reference_code,
       status: "pending",
       source: "web",
-      provider_id: null,
-      provider_phone: null,
-      commission_rate: 0,
-      auto_assigned: false,
+      provider_id: assignment.provider_id,
+      provider_phone: assignment.provider_phone,
+      commission_rate: assignment.commission_rate,
+      auto_assigned: assignment.auto_assigned,
       direct_mode: false,
       utm_source,
       utm_medium,
@@ -92,6 +96,10 @@ export async function POST(req: Request) {
       lead_score: scoring.score,
       lead_priority: scoring.priority,
       suggested_package_slug,
+      suggested_provider_id: assignment.suggested_provider_id,
+      top_provider_ids: assignment.top_provider_ids,
+      assignment_mode: assignment.assignment_mode,
+      assignment_reason: assignment.assignment_reason,
       direct_provider_ids: []
     }
 
@@ -109,36 +117,7 @@ export async function POST(req: Request) {
       )
     }
 
-    let assignedLead = data
-
-    if (data) {
-      const provider = await selectProviderForLead({
-        service_name: service_name,
-        city_interest,
-        service_slug,
-        lead_score: scoring.score,
-      })
-
-      if (provider) {
-        const { data: updatedLead, error: updateError } = await supabase
-          .from("leads")
-          .update({
-            provider_id: provider.id,
-            provider_phone: provider.whatsapp || null,
-            commission_rate: provider.commission_rate || 0,
-            auto_assigned: true
-          })
-          .eq("id", data.id)
-          .select()
-          .single()
-
-        if (updateError) {
-          console.error("Error auto-asignando provider:", updateError)
-        } else if (updatedLead) {
-          assignedLead = updatedLead
-        }
-      }
-    }
+    const assignedLead = data
 
     try {
       await notifyTelegramLead({
@@ -164,8 +143,11 @@ export async function POST(req: Request) {
       lead_score: assignedLead?.lead_score ?? scoring.score,
       lead_priority: assignedLead?.lead_priority ?? scoring.priority,
       suggested_package_slug: assignedLead?.suggested_package_slug ?? suggested_package_slug,
+      suggested_provider_id: assignedLead?.suggested_provider_id ?? assignment.suggested_provider_id,
+      top_provider_ids: assignedLead?.top_provider_ids ?? assignment.top_provider_ids,
+      assignment_mode: assignedLead?.assignment_mode ?? assignment.assignment_mode,
+      assignment_reason: assignedLead?.assignment_reason ?? assignment.assignment_reason,
       message_persisted: Boolean(assignedLead?.message),
-      page_type: page_type,
       phone_persisted: Boolean(phone)
     })
   } catch (error) {

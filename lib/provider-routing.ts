@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
+import type { LeadAssignmentResult, ProviderSuggestion } from '@/lib/assignment-types'
 import { services } from '@/lib/service-catalog'
 import type { Lead, Provider } from '@/lib/crm-types'
-import { getLeadPriorityLabel } from '@/lib/lead-scoring'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -56,22 +56,87 @@ function matchesCityScope(provider: Provider, cityInterest: string | null | unde
     .includes(city)
 }
 
-function getProviderRoutingWeight(
-  provider: Provider,
-  lead: Pick<Lead, 'service_name' | 'city_interest'> & { service_slug?: string | null; lead_score?: number | null }
-) {
-  const priorityWeight = Number(provider.priority || 0) * 100
-  const scoreWeight = Number(provider.score || 0) * 10
-  const commissionWeight = Math.round(Number(provider.commission_rate || 0) * 100)
-  const leadPriority = getLeadPriorityLabel(Number(lead.lead_score || 0))
-  const premiumBoost = leadPriority === 'Alta' ? 25 : leadPriority === 'Media' ? 10 : 0
+function compareProvidersForAssignment(a: Provider, b: Provider) {
+  const priorityDiff = Number(b.priority || 0) - Number(a.priority || 0)
+  if (priorityDiff !== 0) return priorityDiff
 
-  return priorityWeight + scoreWeight + commissionWeight + premiumBoost
+  const scoreDiff = Number(b.score || 0) - Number(a.score || 0)
+  if (scoreDiff !== 0) return scoreDiff
+
+  const createdAtDiff = new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+  if (!Number.isNaN(createdAtDiff) && createdAtDiff !== 0) return createdAtDiff
+
+  return String(a.id).localeCompare(String(b.id))
+}
+
+function toProviderSuggestion(provider: Provider): ProviderSuggestion {
+  return {
+    id: provider.id,
+    name: provider.name,
+    service_slug: provider.service_slug || null,
+    city_scope: provider.city_scope || null,
+    priority: Number(provider.priority || 0),
+    score: Number(provider.score || 0),
+    auto_assign: provider.auto_assign === true,
+  }
+}
+
+function buildAssignmentResult(
+  eligibleProviders: Provider[],
+  autoAssignableProviders: Provider[],
+  assignmentReason: LeadAssignmentResult['assignment_reason']
+): LeadAssignmentResult {
+  const topProviders = eligibleProviders.slice(0, 3).map(toProviderSuggestion)
+  const topProviderIds = topProviders.map((provider) => provider.id)
+  const suggestedProvider = (autoAssignableProviders[0] || eligibleProviders[0]) ?? null
+
+  if (!eligibleProviders.length) {
+    return {
+      suggested_provider_id: null,
+      top_provider_ids: [],
+      provider_id: null,
+      provider_phone: null,
+      commission_rate: 0,
+      auto_assigned: false,
+      assignment_mode: 'pending_review',
+      assignment_reason: assignmentReason,
+      suggested_provider: null,
+      top_providers: [],
+    }
+  }
+
+  if (!autoAssignableProviders.length) {
+    return {
+      suggested_provider_id: suggestedProvider?.id || null,
+      top_provider_ids: topProviderIds,
+      provider_id: null,
+      provider_phone: null,
+      commission_rate: 0,
+      auto_assigned: false,
+      assignment_mode: 'pending_review',
+      assignment_reason: assignmentReason,
+      suggested_provider: suggestedProvider ? toProviderSuggestion(suggestedProvider) : null,
+      top_providers: topProviders,
+    }
+  }
+
+  return {
+    suggested_provider_id: suggestedProvider?.id || null,
+    top_provider_ids: topProviderIds,
+    provider_id: suggestedProvider?.id || null,
+    provider_phone: suggestedProvider?.whatsapp || null,
+    commission_rate: Number(suggestedProvider?.commission_rate || 0),
+    auto_assigned: true,
+    assignment_mode: 'auto_assigned',
+    assignment_reason: assignmentReason,
+    suggested_provider: suggestedProvider ? toProviderSuggestion(suggestedProvider) : null,
+    top_providers: topProviders,
+  }
 }
 
 export async function selectProviderForLead(
-  lead: Pick<Lead, 'service_name' | 'city_interest'> & { service_slug?: string | null; lead_score?: number | null }
-) {
+  lead: Pick<Lead, 'service_name' | 'city_interest'> & { service_slug?: string | null }
+): Promise<LeadAssignmentResult> {
   const serviceSlug = resolveServiceSlug(lead)
   const serviceName = normalizeValue(lead.service_name)
 
@@ -81,12 +146,11 @@ export async function selectProviderForLead(
 
   if (error || !data) {
     console.error('Error loading providers for routing:', error)
-    return null
+    return buildAssignmentResult([], [], 'routing_unavailable')
   }
 
-  const providers = (data as Provider[])
+  const eligibleProviders = (data as Provider[])
     .filter((provider) => isProviderActive(provider))
-    .filter((provider) => provider.auto_assign === true)
     .filter((provider) => {
       const providerSlug = normalizeValue(provider.service_slug)
       const providerServiceName = normalizeValue(provider.service_name)
@@ -103,11 +167,19 @@ export async function selectProviderForLead(
       return providerServiceName === serviceName
     })
     .filter((provider) => matchesCityScope(provider, lead.city_interest))
-    .sort((a, b) => {
-      return getProviderRoutingWeight(b, lead) - getProviderRoutingWeight(a, lead)
-    })
+    .sort(compareProvidersForAssignment)
 
-  return providers[0] || null
+  if (!eligibleProviders.length) {
+    return buildAssignmentResult([], [], 'no_eligible_provider')
+  }
+
+  const autoAssignableProviders = eligibleProviders.filter((provider) => provider.auto_assign === true)
+
+  if (!autoAssignableProviders.length) {
+    return buildAssignmentResult(eligibleProviders, [], 'no_auto_assignable_provider')
+  }
+
+  return buildAssignmentResult(eligibleProviders, autoAssignableProviders, 'ranked_auto_assign')
 }
 
 export const getBestProviderForLead = selectProviderForLead
