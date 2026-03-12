@@ -708,6 +708,57 @@ export default function Dashboard() {
     return providers.filter((provider) => (lead.direct_provider_ids || []).includes(provider.id))
   }
 
+  function getProviderNameById(id: string | null | undefined) {
+    if (!id) return null
+
+    const provider = providers.find((item) => item.id === id)
+
+    if (!provider) {
+      return id.length > 8 ? `${id.slice(0, 8)}...` : id
+    }
+
+    return provider.name.length > 30 ? `${provider.name.slice(0, 30)}...` : provider.name
+  }
+
+  function formatAssignmentMode(value: string | null | undefined) {
+    switch (value) {
+      case 'auto_assigned':
+        return 'Autoasignado'
+      case 'pending_review':
+        return 'Pendiente de revision'
+      case 'manual_override':
+        return 'Override manual'
+      default:
+        return 'Pendiente de revision'
+    }
+  }
+
+  function formatAssignmentReason(value: string | null | undefined) {
+    switch (value) {
+      case 'ranked_auto_assign':
+        return 'Ranking automatico'
+      case 'no_auto_assignable_provider':
+        return 'Sin proveedor autoasignable'
+      case 'no_eligible_provider':
+        return 'Sin proveedor elegible'
+      case 'routing_unavailable':
+        return 'Routing no disponible'
+      case 'manual_admin_override':
+        return 'Definido manualmente'
+      default:
+        return '-'
+    }
+  }
+
+  function getTopSuggestedProviders(lead: Lead) {
+    if (!lead.top_provider_ids?.length) return '-'
+
+    return lead.top_provider_ids
+      .slice(0, 3)
+      .map((providerId) => getProviderNameById(providerId) || 'Proveedor no resuelto')
+      .join(' | ')
+  }
+
   function syncScroll(source: 'top' | 'bottom') {
     const top = topScrollRef.current
     const bottom = bottomScrollRef.current
@@ -1123,6 +1174,23 @@ export default function Dashboard() {
                                 </select>
                               )
                             })() : null}
+
+                            <div style={assignmentTraceWrapStyle}>
+                              <div style={assignmentTraceLineStyle}>
+                                <strong>Asignado:</strong> {getProviderNameById(lead.provider_id) || 'Pendiente'}
+                              </div>
+                              <div style={assignmentTraceLineStyle}>
+                                <strong>Sugerido:</strong> {getProviderNameById(lead.suggested_provider_id) || 'Sin sugerencia'}
+                              </div>
+                              <div style={assignmentTraceLineStyle}>
+                                <strong>Modo:</strong> {formatAssignmentMode(lead.assignment_mode)}{' '}
+                                <span style={assignmentTraceMutedStyle}>|</span>{' '}
+                                {formatAssignmentReason(lead.assignment_reason)}
+                              </div>
+                              <div style={assignmentTraceLineStyle}>
+                                <strong>Top:</strong> {getTopSuggestedProviders(lead)}
+                              </div>
+                            </div>
                           </div>
                         </td>
                         <td style={tdStyle}>
@@ -1630,6 +1698,26 @@ const toggleWrapStyle: CSSProperties = {
 
 const smallMutedStyle: CSSProperties = {
   color: '#64748b',
+}
+
+const assignmentTraceWrapStyle: CSSProperties = {
+  display: 'grid',
+  gap: '4px',
+  marginTop: '8px',
+  padding: '8px 10px',
+  borderRadius: '12px',
+  background: '#f8fafc',
+  border: '1px solid #e2e8f0',
+}
+
+const assignmentTraceLineStyle: CSSProperties = {
+  fontSize: '12px',
+  lineHeight: 1.45,
+  color: '#334155',
+}
+
+const assignmentTraceMutedStyle: CSSProperties = {
+  color: '#94a3b8',
 }
 
 const packageNameStyle: CSSProperties = {
