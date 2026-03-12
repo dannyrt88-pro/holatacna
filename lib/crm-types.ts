@@ -37,6 +37,7 @@ export type Lead = {
   top_provider_ids?: string[] | null
   assignment_mode?: string | null
   assignment_reason?: string | null
+  manual_override_at?: string | null
   service_name: string | null
   reference_code: string | null
   status: LeadStatus | null

@@ -374,6 +374,10 @@ export default function Dashboard() {
         provider_id: provider.id,
         provider_phone: provider.whatsapp,
         commission_rate: provider.commission_rate,
+        auto_assigned: false,
+        assignment_mode: 'manual_override',
+        assignment_reason: 'manual_admin_override',
+        manual_override_at: new Date().toISOString(),
       })
       .eq('id', leadId)
 
