@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import type { LeadAssignmentResult, ProviderSuggestion } from '@/lib/assignment-types'
 import { services } from '@/lib/service-catalog'
 import type { Lead, Provider } from '@/lib/crm-types'
+import { getHybridRankScore } from '@/lib/provider-hybrid-ranking'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -56,7 +57,31 @@ function matchesCityScope(provider: Provider, cityInterest: string | null | unde
     .includes(city)
 }
 
+function getObservedSignalsForProvider(_provider: Provider) {
+  return {
+    assigned_leads_count: 0,
+    suggested_count: 0,
+    suggested_to_assigned_rate: 0,
+    auto_assignment_share: 0,
+    manual_override_share: 0,
+  }
+}
+
 function compareProvidersForAssignment(a: Provider, b: Provider) {
+  const aHybridRankScore = getHybridRankScore({
+    priority: Number(a.priority || 0),
+    score: Number(a.score || 0),
+    ...getObservedSignalsForProvider(a),
+  })
+  const bHybridRankScore = getHybridRankScore({
+    priority: Number(b.priority || 0),
+    score: Number(b.score || 0),
+    ...getObservedSignalsForProvider(b),
+  })
+
+  const hybridDiff = bHybridRankScore - aHybridRankScore
+  if (hybridDiff !== 0) return hybridDiff
+
   const priorityDiff = Number(b.priority || 0) - Number(a.priority || 0)
   if (priorityDiff !== 0) return priorityDiff
 
