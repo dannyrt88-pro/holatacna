@@ -1,432 +1,113 @@
 # SYSTEM FEATURES AND DATABASE STRUCTURE
 
-Este documento combina:
+Este documento resume las funcionalidades actuales del sistema y su relacion con la capa de datos.
 
-- descripción de funcionalidades del sistema
-- estructura conceptual de la base de datos
-- relación entre módulos del sistema
-- evolución futura de features
+## Proposito del sistema
 
-Debe leerse junto con:
+HolaTacna es un motor de captacion, routing y operacion de leads para un marketplace de servicios en Tacna.
 
-PROJECT_BRAIN.md  
-ARCHITECTURE.md  
-SERVICE_ENGINE.md  
-LEAD_FLOW.md  
-ROADMAP.md  
-CODEX_RULES.md  
+## Modulos principales
 
-Este documento sirve como referencia para cualquier agente de IA o desarrollador que necesite entender cómo se conectan las funcionalidades del sistema con la base de datos.
+### 1. Captura de leads
 
----
+- landings SEO
+- formularios web
+- comparativas
+- flujos comerciales
+- entrada central en `app/api/create-lead/route.ts`
 
-# PROPÓSITO DEL SISTEMA
+### 2. Normalizacion y enriquecimiento
 
-La plataforma es un **motor de captación, gestión y derivación de oportunidades (leads)** para múltiples categorías de servicios.
+El backend:
 
-Aunque soporta múltiples verticales, se da prioridad inicial a:
+- limpia payloads
+- conserva tracking comercial
+- interpreta `service_name` y `service_slug`
+- prepara contexto para el routing
 
-- servicios clínicos
-- tratamientos estéticos
-- implantes
-- dermatología
-- turismo médico
+### 3. Routing de providers
 
-También soporta:
+Componentes:
 
-- hoteles
-- Airbnb
-- transporte
-- compras por mayor
-- turismo
-- logística
-- otros servicios futuros
+- `lib/provider-routing.ts`
+- `lib/provider-observed-signals.ts`
+- `lib/provider-hybrid-ranking.ts`
 
-La arquitectura debe permitir agregar nuevas categorías sin modificar el núcleo del sistema.
+### 4. Operacion del marketplace
 
----
+- dashboard de leads
+- panel `/providers`
+- override manual
 
-# MÓDULOS PRINCIPALES DEL SISTEMA
+### 5. Analytics
 
-El sistema se compone de varios módulos funcionales.
+- metricas por provider
+- trazabilidad sugerido vs asignado
+- cobertura por servicio
 
----
+## Tabla operativa principal: `public.leads`
 
-# 1 CAPTURA DE LEADS
+Campos conceptuales mas importantes:
 
-Responsabilidad:
+- `id`
+- `name`
+- `phone`
+- `country`
+- `service_name`
+- `service_slug`
+- `provider_id`
+- `suggested_provider_id`
+- `top_provider_ids`
+- `assignment_mode`
+- `assignment_reason`
+- `auto_assigned`
+- `manual_override_at`
+- `created_at`
 
-Capturar solicitudes de usuarios.
+## Entidad operativa: providers
 
-Origen del lead:
+Campos y conceptos clave:
 
-- formulario web
-- landing page
-- campaña publicitaria
-- referencia externa
-- integración futura con APIs
+- `id`
+- `name`
+- `active`
+- `auto_assign`
+- `priority`
+- `score`
+- `city_scope`
+- cobertura por servicios
 
-Campos básicos:
+## Relaciones principales
 
-- nombre
-- teléfono
-- país
-- servicio solicitado
-- categoría
-- descripción
-- fecha
+- lead -> provider final
+- lead -> provider sugerido
+- lead -> servicio solicitado
+- provider -> servicios soportados
+- provider -> ciudad o ambito de cobertura
 
-Resultado:
+## Features actuales
 
-Creación de una solicitud en la base de datos.
+- captacion desde landings SEO
+- create-lead como punto unico de entrada
+- routing hibrido
+- autoasignacion cuando aplica
+- pending review cuando requiere operacion manual
+- panel de providers
+- override manual con trazabilidad
+- metricas iniciales por provider
 
----
+## Features futuras
 
-# 2 CLASIFICACIÓN DE SERVICIOS
-
-El sistema debe clasificar cada solicitud.
-
-Estructura conceptual:
-
-Categoría  
-→ Subcategoría  
-→ Servicio
-
-Ejemplo:
-
-Salud  
-→ Dermatología  
-→ Tratamiento de piel
-
-Salud  
-→ Implantes dentales  
-→ Implantes unitarios
-
-Turismo  
-→ Hoteles  
-→ Reserva de hospedaje
-
-Logística  
-→ Transporte  
-→ Traslado aeropuerto
-
-Esta estructura debe poder crecer dinámicamente.
-
----
-
-# 3 GESTIÓN DE LEADS
-
-Después de capturarse, los leads pasan por distintas etapas.
-
-Estados posibles:
-
-nuevo  
-validado  
-en revisión  
-asignado  
-derivado  
-contactado  
-convertido  
-descartado  
-cancelado  
-
-Estos estados deben almacenarse en la base de datos.
-
----
-
-# 4 DASHBOARD ADMINISTRATIVO
-
-El dashboard permite operar el sistema.
-
-Funciones principales:
-
-ver leads entrantes  
-filtrar por categoría  
-filtrar por estado  
-filtrar por país  
-asignar proveedores  
-activar modo automático  
-cambiar estados  
-
-Columnas recomendadas:
-
-nombre  
-servicio  
-categoría  
-proveedor  
-estado  
-automático  
-fecha  
-
----
-
-# 5 GESTIÓN DE PROVEEDORES
-
-Los proveedores son empresas o profesionales que atienden los leads.
-
-Ejemplos:
-
-clínicas  
-consultorios  
-hoteles  
-transportistas  
-distribuidores  
-agencias  
-
-Cada proveedor debe tener atributos como:
-
-id  
-nombre  
-categoría de servicio  
-ubicación  
-estado  
-automatico (boolean)
-
----
-
-# 6 DERIVACIÓN DE SOLICITUDES
-
-El sistema debe decidir cómo manejar cada lead.
-
-Modo manual:
-
-el lead aparece en el dashboard  
-un operador lo revisa y asigna proveedor
-
-Modo automático:
-
-si proveedor automatico = true  
-el sistema puede derivar automáticamente
-
-Esto permite escalar el sistema sin intervención humana constante.
-
----
-
-# 7 TRAZABILIDAD DEL LEAD
-
-Cada lead debe ser completamente rastreable.
-
-Debe registrarse:
-
-origen del lead  
-fecha de entrada  
-servicio solicitado  
-proveedor asignado  
-estado actual  
-resultado final  
-
-Esto permite medir rendimiento del sistema.
-
----
-
-# MODELO CONCEPTUAL DE BASE DE DATOS
-
-El sistema se basa en varias entidades principales.
-
----
-
-# TABLA: LEADS
-
-Representa una solicitud de servicio.
-
-Campos conceptuales:
-
-id (UUID)  
-nombre  
-telefono  
-pais  
-categoria  
-servicio  
-descripcion  
-estado  
-proveedor_id  
-origen  
-automatico  
-fecha_creacion  
-
----
-
-# TABLA: SERVICIOS
-
-Define los servicios disponibles.
-
-Campos conceptuales:
-
-id  
-nombre  
-categoria_id  
-descripcion  
-activo  
-
-Ejemplo:
-
-dermatologia  
-implantes  
-hotel  
-transporte  
-
----
-
-# TABLA: CATEGORIAS
-
-Agrupa servicios.
-
-Campos conceptuales:
-
-id  
-nombre  
-descripcion  
-
-Ejemplo:
-
-salud  
-turismo  
-logistica  
-comercio  
-
----
-
-# TABLA: PROVEEDORES
-
-Define empresas o profesionales que reciben leads.
-
-Campos conceptuales:
-
-id  
-nombre  
-categoria_servicio  
-ubicacion  
-automatico  
-activo  
-fecha_creacion  
-
----
-
-# TABLA: ESTADOS_LEAD
-
-Define los estados posibles del lead.
-
-Campos conceptuales:
-
-id  
-nombre_estado  
-
-Ejemplo:
-
-nuevo  
-en_revision  
-derivado  
-convertido  
-cancelado  
-
----
-
-# RELACIONES PRINCIPALES
-
-lead → servicio  
-lead → proveedor  
-lead → estado  
-
-servicio → categoria  
-
-proveedor → categoria_servicio  
-
----
-
-# REGLAS IMPORTANTES DE BASE DE DATOS
-
-Siempre usar UUID para relaciones principales.
-
-Nunca enviar slugs en campos que esperan UUID.
-
-Validar siempre:
-
-- inserts
-- updates
-- relaciones entre tablas
-
-Errores conocidos a evitar:
-
-invalid input syntax for type uuid
-
----
-
-# FEATURES ACTUALES DEL SISTEMA
-
-Las funcionalidades actuales incluyen:
-
-captura de leads  
-formularios por servicio  
-almacenamiento en Supabase  
-dashboard de gestión  
-gestión manual de solicitudes  
-clasificación por categoría  
-
----
-
-# FEATURES EN DESARROLLO
-
-Funciones que están en proceso o en implementación.
-
-derivación automática  
-checkbox automático en dashboard  
-mejor clasificación de servicios  
-mejor visualización de leads  
-
----
-
-# FEATURES FUTURAS
-
-Funciones previstas en roadmap.
-
-lead scoring  
-ranking de proveedores  
-geolocalización  
-priorización automática  
-matching inteligente proveedor-cliente  
-automatización avanzada  
-
----
-
-# MÉTRICAS QUE EL SISTEMA DEBERÁ MEDIR
-
-leads generados  
-leads derivados  
-leads convertidos  
-ingresos por categoría  
-proveedores más eficientes  
-tiempo promedio de respuesta  
-ticket promedio  
-
----
-
-# ESCALABILIDAD DEL SISTEMA
-
-El sistema debe poder crecer hacia:
-
-marketplace de servicios  
-automatización avanzada  
-múltiples países  
-múltiples monedas  
-integraciones con CRMs  
-integraciones con sistemas externos  
-
----
-
-# REGLAS PARA AGENTES DE IA
-
-Antes de modificar código relacionado con base de datos:
-
-1 entender entidades involucradas  
-2 revisar relaciones existentes  
-3 validar impacto en dashboard  
-4 validar impacto en automatización  
-5 aplicar cambios mínimos seguros  
-
-Siempre explicar:
-
-diagnóstico  
-causa raíz  
-archivos modificados  
-impacto del cambio  
-cómo probar
+- persistencia de metricas
+- ranking adaptativo
+- optimizacion de performance
+- AI assisted routing
+- expansion multiservicio
+
+## Reglas de base de datos
+
+- usar UUID validos en relaciones
+- no enviar slugs en campos UUID
+- mantener coherencia entre `provider_id` y `suggested_provider_id`
+- nunca perder trazabilidad de `assignment_mode` y `assignment_reason`
+- registrar `manual_override_at` cuando corresponda

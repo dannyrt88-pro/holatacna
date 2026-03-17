@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { buildTrackingPayload } from '@/lib/lead-tracking'
 import type { LeadCapturePayload } from '@/lib/crm-types'
@@ -27,7 +27,9 @@ type LeadCaptureFormProps = {
   successMessage?: string
 }
 
-export function LeadCaptureForm({
+type LeadCaptureFormInnerProps = LeadCaptureFormProps
+
+function LeadCaptureFormInner({
   serviceSlug,
   serviceName,
   cityInterest = null,
@@ -46,8 +48,8 @@ export function LeadCaptureForm({
   additionalServicesLabel = 'Servicios adicionales',
   additionalServicesHelperText,
   additionalServicesOptions = [],
-  successMessage = 'Solicitud enviada. Nuestro equipo te contactara por WhatsApp.',
-}: LeadCaptureFormProps) {
+  successMessage = '¡Gracias! Te contactamos pronto por WhatsApp',
+}: LeadCaptureFormInnerProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [name, setName] = useState('')
@@ -72,7 +74,7 @@ export function LeadCaptureForm({
     )
   }
 
-  function buildPayload(): LeadCapturePayload & { variant?: string | null } {
+  function buildPayload(): LeadCapturePayload & { variant?: string | null; origin_url?: string | null } {
     return {
       name: name.trim() || null,
       phone: phone.trim() || null,
@@ -83,6 +85,7 @@ export function LeadCaptureForm({
       service_name: serviceName || null,
       city_interest: cityInterest?.trim() || null,
       landing_path: landingPath || pathname || null,
+      origin_url: typeof window !== 'undefined' ? window.location.href : landingPath || pathname || null,
       page_type: pageType?.trim() || null,
       additional_services: shouldShowAdditionalServices ? additionalServices : null,
       ...buildTrackingPayload(searchParams),
@@ -109,7 +112,7 @@ export function LeadCaptureForm({
       const data = await response.json()
 
       if (!response.ok) {
-        alert(data.error || 'No se pudo enviar la solicitud.')
+        alert(data.error || 'Hubo un error. Escríbenos directo por WhatsApp')
         setLoading(false)
         return
       }
@@ -121,7 +124,7 @@ export function LeadCaptureForm({
       setMessage('')
       setAdditionalServices([])
     } catch {
-      alert('No se pudo enviar la solicitud.')
+      alert('Hubo un error. Escríbenos directo por WhatsApp')
     }
 
     setLoading(false)
@@ -212,5 +215,13 @@ export function LeadCaptureForm({
         {loading ? 'Enviando...' : submitLabel}
       </button>
     </form>
+  )
+}
+
+export function LeadCaptureForm(props: LeadCaptureFormProps) {
+  return (
+    <Suspense fallback={<div className="text-sm text-slate-500">Cargando formulario...</div>}>
+      <LeadCaptureFormInner {...props} />
+    </Suspense>
   )
 }

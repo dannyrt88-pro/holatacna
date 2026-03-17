@@ -224,11 +224,14 @@ Implementa lógica de derivación automática.
 
 Reglas:
 
-si proveedor automatico = true  
-→ derivar automáticamente
+si existe provider elegible y autoasignable con mejor ranking  
+-> autoasignar
 
-si proveedor automatico = false  
-→ revisión manual
+si hay providers elegibles pero no autoasignables  
+-> `pending_review`
+
+si no hay providers compatibles  
+-> `no_eligible_provider`
 
 Asegúrate de que el cambio se refleje en el dashboard.
 

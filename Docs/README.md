@@ -1,6 +1,19 @@
 # HolaTacna
 
-HolaTacna es una plataforma web enfocada en captar leads y convertir pacientes o clientes interesados en servicios medicos y esteticos entre Tacna y ciudades del norte de Chile, especialmente Arica, Iquique y Antofagasta.
+HolaTacna es un marketplace de servicios enfocado en captar leads desde Chile, convertirlos en oportunidades operables y conectarlos con proveedores compatibles en Tacna.
+
+## Documentos de entrada
+
+- `MASTER_WORK_ROUTE.md`
+  - documento rector actual y ruta principal de trabajo del proyecto
+- `N8N_WORKFLOW_BLUEPRINT.md`
+  - blueprint tecnico completo de la capa de automatizacion `n8n`
+- `EXECUTIVE_ONE_PAGER.md`
+  - resumen ejecutivo del negocio, arquitectura operativa y prioridades
+- `MARKETPLACE_FUNNEL.md`
+  - vision del funnel de captacion, routing y conversion del marketplace
+- `PROJECT_BRAIN.md`
+  - memoria central del proyecto y referencia de evolucion del sistema
 
 ## Stack actual
 
@@ -15,7 +28,7 @@ HolaTacna es una plataforma web enfocada en captar leads y convertir pacientes o
 
 - captar leads comerciales desde landings SEO
 - coordinar atencion por WhatsApp
-- derivar casos hacia clinicas y proveedores verificados
+- derivar casos hacia proveedores verificados
 - operar un dashboard interno para seguimiento comercial
 
 ## Areas principales del proyecto

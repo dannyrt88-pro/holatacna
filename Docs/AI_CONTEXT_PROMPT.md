@@ -175,13 +175,16 @@ La automatización permite derivar leads sin intervención humana.
 
 Regla principal:
 
-si proveedor automatico = true  
-→ derivación automática  
+si existe provider elegible y autoasignable con mejor ranking  
+-> `assignment_mode = auto_assigned`
 
-si proveedor automatico = false  
-→ revisión manual  
+si existen providers elegibles pero no autoasignables  
+-> `assignment_mode = pending_review`
 
-Este flujo es crítico para la escalabilidad.
+si no existen providers compatibles  
+-> `assignment_mode = no_eligible_provider`
+
+La escalabilidad depende de mantener este routing con trazabilidad, no de un checkbox binario aislado.
 
 ---
 

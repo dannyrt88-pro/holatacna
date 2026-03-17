@@ -3,10 +3,13 @@
 import { ChangeEvent, Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
-import type { Provider } from '@/lib/crm-types'
+import type { Lead, Provider } from '@/lib/crm-types'
 import type { AppRole } from '@/lib/access-control'
 import { services } from '@/lib/service-catalog'
 import { ProviderOnboardingForm } from '@/components/forms/provider-onboarding-form'
+import { buildProviderMetrics } from '@/lib/provider-metrics'
+import { buildProviderPhase2Metrics } from '@/lib/provider-metrics-phase2'
+import { buildServiceCoverageMetrics } from '@/lib/service-coverage-metrics'
 import {
   buildProviderNotesWithServices,
   getEmptyProviderOfferedService,
@@ -77,6 +80,9 @@ function ProvidersPageInner() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [providers, setProviders] = useState<Provider[]>([])
+  const [leads, setLeads] = useState<
+    Pick<Lead, 'provider_id' | 'suggested_provider_id' | 'assignment_mode' | 'service_slug' | 'service_name'>[]
+  >([])
   const [role, setRole] = useState<AppRole>('none')
   const [form, setForm] = useState<ProviderFormState>(getEmptyProviderForm())
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -88,6 +94,15 @@ function ProvidersPageInner() {
   const serviceOptions = useMemo(
     () => services.map((service) => ({ slug: service.slug, name: service.name })),
     []
+  )
+  const providerMetrics = useMemo(() => buildProviderMetrics(providers, leads), [providers, leads])
+  const providerPhase2Metrics = useMemo(
+    () => buildProviderPhase2Metrics(providerMetrics),
+    [providerMetrics]
+  )
+  const serviceCoverageMetrics = useMemo(
+    () => buildServiceCoverageMetrics(providers, leads),
+    [providers, leads]
   )
 
   const loadProviders = useCallback(async () => {
@@ -102,6 +117,24 @@ function ProvidersPageInner() {
     }
 
     setProviders((data || []) as Provider[])
+  }, [supabase])
+
+  const loadLeadMetrics = useCallback(async () => {
+    const { data, error } = await supabase
+      .from('leads')
+      .select('provider_id,suggested_provider_id,assignment_mode,service_slug,service_name')
+
+    if (error) {
+      console.error(error)
+      return
+    }
+
+    setLeads(
+      ((data || []) as Pick<
+        Lead,
+        'provider_id' | 'suggested_provider_id' | 'assignment_mode' | 'service_slug' | 'service_name'
+      >[])
+    )
   }, [supabase])
 
   useEffect(() => {
@@ -140,7 +173,7 @@ function ProvidersPageInner() {
 
       setRole(roleData.role)
 
-      await loadProviders()
+      await Promise.all([loadProviders(), loadLeadMetrics()])
 
       if (active) {
         setLoading(false)
@@ -152,17 +185,17 @@ function ProvidersPageInner() {
     return () => {
       active = false
     }
-  }, [isPublicRegistration, loadProviders, router, supabase])
+  }, [isPublicRegistration, loadLeadMetrics, loadProviders, router, supabase])
 
   useEffect(() => {
     if (isPublicRegistration || role !== 'admin') return
 
     function handleFocus() {
-      void loadProviders()
+      void Promise.all([loadProviders(), loadLeadMetrics()])
     }
 
     const intervalId = window.setInterval(() => {
-      void loadProviders()
+      void Promise.all([loadProviders(), loadLeadMetrics()])
     }, 15000)
 
     window.addEventListener('focus', handleFocus)
@@ -171,7 +204,7 @@ function ProvidersPageInner() {
       window.removeEventListener('focus', handleFocus)
       window.clearInterval(intervalId)
     }
-  }, [isPublicRegistration, loadProviders, role])
+  }, [isPublicRegistration, loadLeadMetrics, loadProviders, role])
 
   async function updateProvider(
     id: string,
@@ -853,6 +886,7 @@ function ProvidersPageInner() {
                   <th className="border-b border-sky-100 px-3 py-3">Foto</th>
                   <th className="border-b border-sky-100 px-3 py-3">Ingreso</th>
                   <th className="border-b border-sky-100 px-3 py-3">Nombre</th>
+                  <th className="border-b border-sky-100 px-3 py-3">Metricas</th>
                   <th className="border-b border-sky-100 px-3 py-3">Servicio</th>
                   <th className="border-b border-sky-100 px-3 py-3">Slug</th>
                   <th className="border-b border-sky-100 px-3 py-3">WhatsApp</th>
@@ -872,6 +906,8 @@ function ProvidersPageInner() {
               <tbody>
                 {providers.map((provider) => {
                   const isEditing = editingId === provider.id
+                  const metrics = providerMetrics[provider.id]
+                  const phase2Metrics = providerPhase2Metrics[provider.id]
 
                   return (
                   <tr key={provider.id} className="align-top even:bg-slate-50">
@@ -908,6 +944,81 @@ function ProvidersPageInner() {
                         onChange={(event) => updateProvider(provider.id, 'name', event.target.value)}
                         className="w-44 rounded-lg border border-slate-300 px-3 py-2 disabled:cursor-not-allowed disabled:bg-slate-100"
                       />
+                    </td>
+                    <td className="border-b border-slate-200 px-3 py-3">
+                      <div className="grid min-w-[220px] gap-3">
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+                            <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500">Asignados</div>
+                            <div className="text-lg font-bold text-slate-900">{metrics?.assigned_leads_count ?? 0}</div>
+                          </div>
+                          <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2">
+                            <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-emerald-700">Auto</div>
+                            <div className="text-lg font-bold text-emerald-900">{metrics?.auto_assigned_leads_count ?? 0}</div>
+                          </div>
+                          <div className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2">
+                            <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-amber-700">Override</div>
+                            <div className="text-lg font-bold text-amber-900">{metrics?.manual_override_leads_count ?? 0}</div>
+                          </div>
+                          <div className="rounded-xl border border-sky-200 bg-sky-50 px-3 py-2">
+                            <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-sky-700">Sugerido</div>
+                            <div className="text-lg font-bold text-sky-900">{metrics?.suggested_count ?? 0}</div>
+                          </div>
+                        </div>
+
+                        {metrics?.high_manual_intervention || metrics?.no_traction ? (
+                          <div className="flex flex-wrap gap-2">
+                            {metrics.high_manual_intervention ? (
+                              <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800">
+                                Alta intervencion manual
+                              </span>
+                            ) : null}
+                            {metrics.no_traction ? (
+                              <span className="rounded-full bg-slate-200 px-3 py-1 text-xs font-bold text-slate-700">
+                                Sin traccion
+                              </span>
+                            ) : null}
+                          </div>
+                        ) : (
+                          <span className="text-xs text-slate-400">Sin alertas operativas</span>
+                        )}
+
+                        <div className="grid grid-cols-3 gap-2">
+                          <div className="rounded-xl border border-violet-200 bg-violet-50 px-3 py-2">
+                            <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-violet-700">
+                              Sug-&gt;Asig
+                            </div>
+                            <div className="text-sm font-bold text-violet-900">
+                              {phase2Metrics?.suggested_to_assigned_rate !== null &&
+                              phase2Metrics?.suggested_to_assigned_rate !== undefined
+                                ? `${Math.round(phase2Metrics.suggested_to_assigned_rate * 100)}%`
+                                : '-'}
+                            </div>
+                          </div>
+                          <div className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2">
+                            <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-rose-700">
+                              Manual
+                            </div>
+                            <div className="text-sm font-bold text-rose-900">
+                              {phase2Metrics?.manual_override_share !== null &&
+                              phase2Metrics?.manual_override_share !== undefined
+                                ? `${Math.round(phase2Metrics.manual_override_share * 100)}%`
+                                : '-'}
+                            </div>
+                          </div>
+                          <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2">
+                            <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-emerald-700">
+                              Auto
+                            </div>
+                            <div className="text-sm font-bold text-emerald-900">
+                              {phase2Metrics?.auto_assignment_share !== null &&
+                              phase2Metrics?.auto_assignment_share !== undefined
+                                ? `${Math.round(phase2Metrics.auto_assignment_share * 100)}%`
+                                : '-'}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </td>
                     <td className="border-b border-slate-200 px-3 py-3">
                       <input
@@ -1050,6 +1161,35 @@ function ProvidersPageInner() {
                 )})}
               </tbody>
             </table>
+          </div>
+        </section>
+
+        <section className="mt-6 rounded-[28px] bg-white p-6 shadow-lg">
+          <div className="mb-5">
+            <div className="mb-2 inline-block rounded-full bg-violet-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-violet-700">
+              Cobertura por servicio
+            </div>
+            <h2 className="text-2xl font-bold">Cobertura operativa compacta</h2>
+            <p className="mt-2 text-sm text-slate-600">
+              Prioriza servicios con mas pending review y menor cobertura activa.
+            </p>
+          </div>
+
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {serviceCoverageMetrics.map((metric) => (
+              <div key={metric.service_key} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <div className="mb-2 text-sm font-bold text-slate-900">{metric.service_label}</div>
+                <div className="text-xs text-slate-600">
+                  Activos: <strong className="text-slate-900">{metric.active_providers_count}</strong> | Pending:{' '}
+                  <strong className="text-slate-900">{metric.pending_review_count}</strong> | Rate:{' '}
+                  <strong className="text-slate-900">
+                    {metric.pending_review_rate !== null
+                      ? `${Math.round(metric.pending_review_rate * 100)}%`
+                      : '-'}
+                  </strong>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
       </div>

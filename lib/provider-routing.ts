@@ -3,11 +3,17 @@ import type { LeadAssignmentResult, ProviderSuggestion } from '@/lib/assignment-
 import { services } from '@/lib/service-catalog'
 import type { Lead, Provider } from '@/lib/crm-types'
 import { getHybridRankScore } from '@/lib/provider-hybrid-ranking'
+import {
+  buildProviderObservedSignals,
+  getNeutralObservedSignalsMap,
+  type ProviderObservedSignalsMap,
+} from '@/lib/provider-observed-signals'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
+const ENABLE_PROVIDER_ROUTING_DEBUG_LOGS = true
 
 function normalizeValue(value: string | null | undefined) {
   return (value || '')
@@ -57,26 +63,27 @@ function matchesCityScope(provider: Provider, cityInterest: string | null | unde
     .includes(city)
 }
 
-function getObservedSignalsForProvider(_provider: Provider) {
-  return {
-    assigned_leads_count: 0,
-    suggested_count: 0,
-    suggested_to_assigned_rate: 0,
-    auto_assignment_share: 0,
-    manual_override_share: 0,
-  }
+function getObservedSignalsForProvider(
+  provider: Provider,
+  observedSignalsMap: ProviderObservedSignalsMap
+) {
+  return observedSignalsMap[provider.id] || getNeutralObservedSignalsMap([provider.id])[provider.id]
 }
 
-function compareProvidersForAssignment(a: Provider, b: Provider) {
+function compareProvidersForAssignment(
+  a: Provider,
+  b: Provider,
+  observedSignalsMap: ProviderObservedSignalsMap
+) {
   const aHybridRankScore = getHybridRankScore({
     priority: Number(a.priority || 0),
     score: Number(a.score || 0),
-    ...getObservedSignalsForProvider(a),
+    ...getObservedSignalsForProvider(a, observedSignalsMap),
   })
   const bHybridRankScore = getHybridRankScore({
     priority: Number(b.priority || 0),
     score: Number(b.score || 0),
-    ...getObservedSignalsForProvider(b),
+    ...getObservedSignalsForProvider(b, observedSignalsMap),
   })
 
   const hybridDiff = bHybridRankScore - aHybridRankScore
@@ -160,7 +167,7 @@ function buildAssignmentResult(
 }
 
 export async function selectProviderForLead(
-  lead: Pick<Lead, 'service_name' | 'city_interest'> & { service_slug?: string | null }
+  lead: Pick<Lead, 'service_name' | 'city_interest'> & { service_slug?: string | null; lead_score?: number | null }
 ): Promise<LeadAssignmentResult> {
   const serviceSlug = resolveServiceSlug(lead)
   const serviceName = normalizeValue(lead.service_name)
@@ -192,19 +199,74 @@ export async function selectProviderForLead(
       return providerServiceName === serviceName
     })
     .filter((provider) => matchesCityScope(provider, lead.city_interest))
-    .sort(compareProvidersForAssignment)
 
   if (!eligibleProviders.length) {
     return buildAssignmentResult([], [], 'no_eligible_provider')
   }
 
-  const autoAssignableProviders = eligibleProviders.filter((provider) => provider.auto_assign === true)
+  const eligibleProviderIds = eligibleProviders.map((provider) => provider.id)
+  const cutoffDateIso = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString()
+  let observedSignalsMap = getNeutralObservedSignalsMap(eligibleProviderIds)
 
-  if (!autoAssignableProviders.length) {
-    return buildAssignmentResult(eligibleProviders, [], 'no_auto_assignable_provider')
+  const { data: observedLeadsData, error: observedLeadsError } = await supabase
+    .from('leads')
+    .select('provider_id,suggested_provider_id,assignment_mode,created_at')
+    .gte('created_at', cutoffDateIso)
+
+  if (observedLeadsError) {
+    console.error('Error loading observed lead signals for routing:', observedLeadsError)
+  } else if (observedLeadsData) {
+    observedSignalsMap = buildProviderObservedSignals(
+      eligibleProviderIds,
+      observedLeadsData as Array<{
+        provider_id: string | null
+        suggested_provider_id: string | null
+        assignment_mode: string | null
+        created_at?: string | null
+      }>
+    )
   }
 
-  return buildAssignmentResult(eligibleProviders, autoAssignableProviders, 'ranked_auto_assign')
+  const rankedEligibleProviders = eligibleProviders.sort((a, b) =>
+    compareProvidersForAssignment(a, b, observedSignalsMap)
+  )
+
+  const autoAssignableProviders = rankedEligibleProviders.filter((provider) => provider.auto_assign === true)
+
+  if (ENABLE_PROVIDER_ROUTING_DEBUG_LOGS && rankedEligibleProviders.length > 0) {
+    console.info('Provider routing ranking debug', {
+      lead_service_slug: serviceSlug,
+      lead_city_interest: lead.city_interest || null,
+      eligibleProvidersCount: rankedEligibleProviders.length,
+      autoAssignableProvidersCount: autoAssignableProviders.length,
+      selectedProviderId: autoAssignableProviders[0]?.id || rankedEligibleProviders[0]?.id || null,
+      topCandidates: rankedEligibleProviders.slice(0, 3).map((provider) => {
+        const observed = getObservedSignalsForProvider(provider, observedSignalsMap)
+        return {
+          provider_id: provider.id,
+          service_slug: provider.service_slug || null,
+          priority: Number(provider.priority || 0),
+          score: Number(provider.score || 0),
+          assigned_leads_count: observed.assigned_leads_count,
+          suggested_count: observed.suggested_count,
+          auto_assignment_share: observed.auto_assignment_share,
+          manual_override_share: observed.manual_override_share,
+          suggested_to_assigned_rate: observed.suggested_to_assigned_rate,
+          hybrid_rank_score: getHybridRankScore({
+            priority: Number(provider.priority || 0),
+            score: Number(provider.score || 0),
+            ...observed,
+          }),
+        }
+      }),
+    })
+  }
+
+  if (!autoAssignableProviders.length) {
+    return buildAssignmentResult(rankedEligibleProviders, [], 'no_auto_assignable_provider')
+  }
+
+  return buildAssignmentResult(rankedEligibleProviders, autoAssignableProviders, 'ranked_auto_assign')
 }
 
 export const getBestProviderForLead = selectProviderForLead

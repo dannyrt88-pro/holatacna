@@ -1,293 +1,176 @@
 # SYSTEM ARCHITECTURE
 
-Este documento describe la arquitectura técnica del proyecto y cómo están organizados los componentes del sistema.
+Este documento describe la arquitectura actual de HolaTacna como marketplace de servicios con captura de demanda, routing de providers, operacion comercial y analytics.
 
-Debe leerse antes de realizar cambios estructurales importantes.
+## Proposito del sistema
 
----
+La plataforma conecta usuarios que buscan servicios en Tacna con proveedores confiables configurados operativamente en el sistema.
 
-# PROPÓSITO DEL SISTEMA
+La arquitectura debe soportar:
 
-La plataforma conecta usuarios que buscan servicios con proveedores confiables.
+- captacion desde SEO, social y canales comerciales
+- captura centralizada de leads
+- routing inteligente de proveedores
+- operacion manual y autoasignacion
+- trazabilidad completa de decisiones
+- evolucion a nuevas categorias sin romper el nucleo
 
-Los servicios pueden ser de distintos tipos, incluyendo:
+## Capas del sistema
 
-PRIORIDAD ALTA (mayor ticket promedio)
+```txt
+Traffic Layer
+  ->
+Lead Capture Layer
+  ->
+Provider Routing Engine
+  ->
+Provider Assignment
+  ->
+Marketplace Operations
+  ->
+Analytics Layer
+```
 
-- servicios médicos
-- tratamientos estéticos
-- implantes dentales
-- dermatología
-- otros tratamientos médicos
-
-OTROS SERVICIOS SOPORTADOS
-
-- hoteles
-- Airbnb
-- transporte
-- compras por mayor
-- turismo médico
-- logística
-- cualquier servicio futuro que se agregue
-
-La arquitectura debe permitir que el sistema escale fácilmente a nuevas categorías de servicios.
-
----
-
-# PRINCIPIOS DE ARQUITECTURA
-
-El sistema sigue estos principios:
-
-1. Modularidad
-2. Escalabilidad
-3. Separación de responsabilidades
-4. Mínimo acoplamiento
-5. Integraciones simples
-6. Evitar lógica duplicada
-7. Código fácil de mantener
-
----
-
-# STACK TECNOLÓGICO
+## Stack tecnologico
 
 Frontend:
 
-- Next.js
-- React
+- Next.js App Router
+- React 19
 - TypeScript
+- Tailwind CSS 4
 
-Backend / Base de datos:
+Backend y datos:
 
 - Supabase
 - PostgreSQL
 
-Funciones del backend:
+Despliegue:
 
-- almacenamiento de solicitudes
-- gestión de proveedores
-- control de estados
-- automatización de derivaciones
+- Vercel
 
----
+## Estructura general
 
-# ESTRUCTURA GENERAL DEL PROYECTO
+- `app`
+  - paginas publicas, landings, APIs, dashboard y providers
+- `components`
+  - formularios y componentes reutilizables
+- `lib`
+  - routing, ranking, observed signals, metadata, tracking y helpers
+- `types`
+  - tipos TypeScript
+- `supabase/migrations`
+  - cambios de esquema y trazabilidad
 
-Ejemplo de estructura esperada:
+## Lead Capture Layer
 
+Todos los leads deben converger en:
 
+- `app/api/create-lead/route.ts`
 
-Descripción:
+Responsabilidades:
 
-app → páginas principales del sistema  
-components → componentes reutilizables  
-lib → utilidades y helpers  
-services → integración con APIs o Supabase  
-dashboard → interfaz de administración  
-types → definiciones TypeScript
+- recibir payloads de formularios
+- normalizar campos
+- preservar tracking comercial
+- mapear servicio y contexto
+- llamar al motor de routing
+- persistir el lead con su resultado operativo
 
----
+## Provider Routing Engine
 
-# PÁGINA PRINCIPAL
+Archivos clave:
 
-Archivo clave:
+- `lib/provider-routing.ts`
+- `lib/provider-observed-signals.ts`
+- `lib/provider-hybrid-ranking.ts`
 
+Responsabilidades:
 
+- construir `eligibleProviders`
+- separar `autoAssignableProviders`
+- calcular senales observadas de los ultimos 90 dias
+- combinar senales manuales y observadas
+- devolver el provider sugerido o final con razon minima
 
-Funciones principales:
+## Regla de elegibilidad
 
-- mostrar categorías de servicios
-- permitir seleccionar especialidad o servicio
-- dirigir al formulario correspondiente
+Un provider entra a `eligibleProviders` si cumple:
 
-Cada servicio debe poder agregarse sin romper la estructura existente.
+- `active = true`
+- compatibilidad con `service_slug`
+- compatibilidad con `city_scope`
 
----
+Para autoasignacion, ademas debe tener:
 
-# SISTEMA DE CATEGORÍAS
+- `auto_assign = true`
 
-El sistema no debe depender de categorías rígidas.
+## Resultados de asignacion
 
-Debe soportar:
+El routing puede producir:
 
-- categorías actuales
-- nuevas categorías
-- subcategorías
+- `auto_assigned`
+- `pending_review`
+- `no_eligible_provider`
 
-Ejemplo:
+Estos resultados se persisten en `leads` y alimentan operacion y analytics.
 
-Servicios médicos  
-→ dermatología  
-→ implantes  
-→ cirugía estética
+## Persistencia
 
-Turismo  
-→ hoteles  
-→ Airbnb
+La tabla operativa central es:
 
-Logística  
-→ transporte  
-→ compras mayoristas
+- `public.leads`
 
----
+Campos importantes:
 
-# SISTEMA DE FORMULARIOS
+- `provider_id`
+- `suggested_provider_id`
+- `top_provider_ids`
+- `assignment_mode`
+- `assignment_reason`
+- `auto_assigned`
+- `manual_override_at`
 
-Cada servicio puede tener su propio formulario.
+## Operacion del marketplace
 
-Pero el sistema debe compartir una base común.
+Las dos superficies mas importantes son:
 
-Flujo:
+- dashboard de leads
+- panel `/providers`
 
-usuario selecciona servicio  
-→ se carga formulario  
-→ se validan datos  
-→ se envían a Supabase  
-→ se crea solicitud
+Desde ahi el equipo puede:
 
-Los formularios deben capturar:
+- revisar leads y trazabilidad
+- reasignar providers
+- mantener parametros manuales como `priority` y `score`
+- activar o desactivar providers
+- detectar cobertura debil por servicio
 
-- nombre
-- teléfono
-- país
-- servicio solicitado
-- descripción
-- fecha
-
-Campos adicionales pueden agregarse según servicio.
-
----
-
-# BASE DE DATOS
-
-Supabase gestiona:
-
-pacientes / clientes  
-proveedores  
-solicitudes  
-estados  
-automatización
-
-Relaciones importantes:
-
-solicitud → servicio  
-solicitud → proveedor  
-solicitud → estado
-
-Reglas críticas:
-
-usar UUID válidos  
-no enviar slugs en campos UUID  
-validar inserciones correctamente
-
----
-
-# DASHBOARD ADMINISTRATIVO
-
-El dashboard permite gestionar solicitudes.
-
-Funciones principales:
-
-ver solicitudes  
-revisar información  
-derivar a proveedores  
-activar automatización
-
-Columnas comunes:
-
-proveedor  
-servicio  
-estado  
-automático  
-fecha
-
----
-
-# DERIVACIÓN DE SOLICITUDES
-
-Existen dos modos.
-
-Modo manual
-
-la solicitud aparece en el dashboard  
-un operador decide a qué proveedor enviarla
-
-Modo automático
-
-si el proveedor está marcado como confiable  
-el sistema deriva automáticamente
-
-Esto se controla mediante un checkbox "Automático".
-
----
-
-# SISTEMA MULTISERVICIO
-
-La plataforma está diseñada para soportar múltiples tipos de servicios.
-
-Ejemplos de categorías futuras:
-
-- salud
-- turismo
-- transporte
-- comercio mayorista
-- servicios profesionales
-
-La arquitectura debe permitir agregar nuevos servicios sin modificar el núcleo del sistema.
-
----
-
-# MONEDA
-
-La moneda principal del sistema es:
-
-PEN (soles peruanos)
-
-Puede mostrarse conversión referencial para usuarios extranjeros.
-
-Ejemplo:
-
-CLP para pacientes chilenos.
-
----
-
-# ERRORES TÉCNICOS CONOCIDOS
-
-Errores que deben evitarse:
-
-invalid input syntax for type uuid  
-formularios que no envían submit  
-rutas incorrectas de especialidades  
-errores en app/page.tsx  
-problemas de integración con Supabase
-
----
-
-# REGLAS PARA AGENTES DE IA
-
-Antes de modificar código:
-
-1. entender la arquitectura
-2. identificar causa raíz
-3. modificar el mínimo posible
-4. no romper funcionalidades existentes
-
-Siempre explicar:
-
-diagnóstico  
-causa raíz  
-archivos modificados  
-cómo probar cambios
-
----
-
-# EVOLUCIÓN FUTURA
-
-La plataforma evolucionará hacia:
-
-1. marketplace de servicios
-2. derivación inteligente
-3. automatización avanzada
-4. integración con múltiples proveedores
-5. expansión internacional
-
-
+## Analytics
+
+Metricas activas o previstas:
+
+- `assigned_leads_count`
+- `auto_assigned_leads_count`
+- `manual_override_leads_count`
+- `suggested_count`
+- `suggested_to_assigned_rate`
+- `manual_override_share`
+- `auto_assignment_share`
+- cobertura por servicio
+
+## Reglas tecnicas criticas
+
+- usar UUID validos en relaciones
+- no usar slugs donde se esperan UUID
+- no romper la trazabilidad del lead
+- mantener separadas sugerencia y asignacion efectiva
+- preservar el flujo manual cuando cambie el routing
+
+## Evolucion esperada
+
+- metricas persistentes
+- mejor performance del routing
+- ranking adaptativo
+- AI assisted routing
+- expansion multiservicio

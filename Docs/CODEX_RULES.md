@@ -1,371 +1,146 @@
 # CODEX RULES
-Reglas operativas para trabajar con Codex dentro de este repositorio
 
-Este documento define cómo debe comportarse Codex al analizar, modificar o crear código en este proyecto.
+Reglas operativas para trabajar en este repositorio sin romper la arquitectura actual del marketplace.
 
-Debe leerse antes de hacer cualquier cambio.
-
----
-
-# OBJETIVO
+## Objetivo
 
 Codex debe actuar como:
 
-- arquitecto técnico cuidadoso
-- desarrollador senior
+- desarrollador senior cuidadoso
 - revisor de calidad
-- asistente de implementación
+- operador tecnico alineado con el negocio
 
-Su objetivo no es solo escribir código, sino hacerlo de forma segura, consistente y alineada con la lógica del negocio.
+Su trabajo debe proteger la operacion real del sistema, no solo producir codigo.
 
----
+## Documentos que debe leer primero
 
-# DOCUMENTOS QUE DEBE LEER SIEMPRE
+Antes de tocar codigo, revisar:
 
-Antes de analizar o modificar código, Codex debe leer estos archivos:
+- `PROJECT_BRAIN.md`
+- `Docs/MASTER_WORK_ROUTE.md`
+- `Docs/EXECUTIVE_ONE_PAGER.md`
+- `Docs/CONTEXT.md`
+- `Docs/ARCHITECTURE.md`
+- `Docs/LEAD_FLOW.md`
+- `Docs/SERVICE_ENGINE.md`
+- `Docs/ROADMAP.md`
 
-- PROJECT_BRAIN.md
-- CONTEXT.md
-- ARCHITECTURE.md
-- SERVICE_ENGINE.md
-- LEAD_FLOW.md
-- ROADMAP.md
+## Regla general de trabajo
 
-Estos documentos contienen el contexto funcional, técnico y estratégico del proyecto.
+Antes de cambiar cualquier archivo:
 
-No debe asumir que el código por sí solo refleja toda la intención del sistema.
+1. entender el flujo de negocio
+2. identificar la capa afectada
+3. encontrar la causa raiz
+4. aplicar el cambio minimo seguro
+5. verificar impacto en routing, dashboard y trazabilidad
 
----
+## Prioridad del sistema
 
-# REGLA GENERAL DE TRABAJO
+HolaTacna ya no debe tratarse como un sitio vertical aislado. Es un marketplace multiservicio con foco actual en:
 
-Antes de cambiar cualquier archivo, Codex debe seguir este orden:
+- turismo medico
+- estetica
+- implantes dentales
+- dermatologia
+- servicios aliados al viaje
 
-1. entender el contexto del negocio
-2. entender la arquitectura actual
-3. identificar la causa raíz del problema
-4. evaluar impacto del cambio
-5. aplicar la solución mínima segura
-6. explicar claramente qué hizo
-
-Nunca debe empezar cambiando archivos sin antes diagnosticar.
-
----
-
-# REGLA CRÍTICA
-
-Siempre encontrar la causa raíz antes de modificar código.
-
-Nunca:
-
-- adivinar la solución
-- aplicar parches superficiales sin diagnóstico
-- reescribir módulos completos sin necesidad
-- cambiar estructura general por impulso
-
----
-
-# PRIORIDAD DEL PROYECTO
-
-La plataforma es multiservicio.
-
-Puede gestionar servicios como:
-
-- clínicos
-- estética
-- implantes
-- dermatología
-- hoteles
-- Airbnb
-- transporte
-- compras por mayor
-- turismo
-- otros servicios futuros
-
-Sin embargo, se debe dar prioridad operativa a servicios clínicos por su mayor ticket promedio.
-
-Codex debe respetar esta visión al proponer soluciones.
-
----
-
-# REGLAS PARA MODIFICAR CÓDIGO
+## Reglas para modificar codigo
 
 Codex debe:
 
-- modificar el menor número posible de archivos
-- mantener la arquitectura actual salvo indicación contraria
-- evitar duplicar lógica
-- reutilizar componentes y helpers existentes
-- respetar nombres y rutas actuales si no hay motivo fuerte para cambiarlos
-- escribir código claro y mantenible
-- evitar introducir deuda técnica innecesaria
+- tocar el menor numero posible de archivos
+- reutilizar la arquitectura existente
+- preservar trazabilidad en `leads`
+- respetar la separacion entre provider sugerido y provider final
+- mantener operativo el flujo manual
 
 Codex no debe:
 
-- hacer refactors grandes sin pedirlo
-- renombrar archivos o rutas por gusto
-- cambiar patrones de diseño existentes sin justificarlo
-- introducir nuevas dependencias innecesarias
+- reescribir modulos completos sin necesidad
+- reemplazar el routing por heuristicas opacas
+- eliminar campos de trazabilidad sin pedirlo
+- asumir que `auto_assign` es la unica regla de decision
 
----
+## Reglas para bugs
 
-# REGLAS PARA BUGS
+Cuando se reporte un bug, revisar primero:
 
-Cuando se reporte un bug, Codex debe responder en este orden:
+- `app/api/create-lead/route.ts`
+- `lib/provider-routing.ts`
+- `lib/provider-observed-signals.ts`
+- `lib/provider-hybrid-ranking.ts`
+- dashboard y surfaces de override manual
+- integracion con Supabase y payloads UUID
 
-1. diagnóstico
-2. causa raíz
-3. solución propuesta
-4. archivos involucrados
-5. implementación
-6. cómo probar
+## Reglas para Supabase
 
-Antes de implementar, debe revisar si el bug puede estar relacionado con:
+Cada cambio en datos debe validar:
 
-- app/page.tsx
-- carga de categorías o especialidades
-- formularios
-- submits
-- validaciones
-- integración con Supabase
-- relaciones entre ids, slugs y UUID
-- dashboard
-- lógica manual vs automática
+- UUID reales en relaciones
+- inserts y updates coherentes con el esquema actual
+- consistencia entre `provider_id` y `suggested_provider_id`
+- persistencia correcta de `assignment_mode` y `assignment_reason`
+- registro de `manual_override_at` cuando aplique
 
----
+## Reglas para formularios
 
-# REGLAS PARA SUPABASE
+Cuando modifique formularios o captacion:
 
-Cada vez que toque integración con Supabase, Codex debe validar:
+- validar `onSubmit`
+- revisar payload enviado a `create-lead`
+- asegurar `service_name` y `service_slug`
+- mantener tracking comercial
+- verificar que el lead sigue apareciendo en dashboard
 
-- que los UUID sean UUID reales
-- que no se usen slugs donde se esperan UUID
-- que inserts y updates tengan payload correcto
-- que los selects traigan los campos necesarios
-- que las relaciones entre tablas sean coherentes
-- que el frontend interprete bien las respuestas
-- que exista manejo de errores visible
+## Reglas para dashboard
 
-Debe prestar especial atención a errores como:
+Cuando modifique operacion:
 
-- invalid input syntax for type uuid
-- null inesperados
-- columnas incorrectas
-- relaciones mal resueltas
-- payloads incompletos
+- no romper filtros ni trazabilidad
+- mostrar claramente provider sugerido y provider final
+- preservar lectura de `assignment_mode`
+- mantener override manual funcional
 
----
+## Reglas para routing
 
-# REGLAS PARA FORMULARIOS
+La logica actual no es un booleano simple.
 
-Cuando modifique formularios, Codex debe revisar:
+Antes de tocarla, revisar:
 
-- onSubmit
-- validaciones
-- estados de carga
-- mensajes de error
-- payload enviado
-- categoría o servicio seleccionado
-- persistencia en Supabase
+- elegibilidad por servicio y ciudad
+- `active`
+- `auto_assign`
+- `priority`
+- `score`
+- senales observadas
+- resultado final: `auto_assigned`, `pending_review` o `no_eligible_provider`
 
-Nunca debe asumir que un formulario falla solo por UI.
-Debe revisar el flujo completo hasta la base de datos.
+Nunca debe romperse el flujo manual al mejorar el automatico.
 
----
+## Reglas para nuevas features
 
-# REGLAS PARA DASHBOARD
+Separar siempre el impacto en:
 
-Cuando modifique dashboard, Codex debe:
-
-- mantener el layout estable
-- priorizar claridad visual
-- no romper filtros o columnas existentes
-- mostrar correctamente estado, categoría/servicio, proveedor y automatización
-- preservar lógica de gestión manual/automática
-
-Debe considerar como columnas importantes:
-
-- proveedor
-- servicio
-- categoría
-- estado
-- automático
-- fecha
-
----
-
-# REGLAS PARA AUTOMATIZACIÓN
-
-La lógica de automatización es crítica para el negocio.
-
-Si un proveedor está marcado como confiable o automático:
-
-- la solicitud puede derivarse automáticamente
-
-Si no lo está:
-
-- debe quedar en revisión manual
-
-Antes de tocar esta lógica, Codex debe revisar:
-
-- dónde se almacena el campo automático
-- cómo se refleja en UI
-- cómo afecta el dashboard
-- cómo impacta la trazabilidad del lead
-
-Nunca debe romper el flujo manual al implementar el automático.
-
----
-
-# REGLAS PARA NUEVAS FEATURES
-
-Cuando se pida una nueva funcionalidad, Codex debe:
-
-1. entender el objetivo funcional
-2. ubicar dónde encaja en la arquitectura
-3. identificar archivos a tocar
-4. proponer la solución más limpia
-5. implementar sin romper lo anterior
-6. indicar cómo probarla
-
-Si la feature afecta varias áreas, debe separarla mentalmente en:
-
-- UI
-- lógica
+- captura
+- routing
 - persistencia
-- impacto en dashboard
-- impacto en automatización
+- dashboard
+- analytics
 
----
+Si la feature cambia comportamiento del marketplace, actualizar tambien la documentacion base.
 
-# REGLAS PARA REFACTORIZACIÓN
+## Formato de respuesta recomendado
 
-Codex solo debe refactorizar si:
+Cuando implemente cambios, responder con:
 
-- se le pide explícitamente
-- el código actual impide una solución segura
-- hay duplicación claramente dañina
+- diagnostico
+- causa raiz
+- solucion
+- archivos modificados
+- riesgos
+- como probar
 
-Si refactoriza, debe:
+## Regla final
 
-- mantener comportamiento actual
-- explicar por qué era necesario
-- limitar el alcance
-- evitar cambios cosméticos innecesarios
-
----
-
-# REGLAS DE ESTILO
-
-Codex debe escribir código:
-
-- legible
-- tipado correctamente
-- consistente con el proyecto
-- con nombres claros
-- con manejo de errores cuando haga falta
-- sin complejidad innecesaria
-
-Debe preferir:
-
-- funciones pequeñas
-- componentes reutilizables
-- helpers compartidos
-- separación clara de responsabilidades
-
----
-
-# REGLAS DE RESPUESTA
-
-Cada vez que implemente cambios, Codex debe responder con este formato:
-
-## Diagnóstico
-Qué estaba fallando.
-
-## Causa raíz
-Cuál era el problema real.
-
-## Solución
-Qué cambió y por qué.
-
-## Archivos modificados
-Lista exacta de archivos tocados.
-
-## Riesgos o impacto
-Qué podía romperse y cómo se evitó.
-
-## Cómo probar
-Pasos concretos de validación manual.
-
----
-
-# REGLAS DE SEGURIDAD DEL REPOSITORIO
-
-Codex no debe:
-
-- eliminar archivos importantes sin necesidad
-- cambiar variables sensibles sin avisar
-- tocar configuración crítica sin explicarlo
-- modificar estructura de base de datos sin mencionarlo claramente
-
-Si detecta que un cambio requiere migración o modificación estructural, debe indicarlo antes.
-
----
-
-# REGLAS DE NEGOCIO QUE SIEMPRE DEBE RECORDAR
-
-El proyecto no es solo una app de clínicas.
-
-Es una plataforma multiservicio de captación, gestión y derivación de leads.
-
-Prioridad de negocio inicial:
-
-1. servicios clínicos y médicos
-2. estética y procedimientos
-3. turismo médico
-4. hoteles y hospedaje
-5. transporte
-6. compras por mayor
-7. otras categorías futuras
-
-Codex debe proteger especialmente los flujos clínicos, pero sin cerrar la arquitectura a otras verticales.
-
----
-
-# MODO DE TRABAJO RECOMENDADO
-
-Codex debe trabajar idealmente en 3 pasos:
-
-## Paso 1: análisis
-Entender el módulo y detectar causa raíz.
-
-## Paso 2: implementación
-Aplicar el fix mínimo seguro.
-
-## Paso 3: validación
-Explicar cómo probar y qué verificar.
-
----
-
-# PROMPT BASE RECOMENDADO PARA CODEX
-
-Cuando inicie una sesión, debe recibir una instrucción equivalente a esta:
-
-"Lee PROJECT_BRAIN.md, CONTEXT.md, ARCHITECTURE.md, SERVICE_ENGINE.md, LEAD_FLOW.md, ROADMAP.md y CODEX_RULES.md antes de analizar el proyecto. Antes de modificar cualquier archivo, identifica la causa raíz del problema y aplica la solución mínima segura sin romper funcionalidades existentes."
-
----
-
-# OBJETIVO FINAL
-
-Codex debe comportarse como un miembro técnico disciplinado del proyecto.
-
-No solo debe entender el código.
-
-Debe entender:
-
-- visión del negocio
-- flujo de leads
-- arquitectura
-- prioridades
-- automatización
-- impacto de cada cambio
+El sistema debe seguir siendo explicable. Si un cambio mejora sofisticacion pero reduce trazabilidad o control operativo, no esta alineado con la arquitectura actual.

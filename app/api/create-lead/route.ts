@@ -52,6 +52,7 @@ export async function POST(req: Request) {
     const utm_content = getTrackingValue(body.utm_content)
     const utm_term = getTrackingValue(body.utm_term)
     const landing_path = body.landing_path?.trim() || null
+    const origin_url = body.origin_url?.trim() || landing_path
     const city_interest = body.city_interest?.trim() || null
     const additional_services = Array.isArray(body.additional_services)
       ? body.additional_services.map((item: unknown) => String(item || '').trim()).filter(Boolean)
@@ -127,7 +128,10 @@ export async function POST(req: Request) {
         tourist_phone: assignedLead?.tourist_phone,
         service_name: assignedLead?.service_name,
         city_interest: assignedLead?.city_interest,
+        origin_url,
         landing_path: assignedLead?.landing_path,
+        lead_score: assignedLead?.lead_score ?? scoring.score,
+        created_at: assignedLead?.created_at,
         preferred_date: assignedLead?.preferred_date,
         provider_phone: assignedLead?.provider_phone,
         message: assignedLead?.message,

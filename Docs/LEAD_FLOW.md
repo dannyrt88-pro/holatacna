@@ -1,424 +1,127 @@
 # LEAD FLOW
-Flujo de leads, solicitudes y conversión dentro de la plataforma
 
-Este documento define cómo entra, se procesa, se deriva y se monetiza un lead dentro del sistema.
+Este documento describe como entra, se procesa, se enruta y se opera un lead dentro de HolaTacna.
 
-Debe considerarse una referencia principal para diseñar lógica de negocio, dashboard, automatizaciones y métricas.
+## Proposito
 
----
+El objetivo del lead flow es convertir trafico en operacion comercial medible:
 
-# PROPÓSITO DEL LEAD FLOW
+1. captar el lead
+2. normalizarlo
+3. enrutarlo
+4. asignarlo o dejarlo pendiente
+5. operarlo desde dashboard
+6. medir resultado y cobertura
 
-El sistema existe para captar oportunidades de negocio y conectarlas con proveedores adecuados.
+## Definicion de lead
 
-Un lead puede representar una persona o empresa interesada en contratar un servicio.
+Un lead es una oportunidad comercial generada por una persona interesada en un servicio. Puede venir de:
 
-El objetivo del flujo es:
-
-1. captar el lead correctamente
-2. clasificarlo
-3. almacenarlo
-4. asignarlo o derivarlo
-5. hacer seguimiento
-6. convertirlo en una atención, reserva, venta o servicio cerrado
-
----
-
-# DEFINICIÓN DE LEAD
-
-Un lead es una solicitud entrante generada por un usuario interesado en un servicio.
-
-Puede provenir de:
-
+- landing SEO
 - formulario web
-- landing page
-- campaña publicitaria
-- recomendación
-- canal externo
-- integración futura con APIs o CRMs
-
-Un lead no es todavía una venta.
-Es una oportunidad calificada o en proceso de calificación.
-
----
-
-# TIPOS DE LEADS
-
-La plataforma debe soportar distintos tipos de leads según categoría de servicio.
-
-Ejemplos:
-
-## Leads clínicos
-- dermatología
-- implantes dentales
-- cirugía estética
-- tratamientos médicos
-- turismo médico
-
-## Leads no clínicos
-- hoteles
-- Airbnb
-- transporte
-- compras por mayor
-- logística
-- servicios profesionales
-- otros servicios futuros
-
-El sistema debe tratarlos bajo una lógica común, pero permitiendo reglas específicas por vertical.
-
----
-
-# FLUJO GENERAL DEL LEAD
-
-Flujo principal:
-
-1. el usuario entra a la plataforma
-2. selecciona una categoría o servicio
-3. completa un formulario
-4. el sistema valida datos
-5. se crea el lead
-6. se almacena en Supabase
-7. se clasifica
-8. se envía a revisión manual o derivación automática
-9. se asigna a un proveedor
-10. se hace seguimiento
-11. se registra resultado
-
----
-
-# ETAPAS DEL LEAD
-
-Se recomienda trabajar con etapas claras.
-
-## 1. Lead nuevo
-El lead acaba de entrar al sistema y todavía no ha sido revisado.
-
-## 2. Lead validado
-Se verificó que tiene datos mínimos correctos y que corresponde a un servicio real.
-
-## 3. Lead en revisión
-Un operador está revisando qué hacer con él.
-
-## 4. Lead asignado
-Ya tiene proveedor o destino definido.
-
-## 5. Lead derivado
-Fue enviado al proveedor.
-
-## 6. Lead contactado
-El proveedor ya hizo contacto o inició atención.
-
-## 7. Lead convertido
-Se transformó en reserva, cita, atención, venta o servicio cerrado.
-
-## 8. Lead descartado
-No aplica, está duplicado, incompleto o no tiene intención válida.
-
-## 9. Lead cancelado
-El usuario desistió o el proceso se detuvo.
-
----
-
-# DATOS MÍNIMOS DE UN LEAD
-
-Todo lead debería incluir como mínimo:
-
-- id
-- nombre
-- teléfono
-- país
-- servicio solicitado
-- categoría
-- descripción
-- origen
-- estado
-- fecha de creación
-
-Campos opcionales según vertical:
-
-- ciudad
-- presupuesto estimado
-- urgencia
-- fechas de viaje
-- número de acompañantes
-- tipo de tratamiento
-- proveedor preferido
-
----
-
-# CLASIFICACIÓN DEL LEAD
-
-Después de ingresar, el lead debe clasificarse al menos por:
-
-- categoría de servicio
-- subcategoría
-- país de origen
-- prioridad
-- posibilidad de automatización
-- proveedor potencial
-
-Ejemplo:
-
-categoría: salud  
-subcategoría: dermatología  
-país: Chile  
-prioridad: alta  
-modo: automático
-
----
-
-# PRIORIZACIÓN DE LEADS
-
-No todos los leads tienen el mismo valor.
-
-La plataforma debe dar prioridad a verticales de mayor ticket promedio, especialmente:
-
-- servicios clínicos
-- tratamientos estéticos
-- implantes
-- turismo médico
-
-Pero sin excluir:
-
-- hoteles
-- transporte
-- hospedaje
-- compras por mayor
-- otras categorías rentables
-
-La lógica futura puede incluir scoring por:
-
-- ticket estimado
-- urgencia
-- calidad del lead
-- país de origen
-- proveedor disponible
-- probabilidad de cierre
-
----
-
-# DERIVACIÓN DEL LEAD
-
-El sistema debe decidir cómo se deriva cada lead.
-
-## Derivación manual
-El lead aparece en el dashboard.
-Un operador revisa el caso y decide a qué proveedor enviarlo.
-
-Usar este modo cuando:
-
-- el lead requiere validación
-- hay varias opciones posibles
-- la categoría necesita revisión humana
-- el proveedor no está habilitado para automático
-
-## Derivación automática
-El sistema deriva el lead automáticamente a un proveedor confiable.
-
-Usar este modo cuando:
-
-- existe proveedor confiable
-- el servicio está claramente definido
-- los datos del lead son suficientes
-- la regla de negocio lo permite
-
----
-
-# CRITERIOS PARA DERIVACIÓN AUTOMÁTICA
-
-Un lead puede ir en automático si cumple condiciones como:
-
-- proveedor activo
-- proveedor marcado como confiable
-- categoría compatible
-- datos mínimos completos
-- sin inconsistencias graves
-- canal apto para automatización
-
-Campo clave sugerido:
-
-`automatico = true`
-
----
-
-# DASHBOARD DE LEADS
-
-El dashboard debe ser el centro de control operativo.
-
-Debe permitir:
-
-- ver leads entrantes
-- filtrar por categoría
-- filtrar por país
-- filtrar por estado
-- filtrar por proveedor
-- marcar automático/manual
-- asignar proveedor
-- cambiar estado
-- revisar historial
-
-Columnas sugeridas:
+- comparativa por ciudad o precio
+- social
+- WhatsApp
+- integraciones futuras
+
+## Flujo actual
+
+1. el usuario llega a una landing
+2. completa un formulario
+3. el lead entra a `app/api/create-lead/route.ts`
+4. el payload se normaliza y enriquece
+5. se determina `service_slug` y contexto comercial
+6. se ejecuta `selectProviderForLead()`
+7. el lead se guarda en `public.leads`
+8. queda `auto_assigned`, `pending_review` o `no_eligible_provider`
+9. el equipo lo opera desde dashboard
+
+## Datos minimos utiles
 
 - nombre
+- telefono
+- pais
+- ciudad de origen o contexto
+- `service_name`
+- `service_slug`
+- descripcion o necesidad
+- tracking comercial disponible
+
+## Clasificacion del lead
+
+Despues de ingresar, el lead debe quedar clasificado al menos por:
+
 - servicio
-- categoría
-- proveedor
-- estado
-- automático
-- origen
-- fecha
+- ciudad o cobertura
+- prioridad comercial
+- provider sugerido
+- modo de asignacion
 
----
+## Routing y asignacion
 
-# RESULTADOS POSIBLES DE UN LEAD
+El routing no es una regla binaria simple. El sistema:
 
-Cada lead debe terminar con un resultado trazable.
+- filtra providers elegibles
+- considera `active`, servicio y `city_scope`
+- calcula senales observadas recientes
+- aplica ranking hibrido
+- decide si asigna o deja pendiente
 
 Resultados posibles:
 
-- pendiente
-- derivado
-- atendido
-- convertido
-- descartado
-- cancelado
-- sin respuesta
-- fuera de cobertura
+- `auto_assigned`
+- `pending_review`
+- `no_eligible_provider`
 
-Esto es clave para medir rentabilidad.
+## Derivacion manual y override
 
----
+El flujo manual sigue siendo parte esencial del sistema.
 
-# MONETIZACIÓN DEL LEAD
+Cuando un admin corrige la asignacion:
 
-El lead flow debe permitir distintos modelos de monetización.
+- cambia `provider_id`
+- `auto_assigned` pasa a `false`
+- `assignment_mode` pasa a `manual_override`
+- `assignment_reason` pasa a `manual_admin_override`
+- `manual_override_at` registra la fecha
 
-Ejemplos:
+La sugerencia original del sistema se mantiene en `suggested_provider_id`.
 
-- comisión por venta cerrada
-- pago por lead calificado
-- fee por derivación
-- fee fijo por proveedor
-- revenue share
+## Dashboard operativo
 
-El sistema debe poder registrar en el futuro:
+El dashboard debe permitir:
 
-- valor estimado del lead
-- valor real cerrado
-- comisión esperada
-- comisión cobrada
+- ver leads nuevos y pendientes
+- entender provider sugerido y provider final
+- leer `assignment_mode` y `assignment_reason`
+- reasignar providers manualmente
+- filtrar por servicio, ciudad, estado y provider
 
----
+## Trazabilidad
 
-# TRAZABILIDAD
+Todo lead debe permitir responder:
 
-Cada lead debe ser rastreable desde su origen hasta su resultado final.
+- de donde vino
+- que servicio pidio
+- que provider sugirio el motor
+- quien quedo asignado finalmente
+- si hubo override manual
+- en que estado operativo esta
 
-Debe poder saberse:
+## Metricas clave
 
-- cuándo entró
-- desde qué canal
-- qué servicio pidió
-- a qué proveedor fue enviado
-- quién lo gestionó
-- cuál fue el resultado
-- si generó ingreso
+- leads por servicio
+- pending review por servicio
+- assigned leads por provider
+- auto assignment share
+- manual override share
+- suggested to assigned rate
+- cobertura por servicio y ciudad
 
-La trazabilidad es obligatoria para optimizar conversiones.
+## Futuro del lead flow
 
----
-
-# DUPLICADOS Y VALIDACIÓN
-
-El sistema debe prevenir leads inválidos o duplicados.
-
-Reglas recomendadas:
-
-- revisar teléfono repetido
-- revisar combinación nombre + teléfono
-- detectar formularios incompletos
-- marcar leads sospechosos
-- evitar asignación automática si faltan datos
-
----
-
-# LEAD FLOW POR PRIORIDAD DE NEGOCIO
-
-La lógica operativa debe priorizar primero las verticales de mayor retorno económico.
-
-Orden inicial sugerido:
-
-1. servicios clínicos y médicos
-2. estética y procedimientos
-3. turismo médico
-4. hoteles y hospedaje
-5. transporte
-6. compras por mayor
-7. otros servicios
-
-Este orden puede ajustarse con datos reales del negocio.
-
----
-
-# MÉTRICAS CLAVE
-
-El sistema debe permitir medir:
-
-- leads por categoría
-- leads por país
-- tasa de validación
-- tasa de derivación
-- tasa de conversión
-- tiempo de respuesta
-- proveedor con mejor desempeño
-- ingresos por lead
-- ticket promedio por categoría
-
-Estas métricas deben alimentar decisiones de negocio.
-
----
-
-# VISIÓN FUTURA DEL LEAD FLOW
-
-El lead flow debe evolucionar hacia un sistema inteligente capaz de:
-
-- clasificar automáticamente leads
-- priorizar por valor potencial
-- asignar mejor proveedor
-- automatizar seguimiento
-- detectar fraude o spam
-- predecir conversión
-- operar múltiples verticales y países
-
----
-
-# REGLAS PARA AGENTES DE IA
-
-Antes de modificar lógica de leads:
-
-1. entender la categoría del servicio
-2. revisar el flujo actual
-3. identificar impacto en dashboard y Supabase
-4. modificar lo mínimo necesario
-5. mantener trazabilidad del lead
-
-Siempre explicar:
-
-- diagnóstico
-- causa raíz
-- cambio propuesto
-- archivos modificados
-- cómo probar
-
----
-
-# RELACIÓN CON OTROS DOCUMENTOS
-
-Este documento debe leerse junto con:
-
-- PROJECT_BRAIN.md
-- CONTEXT.md
-- ARCHITECTURE.md
-- SERVICE_ENGINE.md
-
-LEAD_FLOW.md define específicamente cómo se mueve y se monetiza una oportunidad dentro del sistema.
+- mejor scoring comercial
+- persistencia de metricas
+- priorizacion adaptativa
+- deteccion de cobertura debil
+- AI assisted routing

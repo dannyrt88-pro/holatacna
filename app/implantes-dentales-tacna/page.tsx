@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import { Suspense } from 'react'
 import { LeadCaptureForm } from '@/components/forms/lead-capture-form'
 
 export default function ImplantesDentalesTacnaPage() {
@@ -68,20 +67,18 @@ export default function ImplantesDentalesTacnaPage() {
             </div>
           </div>
 
-          <Suspense fallback={<div className="text-sm text-slate-500">Cargando formulario...</div>}>
-            <LeadCaptureForm
-              serviceSlug="implantes-dentales"
-              serviceName="Implantes Dentales"
-              landingPath="/implantes-dentales-tacna"
-              pageType="service"
-              variant="primary"
-              heading="Solicitar Evaluación"
-              submitLabel="Solicitar Evaluación"
-              messageLabel="Mensaje (opcional)"
-              messagePlaceholder="Cuéntanos qué evaluación buscas o qué dudas tienes."
-              successMessage="Solicitud enviada. Nuestro equipo te contactará por WhatsApp."
-            />
-          </Suspense>
+          <LeadCaptureForm
+            serviceSlug="implantes-dentales"
+            serviceName="Implantes Dentales"
+            landingPath="/implantes-dentales-tacna"
+            pageType="service"
+            variant="primary"
+            heading="Solicitar Evaluación"
+            submitLabel="Solicitar Evaluación"
+            messageLabel="Mensaje"
+            messagePlaceholder="Cuéntanos qué evaluación buscas o qué dudas tienes."
+            successMessage="¡Gracias! Te contactamos pronto por WhatsApp"
+          />
         </div>
       </section>
     </main>

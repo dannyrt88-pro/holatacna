@@ -242,13 +242,16 @@ La automatización permite escalar la plataforma.
 
 Regla principal:
 
-si proveedor automatico = true  
-→ derivación automática
+si existe provider elegible y autoasignable con mejor ranking  
+-> `assignment_mode = auto_assigned`
 
-si proveedor automatico = false  
-→ revisión manual
+si existen providers elegibles pero ninguno autoasignable  
+-> `assignment_mode = pending_review`
 
-Los agentes no deben romper este flujo.
+si no existe provider compatible  
+-> `assignment_mode = no_eligible_provider`
+
+Los agentes no deben romper este flujo ni la trazabilidad entre provider sugerido y provider final.
 
 ---
 

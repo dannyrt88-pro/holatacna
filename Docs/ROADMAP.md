@@ -1,249 +1,111 @@
 # PRODUCT ROADMAP
 
-Este documento define las fases de desarrollo y evolución del proyecto.
+> Este roadmap es tactico y subordinado a `Docs/MASTER_WORK_ROUTE.md`, que define la ruta principal de trabajo del proyecto.
 
-Sirve como guía estratégica para el desarrollo técnico, crecimiento del negocio y expansión de la plataforma.
+Este roadmap refleja la evolucion del sistema segun la arquitectura actual del marketplace.
 
-Debe actualizarse a medida que el proyecto evoluciona.
+## Vision
 
----
+Convertir HolaTacna en una plataforma de orquestacion comercial que conecte demanda captada digitalmente con proveedores confiables y operables en Tacna.
 
-# VISIÓN DEL PRODUCTO
+## Fase 1. Captura y operacion base
 
-Construir una plataforma capaz de conectar usuarios que buscan servicios con proveedores confiables.
+Objetivo:
 
-La plataforma debe funcionar como un **motor de generación y distribución de oportunidades (leads)**.
+- captar leads desde landings y formularios
+- centralizar ingreso en `create-lead`
+- operar leads desde dashboard
 
-Debe soportar múltiples verticales de servicios, priorizando inicialmente los servicios clínicos debido a su mayor ticket promedio.
+Estado:
 
----
+- implementado
 
-# CATEGORÍAS PRINCIPALES DE SERVICIOS
+## Fase 2. Routing operativo de providers
 
-El sistema debe soportar múltiples verticales.
+Objetivo:
 
-Prioridad inicial:
+- filtrar providers compatibles
+- separar elegibilidad de autoasignacion
+- dejar leads en `pending_review` cuando aplique
 
-Servicios clínicos
+Estado:
 
-- dermatología
-- implantes dentales
-- estética
-- cirugía
-- tratamientos médicos
-- turismo médico
+- implementado
 
-Servicios complementarios
+## Fase 3. Ranking hibrido y trazabilidad
 
-- hoteles
-- Airbnb
-- transporte
-- turismo
-- compras por mayor
-- logística
-- otros servicios futuros
+Objetivo:
 
-La arquitectura debe permitir agregar nuevas categorías sin cambios estructurales grandes.
+- combinar `priority` y `score` con senales observadas
+- persistir sugerencia, asignacion final y razon
+- soportar override manual sin perder historial operativo
 
----
+Estado:
 
-# FASE 1 — FUNDACIÓN DEL SISTEMA
+- implementado
 
-Objetivo: construir la base funcional de la plataforma.
+## Fase 4. Analytics del marketplace
 
-Componentes clave:
+Objetivo:
 
-captura de leads mediante formularios  
-página principal con selección de servicios  
-almacenamiento de solicitudes en Supabase  
-dashboard básico de gestión  
-visualización de leads entrantes  
+- medir providers sugeridos y asignados
+- medir `manual_override_share`
+- medir `auto_assignment_share`
+- leer cobertura por servicio
 
-Funciones mínimas:
+Estado:
 
-crear solicitud  
-guardar datos  
-mostrar solicitudes  
-revisar información del usuario  
+- parcialmente implementado
 
-Resultado esperado:
+## Fase 5. Optimizacion del routing
 
-plataforma funcional capaz de capturar y gestionar solicitudes.
+Objetivo:
 
----
+- persistir metricas de rendimiento
+- mejorar velocidad del motor
+- ajustar mejor cobertura por ciudad y servicio
 
-# FASE 2 — GESTIÓN DE LEADS
+Estado:
 
-Objetivo: mejorar el manejo de solicitudes.
+- siguiente prioridad tecnica
 
-Funciones:
+## Fase 6. Marketplace multiservicio
 
-estados de leads  
-clasificación por categoría  
-filtros en dashboard  
-asignación manual de proveedores  
-visualización por prioridad  
+Objetivo:
 
-Mejoras en dashboard:
+- extender el sistema a nuevas categorias sin romper el nucleo
+- mantener una capa comun de lead capture, routing y operacion
 
-filtrar por categoría  
-filtrar por país  
-filtrar por estado  
-filtrar por proveedor  
+Estado:
 
-Resultado esperado:
+- direccion activa
 
-sistema claro para gestionar leads manualmente.
+## Fase 7. AI assisted routing
 
----
+Objetivo:
 
-# FASE 3 — DERIVACIÓN AUTOMÁTICA
+- asistir la seleccion de providers
+- detectar cobertura debil
+- sugerir mejores reglas de distribucion
+- ayudar a priorizar leads
 
-Objetivo: automatizar la distribución de solicitudes.
+Estado:
 
-Funciones:
+- futuro
 
-proveedores confiables  
-checkbox "automático"  
-reglas de derivación automática  
-asignación automática de leads  
+## Metricas de negocio que deben guiar el roadmap
 
-Ejemplo de lógica:
-
-si proveedor confiable → derivación automática  
-si no → revisión manual
-
-Resultado esperado:
-
-reducir intervención manual y acelerar respuesta a usuarios.
-
----
-
-# FASE 4 — MULTI-CATEGORÍA DE SERVICIOS
-
-Objetivo: ampliar la plataforma a más tipos de servicios.
-
-El sistema debe soportar verticales como:
-
-salud  
-turismo  
-hospedaje  
-transporte  
-comercio mayorista  
-servicios profesionales  
-
-Cambios esperados:
-
-categorías dinámicas  
-formularios adaptables  
-dashboard multi-servicio  
-
-Resultado esperado:
-
-plataforma multiservicio.
-
----
-
-# FASE 5 — OPTIMIZACIÓN DE CONVERSIÓN
-
-Objetivo: mejorar la calidad y rentabilidad de los leads.
-
-Funciones futuras:
-
-lead scoring  
-priorización automática  
-detección de duplicados  
-mejor validación de formularios  
-ranking de proveedores  
-
-Métricas a medir:
-
-tasa de conversión  
-ticket promedio  
-tiempo de respuesta  
-leads por categoría  
-proveedores con mejor desempeño  
-
-Resultado esperado:
-
-sistema optimizado para generar ingresos.
-
----
-
-# FASE 6 — AUTOMATIZACIÓN INTELIGENTE
-
-Objetivo: automatizar decisiones dentro del sistema.
-
-Funciones posibles:
-
-asignación inteligente de proveedores  
-geolocalización  
-prioridad por país  
-matching automático de servicios  
-
-Ejemplo:
-
-usuario de Chile + dermatología → proveedor especializado en ese país.
-
-Resultado esperado:
-
-derivación más eficiente.
-
----
-
-# FASE 7 — ESCALAMIENTO
-
-Objetivo: convertir la plataforma en un marketplace completo de servicios.
-
-Expansiones posibles:
-
-múltiples países  
-múltiples monedas  
-integración con APIs externas  
-integración con CRM  
-integración con sistemas de reserva  
-
-Resultado esperado:
-
-plataforma escalable internacionalmente.
-
----
-
-# MÉTRICAS CLAVE DEL NEGOCIO
-
-El sistema debe permitir medir:
-
-leads generados  
-leads derivados  
-leads convertidos  
-ticket promedio  
-ingresos por proveedor  
-categorías más rentables  
-
-Estas métricas deben guiar decisiones futuras.
-
----
-
-# PRINCIPIOS DE DESARROLLO
-
-Durante todas las fases el proyecto debe respetar:
-
-estabilidad del sistema  
-cambios mínimos y seguros  
-arquitectura clara  
-evitar refactors innecesarios  
-mantener compatibilidad con la base de datos  
-
----
-
-# RELACIÓN CON OTROS DOCUMENTOS
-
-Este roadmap debe leerse junto con:
-
-PROJECT_BRAIN.md  
-CONTEXT.md  
-ARCHITECTURE.md  
-SERVICE_ENGINE.md  
-LEAD_FLOW.md  
-
-Cada documento cubre un aspecto distinto del proyecto.
+- leads captados por servicio
+- pending review rate
+- assigned leads por provider
+- suggested to assigned rate
+- auto assignment share
+- manual override share
+- cobertura por servicio y ciudad
+
+## Principios de evolucion
+
+- no romper el control manual
+- mantener trazabilidad
+- medir antes de sofisticar
+- crecer por capas pequenas y verificables

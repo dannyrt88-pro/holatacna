@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import { Suspense } from 'react'
 import { LeadCaptureForm } from '@/components/forms/lead-capture-form'
 
 export default function OperacionOjosTacnaPage() {
@@ -143,20 +142,18 @@ export default function OperacionOjosTacnaPage() {
             </div>
           </div>
 
-          <Suspense fallback={<div className="text-sm text-slate-500">Cargando formulario...</div>}>
-            <LeadCaptureForm
-              serviceSlug="oftalmologia"
-              serviceName="Oftalmología"
-              landingPath="/operacion-ojos-tacna"
-              pageType="service"
-              variant="primary"
-              heading="Solicitar evaluación"
-              submitLabel="Solicitar evaluación"
-              messageLabel="Mensaje"
-              messagePlaceholder="Cuéntanos qué tipo de evaluación visual o tratamiento deseas consultar."
-              successMessage="Solicitud enviada. Nuestro equipo te contactará por WhatsApp."
-            />
-          </Suspense>
+          <LeadCaptureForm
+            serviceSlug="operacion-ojos"
+            serviceName="Operación de Ojos"
+            landingPath="/operacion-ojos-tacna"
+            pageType="service"
+            variant="primary"
+            heading="Solicitar evaluación"
+            submitLabel="Solicitar evaluación"
+            messageLabel="Mensaje"
+            messagePlaceholder="Cuéntanos qué tipo de evaluación visual o tratamiento deseas consultar."
+            successMessage="¡Gracias! Te contactamos pronto por WhatsApp"
+          />
         </div>
       </section>
 
