@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import GoogleLoginButton from '@/components/auth/google-login-button'
 
 type LoginPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>
@@ -22,15 +23,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           Acceso interno para gestionar leads y proveedores.
         </p>
 
-        <form action="/auth/google" method="post" className="mb-5">
-          {next ? <input type="hidden" name="next" value={next} /> : null}
-          <button
-            type="submit"
-            className="w-full rounded-lg border border-slate-300 bg-white p-3 font-semibold text-slate-900"
-          >
-            Continuar con Google
-          </button>
-        </form>
+        <div className="mb-5">
+          <GoogleLoginButton next={next || null} />
+        </div>
 
         <div className="mb-5 flex items-center gap-3 text-xs uppercase tracking-[0.18em] text-slate-400">
           <span className="h-px flex-1 bg-slate-200" />

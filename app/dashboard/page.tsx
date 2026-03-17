@@ -20,6 +20,8 @@ export default function Dashboard() {
   const topScrollRef = useRef<HTMLDivElement | null>(null)
   const bottomScrollRef = useRef<HTMLDivElement | null>(null)
   const syncingScrollRef = useRef<'top' | 'bottom' | null>(null)
+  const latestLeadCreatedAtRef = useRef<string | null>(null)
+  const leadIdsRef = useRef<Set<string>>(new Set())
 
   const [leads, setLeads] = useState<Lead[]>([])
   const [filtered, setFiltered] = useState<Lead[]>([])
@@ -44,6 +46,11 @@ export default function Dashboard() {
   const [lost, setLost] = useState(0)
   const [revenuePen, setRevenuePen] = useState(0)
   const [commissionsPen, setCommissionsPen] = useState(0)
+  const [newLeadCount, setNewLeadCount] = useState(0)
+  const [lastUpdatedAt, setLastUpdatedAt] = useState<Date | null>(null)
+  const [nowTimestamp, setNowTimestamp] = useState(Date.now())
+  const [soundEnabled, setSoundEnabled] = useState(true)
+  const [hoveredLeadId, setHoveredLeadId] = useState<string | null>(null)
   const isCleanupOwner = currentEmail === 'danny.rt88@gmail.com'
 
   const CLP_PER_PEN = 260
@@ -79,15 +86,7 @@ export default function Dashboard() {
     }
   }, [supabase])
 
-  const loadLeads = useCallback(async () => {
-    const { data, error } = await supabase.from('leads').select('*').order('created_at', { ascending: false })
-
-    if (!data || error) {
-      setLoading(false)
-      return
-    }
-
-    const typedLeads = data as Lead[]
+  const applyLeadSnapshot = useCallback((typedLeads: Lead[]) => {
     setLeads(typedLeads)
 
     const today = getDateKey(new Date())
@@ -133,8 +132,23 @@ export default function Dashboard() {
     setLost(lostCount)
     setRevenuePen(totalRevenue)
     setCommissionsPen(totalCommissions)
+    setLastUpdatedAt(new Date())
+    latestLeadCreatedAtRef.current = typedLeads[0]?.created_at || null
+    leadIdsRef.current = new Set(typedLeads.map((lead) => lead.id))
+  }, [])
+
+  const loadLeads = useCallback(async () => {
+    const { data, error } = await supabase.from('leads').select('*').order('created_at', { ascending: false })
+
+    if (!data || error) {
+      setLoading(false)
+      return
+    }
+
+    const typedLeads = data as Lead[]
+    applyLeadSnapshot(typedLeads)
     setLoading(false)
-  }, [supabase])
+  }, [applyLeadSnapshot, supabase])
 
   const isChileanLead = useCallback((phone: string) => {
     if (!phone) return false
@@ -233,6 +247,84 @@ export default function Dashboard() {
   useEffect(() => {
     applyFilters()
   }, [applyFilters])
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setNowTimestamp(Date.now())
+    }, 1000)
+
+    return () => window.clearInterval(intervalId)
+  }, [])
+
+  function playNotificationBeep() {
+    if (typeof window === 'undefined' || typeof window.AudioContext === 'undefined') {
+      return
+    }
+
+    const context = new window.AudioContext()
+    const oscillator = context.createOscillator()
+    const gain = context.createGain()
+
+    oscillator.type = 'sine'
+    oscillator.frequency.setValueAtTime(880, context.currentTime)
+    gain.gain.setValueAtTime(0.0001, context.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.04, context.currentTime + 0.02)
+    gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.18)
+
+    oscillator.connect(gain)
+    gain.connect(context.destination)
+    oscillator.start()
+    oscillator.stop(context.currentTime + 0.18)
+    void context.close().catch(() => undefined)
+  }
+
+  const pollLatestLeads = useCallback(async () => {
+    const { data, error } = await supabase.from('leads').select('*').order('created_at', { ascending: false })
+
+    if (!data || error) {
+      return
+    }
+
+    const typedLeads = data as Lead[]
+    const previousIds = leadIdsRef.current
+    const previousLatest = latestLeadCreatedAtRef.current
+
+    let incomingNewCount = 0
+
+    if (previousIds.size > 0) {
+      incomingNewCount = typedLeads.filter((lead) => !previousIds.has(lead.id)).length
+    } else if (previousLatest) {
+      const previousTimestamp = new Date(previousLatest).getTime()
+      incomingNewCount = typedLeads.filter((lead) => new Date(lead.created_at).getTime() > previousTimestamp).length
+    }
+
+    applyLeadSnapshot(typedLeads)
+
+    if (incomingNewCount > 0) {
+      setNewLeadCount((current) => current + incomingNewCount)
+
+      if (document.visibilityState === 'visible' && soundEnabled) {
+        playNotificationBeep()
+      }
+    }
+  }, [applyLeadSnapshot, soundEnabled, supabase])
+
+  useEffect(() => {
+    if (loading || role === 'none') return
+
+    const intervalId = window.setInterval(() => {
+      void pollLatestLeads()
+    }, 30000)
+
+    return () => window.clearInterval(intervalId)
+  }, [loading, pollLatestLeads, role])
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return
+
+    document.title =
+      newLeadCount > 0 ? `🔔 ${newLeadCount} leads nuevos — Dashboard HolaTacna` : 'Dashboard HolaTacna'
+  }, [newLeadCount])
 
   function getCountryFlag(phone: string) {
     if (!phone) return ''
@@ -789,6 +881,12 @@ export default function Dashboard() {
     return priorityPillStyles.normal
   }
 
+  function getScoreStyle(score: number): CSSProperties {
+    if (score > 70) return scorePillStyles.high
+    if (score >= 40) return scorePillStyles.medium
+    return scorePillStyles.low
+  }
+
   function getStatusStyle(status: string | null | undefined): CSSProperties {
     switch (status) {
       case 'contactado':
@@ -816,24 +914,58 @@ export default function Dashboard() {
     return [...new Set(leads.map((lead) => lead.city_interest).filter(Boolean))] as string[]
   }, [leads])
 
+  const activeFilterPills = useMemo(() => {
+    return [
+      search ? `Busqueda: ${search}` : null,
+      serviceFilter ? `Servicio: ${serviceFilter}` : null,
+      cityFilter ? `Ciudad: ${cityFilter}` : null,
+      statusFilter ? `Estado: ${statusFilter}` : null,
+      dateFrom ? `Desde: ${dateFrom}` : null,
+      dateTo ? `Hasta: ${dateTo}` : null,
+      premiumOnly ? 'Solo premium' : null,
+    ].filter(Boolean) as string[]
+  }, [cityFilter, dateFrom, dateTo, premiumOnly, search, serviceFilter, statusFilter])
+
+  const lastUpdatedLabel = useMemo(() => {
+    if (!lastUpdatedAt) return 'Sin sincronizacion'
+
+    const seconds = Math.max(0, Math.floor((nowTimestamp - lastUpdatedAt.getTime()) / 1000))
+
+    if (seconds < 60) {
+      return `Actualizado hace ${seconds}s`
+    }
+
+    const minutes = Math.floor(seconds / 60)
+    return `Actualizado hace ${minutes}m`
+  }, [lastUpdatedAt, nowTimestamp])
+
   const summaryCards = [
-    { label: 'Leads hoy', value: String(todayLeads), accent: '#0f766e' },
-    { label: 'Contactados', value: String(contacted), accent: '#1d4ed8' },
-    { label: 'Vendidos', value: String(sold), accent: '#166534' },
-    { label: 'Perdidos', value: String(lost), accent: '#991b1b' },
+    { label: 'Leads hoy', value: String(todayLeads), accent: '#0f766e', icon: '📥', surface: 'rgba(16,185,129,0.14)' },
+    { label: 'Contactados', value: String(contacted), accent: '#1d4ed8', icon: '🤝', surface: 'rgba(59,130,246,0.14)' },
+    { label: 'Vendidos', value: String(sold), accent: '#166534', icon: '💸', surface: 'rgba(34,197,94,0.14)' },
+    { label: 'Perdidos', value: String(lost), accent: '#64748b', icon: '🧊', surface: 'rgba(148,163,184,0.18)' },
     {
       label: 'Ingresos',
       value: formatPen(revenuePen),
       subvalue: `Ref. ${formatClpReferenceFromPen(revenuePen)}`,
       accent: '#7c3aed',
+      icon: '📈',
+      surface: 'rgba(124,58,237,0.14)',
     },
     {
       label: 'Comisiones HolaTacna',
       value: formatPen(commissionsPen),
       subvalue: `Ref. ${formatClpReferenceFromPen(commissionsPen)}`,
       accent: '#b45309',
+      icon: '🏦',
+      surface: 'rgba(245,158,11,0.16)',
     },
   ]
+
+  function clearNewLeadBadge() {
+    setNewLeadCount(0)
+    topScrollRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 
   if (loading) {
     return (
@@ -853,7 +985,10 @@ export default function Dashboard() {
             <div style={heroHeaderRowStyle}>
               <div>
                 <div style={eyebrowStyle}>CRM operativo</div>
-                <h1 style={heroTitleStyle}>Dashboard HolaTacna</h1>
+                <div style={heroBrandRowStyle}>
+                  <h1 style={heroTitleStyle}>HolaTacna</h1>
+                  <span style={heroTitlePillStyle}>Dashboard</span>
+                </div>
                 <p style={heroCopyStyle}>
                   Gestiona leads, prioriza casos premium desde Chile y decide el paso directo solo cuando corresponda.
                 </p>
@@ -863,6 +998,12 @@ export default function Dashboard() {
               </div>
 
               <div style={heroButtonRowStyle}>
+                <div style={dashboardHealthCardStyle}>
+                  <span style={dashboardHealthLabelStyle}>{lastUpdatedLabel}</span>
+                  <button onClick={() => setSoundEnabled((current) => !current)} style={soundToggleStyle}>
+                    {soundEnabled ? '🔔 Sonido on' : '🔕 Sonido off'}
+                  </button>
+                </div>
                 {role === 'admin' ? (
                   <>
                     {isCleanupOwner ? (
@@ -887,10 +1028,25 @@ export default function Dashboard() {
               </div>
             </div>
 
+            {newLeadCount > 0 ? (
+              <div style={newLeadBannerStyle}>
+                <div>
+                  <strong style={newLeadBannerTitleStyle}>🔔 {newLeadCount} lead{newLeadCount === 1 ? '' : 's'} nuevo{newLeadCount === 1 ? '' : 's'}</strong>
+                  <div style={newLeadBannerCopyStyle}>El dashboard ya se actualizo. Marca el aviso cuando revises los ingresos nuevos.</div>
+                </div>
+                <button onClick={clearNewLeadBadge} style={newLeadBannerButtonStyle}>
+                  Marcar como visto
+                </button>
+              </div>
+            ) : null}
+
             <div style={summaryGridStyle}>
               {summaryCards.map((card) => (
-                <div key={card.label} style={{ ...summaryCardStyle, borderTopColor: card.accent }}>
-                  <span style={summaryLabelStyle}>{card.label}</span>
+                <div key={card.label} style={{ ...summaryCardStyle, borderTopColor: card.accent, background: card.surface }}>
+                  <div style={summaryCardIconRowStyle}>
+                    <span style={summaryIconStyle}>{card.icon}</span>
+                    <span style={summaryLabelStyle}>{card.label}</span>
+                  </div>
                   <strong style={summaryValueStyle}>{card.value}</strong>
                   {card.subvalue ? <span style={summarySubvalueStyle}>{card.subvalue}</span> : null}
                 </div>
@@ -968,6 +1124,16 @@ export default function Dashboard() {
                 Solo premium
               </label>
             </div>
+
+            {activeFilterPills.length ? (
+              <div style={filterPillsWrapStyle}>
+                {activeFilterPills.map((pill) => (
+                  <span key={pill} style={filterPillStyle}>
+                    {pill}
+                  </span>
+                ))}
+              </div>
+            ) : null}
           </div>
 
           <div style={tableShellStyle}>
@@ -1054,7 +1220,12 @@ export default function Dashboard() {
                     const directProviderCount = selectedDirectProviders.length
 
                     return (
-                      <tr key={lead.id} style={rowStyle}>
+                      <tr
+                        key={lead.id}
+                        style={lead.id === hoveredLeadId ? hoveredRowStyle : rowStyle}
+                        onMouseEnter={() => setHoveredLeadId(lead.id)}
+                        onMouseLeave={() => setHoveredLeadId((current) => (current === lead.id ? null : current))}
+                      >
                         <td style={tdStyle}>
                           {isCleanupOwner ? (
                             <div style={cleanupCheckboxWrapStyle}>
@@ -1086,7 +1257,7 @@ export default function Dashboard() {
                           </div>
                         </td>
                         <td style={tdStyle}>
-                          <span style={scorePillStyle}>{score}</span>
+                          <span style={getScoreStyle(score)}>{score}</span>
                         </td>
                         <td style={tdStyle}>
                           <strong>{lead.name || '-'}</strong>
@@ -1396,6 +1567,28 @@ const heroHeaderRowStyle: CSSProperties = {
   marginBottom: '24px',
 }
 
+const heroBrandRowStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '12px',
+  flexWrap: 'wrap',
+  marginBottom: '10px',
+}
+
+const heroTitlePillStyle: CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  borderRadius: '999px',
+  background: 'rgba(255,255,255,0.14)',
+  border: '1px solid rgba(255,255,255,0.18)',
+  color: 'white',
+  padding: '8px 12px',
+  fontSize: '12px',
+  fontWeight: 800,
+  letterSpacing: '0.08em',
+  textTransform: 'uppercase',
+}
+
 const eyebrowStyle: CSSProperties = {
   display: 'inline-block',
   background: 'rgba(255,255,255,0.14)',
@@ -1440,6 +1633,35 @@ const heroButtonRowStyle: CSSProperties = {
   display: 'flex',
   flexWrap: 'wrap',
   gap: '10px',
+  alignItems: 'flex-start',
+  justifyContent: 'flex-end',
+}
+
+const dashboardHealthCardStyle: CSSProperties = {
+  display: 'grid',
+  gap: '8px',
+  minWidth: '200px',
+  padding: '12px 14px',
+  borderRadius: '16px',
+  background: 'rgba(15,23,42,0.22)',
+  border: '1px solid rgba(255,255,255,0.12)',
+}
+
+const dashboardHealthLabelStyle: CSSProperties = {
+  color: 'rgba(255,255,255,0.86)',
+  fontSize: '13px',
+  fontWeight: 700,
+}
+
+const soundToggleStyle: CSSProperties = {
+  border: '1px solid rgba(255,255,255,0.14)',
+  borderRadius: '12px',
+  background: 'rgba(255,255,255,0.08)',
+  color: 'white',
+  padding: '10px 12px',
+  fontSize: '12px',
+  fontWeight: 800,
+  cursor: 'pointer',
 }
 
 const monitorNoticeStyle: CSSProperties = {
@@ -1471,6 +1693,42 @@ const ghostButtonStyle: CSSProperties = {
   cursor: 'pointer',
 }
 
+const newLeadBannerStyle: CSSProperties = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  gap: '16px',
+  flexWrap: 'wrap',
+  alignItems: 'center',
+  marginBottom: '18px',
+  background: 'rgba(239,68,68,0.14)',
+  border: '1px solid rgba(252,165,165,0.38)',
+  borderRadius: '18px',
+  padding: '16px 18px',
+}
+
+const newLeadBannerTitleStyle: CSSProperties = {
+  display: 'block',
+  color: '#fff',
+  fontSize: '16px',
+  marginBottom: '4px',
+}
+
+const newLeadBannerCopyStyle: CSSProperties = {
+  color: 'rgba(255,255,255,0.84)',
+  fontSize: '13px',
+  lineHeight: 1.5,
+}
+
+const newLeadBannerButtonStyle: CSSProperties = {
+  border: 'none',
+  borderRadius: '12px',
+  padding: '11px 14px',
+  background: '#fee2e2',
+  color: '#991b1b',
+  fontWeight: 800,
+  cursor: 'pointer',
+}
+
 const summaryGridStyle: CSSProperties = {
   display: 'grid',
   gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
@@ -1486,16 +1744,35 @@ const summaryCardStyle: CSSProperties = {
   backdropFilter: 'blur(10px)',
 }
 
+const summaryCardIconRowStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '12px',
+  marginBottom: '10px',
+}
+
+const summaryIconStyle: CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '40px',
+  height: '40px',
+  borderRadius: '14px',
+  background: 'rgba(255,255,255,0.6)',
+  fontSize: '20px',
+}
+
 const summaryLabelStyle: CSSProperties = {
   display: 'block',
   fontSize: '13px',
-  color: 'rgba(255,255,255,0.76)',
-  marginBottom: '8px',
+  color: 'rgba(255,255,255,0.86)',
+  marginBottom: '0',
+  fontWeight: 700,
 }
 
 const summaryValueStyle: CSSProperties = {
   display: 'block',
-  fontSize: '28px',
+  fontSize: '30px',
   marginBottom: '6px',
 }
 
@@ -1506,14 +1783,14 @@ const summarySubvalueStyle: CSSProperties = {
 }
 
 const contentSectionStyle: CSSProperties = {
-  padding: '24px 0 42px',
+  padding: '32px 0 54px',
 }
 
 const filterCardStyle: CSSProperties = {
   background: '#ffffff',
   border: '1px solid #dbe4ee',
   borderRadius: '26px',
-  padding: '24px',
+  padding: '22px',
   boxShadow: '0 16px 42px rgba(15,23,42,0.08)',
   marginBottom: '22px',
 }
@@ -1566,6 +1843,24 @@ const filterGridStyle: CSSProperties = {
   gap: '12px',
 }
 
+const filterPillsWrapStyle: CSSProperties = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '8px',
+  marginTop: '14px',
+}
+
+const filterPillStyle: CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  borderRadius: '999px',
+  background: '#e0e7ff',
+  color: '#3730a3',
+  padding: '8px 11px',
+  fontSize: '12px',
+  fontWeight: 700,
+}
+
 const inputStyle: CSSProperties = {
   width: '100%',
   minHeight: '48px',
@@ -1575,6 +1870,7 @@ const inputStyle: CSSProperties = {
   color: '#0f172a',
   padding: '0 14px',
   fontSize: '15px',
+  boxShadow: 'inset 0 1px 2px rgba(15,23,42,0.04)',
 }
 
 const checkboxCardStyle: CSSProperties = {
@@ -1672,6 +1968,12 @@ const tdStyle: CSSProperties = {
 
 const rowStyle: CSSProperties = {
   background: '#ffffff',
+  transition: 'background 180ms ease, transform 180ms ease',
+}
+
+const hoveredRowStyle: CSSProperties = {
+  ...rowStyle,
+  background: '#f8fbff',
 }
 
 const messageCellStyle: CSSProperties = {
@@ -1739,6 +2041,24 @@ const scorePillStyle: CSSProperties = {
   borderRadius: '999px',
   padding: '6px 10px',
   fontWeight: 700,
+}
+
+const scorePillStyles = {
+  high: {
+    ...scorePillStyle,
+    background: '#dcfce7',
+    color: '#166534',
+  } satisfies CSSProperties,
+  medium: {
+    ...scorePillStyle,
+    background: '#fef3c7',
+    color: '#92400e',
+  } satisfies CSSProperties,
+  low: {
+    ...scorePillStyle,
+    background: '#fee2e2',
+    color: '#991b1b',
+  } satisfies CSSProperties,
 }
 
 const priorityCellStyle: CSSProperties = {
@@ -1831,10 +2151,11 @@ const actionWrapStyle: CSSProperties = {
 const actionButtonBaseStyle: CSSProperties = {
   border: 'none',
   borderRadius: '10px',
-  padding: '9px 11px',
-  fontSize: '12px',
+  padding: '8px 10px',
+  fontSize: '11px',
   fontWeight: 700,
   cursor: 'pointer',
+  letterSpacing: '0.01em',
 }
 
 const actionButtonStyles: Record<string, CSSProperties> = {
@@ -1955,16 +2276,16 @@ const modePillStyles = {
 
 const statusPillStyles: Record<string, CSSProperties> = {
   pending: {
-    background: '#e2e8f0',
-    color: '#334155',
+    background: '#dbeafe',
+    color: '#1d4ed8',
     padding: '6px 10px',
     borderRadius: '999px',
     fontWeight: 700,
     display: 'inline-block',
   },
   contactado: {
-    background: '#dbeafe',
-    color: '#1d4ed8',
+    background: '#fef3c7',
+    color: '#92400e',
     padding: '6px 10px',
     borderRadius: '999px',
     fontWeight: 700,
@@ -2003,8 +2324,8 @@ const statusPillStyles: Record<string, CSSProperties> = {
     display: 'inline-block',
   },
   descartado: {
-    background: '#fee2e2',
-    color: '#991b1b',
+    background: '#e2e8f0',
+    color: '#475569',
     padding: '6px 10px',
     borderRadius: '999px',
     fontWeight: 700,
