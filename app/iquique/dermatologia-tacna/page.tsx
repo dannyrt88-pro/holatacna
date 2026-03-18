@@ -33,7 +33,7 @@ export default function IquiqueDermatologiaTacnaPage() {
     setLoading(true)
 
     try {
-      const response = await fetch('/api/create-lead', {
+      const response = await fetch('/api/intake', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
