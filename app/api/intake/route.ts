@@ -20,13 +20,17 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    await fetch(n8nUrl, {
+    const n8nRes = await fetch(n8nUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     })
-    return NextResponse.json({ ok: true })
-  } catch {
+    console.log('[intake] n8n status:', n8nRes.status)
+    const n8nBody = await n8nRes.text()
+    console.log('[intake] n8n response:', n8nBody)
+    return NextResponse.json({ ok: true, n8n_status: n8nRes.status })
+  } catch (err) {
+    console.error('[intake] n8n fetch error:', err)
     return NextResponse.json({ error: 'Error al procesar el lead' }, { status: 500 })
   }
 }
