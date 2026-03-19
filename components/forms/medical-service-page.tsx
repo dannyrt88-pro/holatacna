@@ -32,8 +32,12 @@ export function MedicalServicePage({
   const [cityInterest, setCityInterest] = useState('')
   const [message, setMessage] = useState('')
   const [additionalServices, setAdditionalServices] = useState<string[]>([])
+  const [implantCount, setImplantCount] = useState('')
+  const [hasDiagnosis, setHasDiagnosis] = useState('')
   const [loading, setLoading] = useState(false)
   const [successText, setSuccessText] = useState('')
+
+  const isDental = serviceSlug === 'implantes-dentales'
 
   const serviceName = serviceNameBySlug[serviceSlug]
   const suggestedPackages = getPackagesForService(serviceSlug)
@@ -81,7 +85,16 @@ export function MedicalServicePage({
           utm_content: getTrackingValue(searchParams.get('utm_content')),
           utm_term: getTrackingValue(searchParams.get('utm_term')),
           additional_services: additionalServices,
-          message: messageEnabled ? message : null,
+          message: (() => {
+            const parts: string[] = []
+            if (isDental && implantCount) parts.push(`Implantes: ${implantCount}`)
+            if (isDental && hasDiagnosis) parts.push(`Diagnóstico previo: ${hasDiagnosis}`)
+            const qualification = parts.length ? parts.join(' | ') : ''
+            const freeText = messageEnabled ? message.trim() : ''
+            if (qualification && freeText) return `${qualification}\n\n${freeText}`
+            if (qualification) return qualification
+            return freeText || null
+          })(),
           landing_path: pathname,
         }),
       })
@@ -94,6 +107,13 @@ export function MedicalServicePage({
         return
       }
 
+      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+        ;(window as any).gtag('event', 'conversion', {
+          send_to: 'AW-18024620453/0NIqCKKagcscEKXD55JD',
+          value: 1.0,
+          currency: 'PEN',
+        })
+      }
       setSuccessText(`Solicitud enviada correctamente. Codigo: ${data.lead.reference_code}`)
       setName('')
       setTouristPhone('')
@@ -101,6 +121,8 @@ export function MedicalServicePage({
       setCityInterest('')
       setMessage('')
       setAdditionalServices([])
+      setImplantCount('')
+      setHasDiagnosis('')
     } catch {
       alert('Error enviando solicitud')
     }
@@ -222,6 +244,50 @@ export function MedicalServicePage({
                   </div>
                 </div>
               ) : null}
+
+              {isDental && (
+                <>
+                  <div className="grid gap-2">
+                    <span className="font-medium">¿Cuántos implantes necesitas?</span>
+                    <div className="flex flex-wrap gap-2">
+                      {['1 implante', '2-3 implantes', '4 o más', 'Boca completa', 'No sé aún'].map((opt) => (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => setImplantCount(opt)}
+                          className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+                            implantCount === opt
+                              ? 'border-green-600 bg-green-600 text-white'
+                              : 'border-slate-300 bg-white text-slate-700 hover:border-green-400'
+                          }`}
+                        >
+                          {opt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="grid gap-2">
+                    <span className="font-medium">¿Tienes diagnóstico o radiografías previas?</span>
+                    <div className="flex flex-wrap gap-2">
+                      {['Sí, tengo', 'No tengo', 'Puedo conseguirlas'].map((opt) => (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => setHasDiagnosis(opt)}
+                          className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+                            hasDiagnosis === opt
+                              ? 'border-green-600 bg-green-600 text-white'
+                              : 'border-slate-300 bg-white text-slate-700 hover:border-green-400'
+                          }`}
+                        >
+                          {opt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
 
               {messageEnabled ? (
                 <label className="grid gap-2">

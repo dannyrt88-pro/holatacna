@@ -1,0 +1,99 @@
+{
+  "name": "WF8 Agente Generador SEO",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "wf8-generador-seo",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "wf8-node-001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [0, 300],
+      "webhookId": "wf8-hook-001"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.body;\nconst data = typeof raw === 'string' ? JSON.parse(raw.replace(/^=\\s*/, '').trim()) : raw;\nreturn [{ json: data }];"
+      },
+      "id": "wf8-node-parse",
+      "name": "Parsear Body",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "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" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 4000, system: 'Eres un experto en SEO para turismo medico y dental en Latinoamerica, especializado en captar pacientes chilenos que viajan a Tacna, Peru. HolaTacna conecta pacientes chilenos con clinicas verificadas en Tacna. Publico objetivo: chilenos de Arica, Iquique, Antofagasta. Ventaja: ahorro 40-70% vs Chile. Devuelve UNICAMENTE un JSON valido con esta estructura: {\"slug\": \"url-slug\", \"meta_title\": \"titulo SEO max 60 chars\", \"meta_description\": \"meta desc max 155 chars\", \"h1\": \"titulo principal\", \"badge_text\": \"texto badge\", \"hero_headline\": \"titular hero max 8 palabras\", \"hero_subheadline\": \"subtitulo con propuesta de valor\", \"hero_description\": \"parrafo 2-3 lineas\", \"savings_hook\": \"frase de ahorro\", \"benefits\": [\"b1\",\"b2\",\"b3\",\"b4\"], \"treatment_scope\": [\"item1\",\"item2\",\"item3\",\"item4\"], \"how_it_works\": [\"paso1\",\"paso2\",\"paso3\"], \"faq\": [{\"question\": \"q\", \"answer\": \"a\"},{\"question\": \"q\", \"answer\": \"a\"},{\"question\": \"q\", \"answer\": \"a\"}], \"form_placeholder\": \"placeholder mensaje\", \"form_success_message\": \"mensaje exito\", \"cta_text\": \"texto boton\", \"color_scheme\": \"sky|emerald|violet|pink|amber|teal\", \"seo_keywords\": [\"kw1\",\"kw2\",\"kw3\",\"kw4\",\"kw5\"]}', messages: [{ role: 'user', content: 'Genera contenido SEO para: Servicio: ' + $('Parsear Body').first().json.service_name + ' | Slug: ' + ($('Parsear Body').first().json.slug || 'auto') + ' | Ahorro: ' + ($('Parsear Body').first().json.savings || 'hasta 60%') + ' | Keywords: ' + ($('Parsear Body').first().json.keywords || 'pacientes chilenos, Tacna') + ' | Ciudades: ' + ($('Parsear Body').first().json.target_cities || 'Arica, Iquique, Antofagasta') + ' | Detalles: ' + ($('Parsear Body').first().json.extra_details || 'ninguno') }] }) }}",
+        "options": {}
+      },
+      "alwaysOutputData": true,
+      "id": "wf8-node-002",
+      "name": "Claude — Generar Contenido SEO",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.content[0].text;\nlet seoContent;\ntry {\n  const match = raw.match(/\\{[\\s\\S]*\\}/);\n  seoContent = match ? JSON.parse(match[0]) : {};\n} catch(e) {\n  seoContent = { error: 'Error al parsear JSON', raw: raw };\n}\n\nconst service = $('Parsear Body').first().json.service_name;\nreturn [{ json: { seo_content: seoContent, generated_at: new Date().toISOString(), service: service } }];"
+      },
+      "id": "wf8-node-003",
+      "name": "Parsear Contenido SEO",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8560629617:AAEqU6y_r1-e8YnnpOdQ09xMhqRQkglSfqY/sendMessage",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({\n  chat_id: '8789162933',\n  text: '📝 <b>Contenido SEO Generado</b>\\n\\n🏥 <b>Servicio:</b> ' + $json.service + '\\n🔗 <b>Slug:</b> /' + ($json.seo_content.slug || 'pendiente') + '\\n\\n🎯 <b>Meta Title:</b>\\n' + ($json.seo_content.meta_title || '') + '\\n\\n📄 <b>Meta Description:</b>\\n' + ($json.seo_content.meta_description || '') + '\\n\\n💰 <b>Hook de ahorro:</b>\\n' + ($json.seo_content.savings_hook || '') + '\\n\\n🔑 <b>Keywords:</b>\\n' + (($json.seo_content.seo_keywords || []).join(', ')) + '\\n\\n<i>Contenido completo disponible en la ejecución del workflow.</i>',\n  parse_mode: 'HTML'\n}) }}",
+        "options": {}
+      },
+      "id": "wf8-node-004",
+      "name": "Telegram — Notificar SEO Generado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [960, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Parsear Body", "type": "main", "index": 0 }]]
+    },
+    "Parsear Body": {
+      "main": [[{ "node": "Claude — Generar Contenido SEO", "type": "main", "index": 0 }]]
+    },
+    "Claude — Generar Contenido SEO": {
+      "main": [[{ "node": "Parsear Contenido SEO", "type": "main", "index": 0 }]]
+    },
+    "Parsear Contenido SEO": {
+      "main": [[{ "node": "Telegram — Notificar SEO Generado", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "pinData": {},
+  "meta": { "templateCredsSetupCompleted": true },
+  "tags": []
+}

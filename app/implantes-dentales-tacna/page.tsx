@@ -1,7 +1,174 @@
 'use client'
 
 import Link from 'next/link'
-import { LeadCaptureForm } from '@/components/forms/lead-capture-form'
+import { Suspense, useState } from 'react'
+import { usePathname, useSearchParams } from 'next/navigation'
+import { buildTrackingPayload } from '@/lib/lead-tracking'
+
+function ImplantesDentalesTacnaForm() {
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const [name, setName] = useState('')
+  const [phone, setPhone] = useState('')
+  const [implantCount, setImplantCount] = useState('')
+  const [hasDiagnosis, setHasDiagnosis] = useState('')
+  const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  function sanitizeWhatsapp(value: string) {
+    const trimmed = value.replace(/\s+/g, '')
+    const hasPlus = trimmed.startsWith('+')
+    const digitsOnly = trimmed.replace(/\D/g, '')
+    return hasPlus ? `+${digitsOnly}` : digitsOnly
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (loading) return
+    setLoading(true)
+
+    const parts: string[] = []
+    if (implantCount) parts.push(`Implantes: ${implantCount}`)
+    if (hasDiagnosis) parts.push(`Diagnóstico previo: ${hasDiagnosis}`)
+    const qualification = parts.join(' | ')
+    const freeText = message.trim()
+    const fullMessage = qualification && freeText
+      ? `${qualification}\n\n${freeText}`
+      : qualification || freeText || null
+
+    try {
+      const res = await fetch('/api/intake', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name.trim(),
+          phone: phone.trim(),
+          tourist_phone: phone.trim(),
+          service_slug: 'implantes-dentales',
+          service_name: 'Implantes Dentales',
+          landing_path: pathname,
+          origin_url: typeof window !== 'undefined' ? window.location.href : pathname,
+          page_type: 'service',
+          message: fullMessage,
+          ...buildTrackingPayload(searchParams),
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        alert(data.error || 'Hubo un error. Escríbenos directo por WhatsApp')
+        setLoading(false)
+        return
+      }
+
+      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+        ;(window as any).gtag('event', 'conversion', {
+          send_to: 'AW-18024620453/0NIqCKKagcscEKXD55JD',
+          value: 1.0,
+          currency: 'PEN',
+        })
+      }
+      alert('¡Gracias! Te contactamos pronto por WhatsApp')
+      setName('')
+      setPhone('')
+      setImplantCount('')
+      setHasDiagnosis('')
+      setMessage('')
+    } catch {
+      alert('Hubo un error. Escríbenos directo por WhatsApp')
+    }
+
+    setLoading(false)
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="grid gap-4">
+      <h2 className="text-2xl font-bold">Solicitar Evaluación</h2>
+
+      <label className="grid gap-2">
+        <span className="font-medium">Nombre</span>
+        <input
+          required
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="rounded-xl border border-slate-300 px-4 py-3"
+          placeholder="Tu nombre"
+        />
+      </label>
+
+      <label className="grid gap-2">
+        <span className="font-medium">WhatsApp</span>
+        <input
+          required
+          value={phone}
+          onChange={(e) => setPhone(sanitizeWhatsapp(e.target.value))}
+          className="rounded-xl border border-slate-300 px-4 py-3"
+          placeholder="+56 9 ..."
+          inputMode="tel"
+        />
+      </label>
+
+      <div className="grid gap-2">
+        <span className="font-medium">¿Cuántos implantes necesitas?</span>
+        <div className="flex flex-wrap gap-2">
+          {['1 implante', '2-3 implantes', '4 o más', 'Boca completa', 'No sé aún'].map((opt) => (
+            <button
+              key={opt}
+              type="button"
+              onClick={() => setImplantCount(opt)}
+              className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+                implantCount === opt
+                  ? 'border-emerald-600 bg-emerald-600 text-white'
+                  : 'border-slate-300 bg-white text-slate-700 hover:border-emerald-400'
+              }`}
+            >
+              {opt}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid gap-2">
+        <span className="font-medium">¿Tienes diagnóstico o radiografías previas?</span>
+        <div className="flex flex-wrap gap-2">
+          {['Sí, tengo', 'No tengo', 'Puedo conseguirlas'].map((opt) => (
+            <button
+              key={opt}
+              type="button"
+              onClick={() => setHasDiagnosis(opt)}
+              className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+                hasDiagnosis === opt
+                  ? 'border-emerald-600 bg-emerald-600 text-white'
+                  : 'border-slate-300 bg-white text-slate-700 hover:border-emerald-400'
+              }`}
+            >
+              {opt}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <label className="grid gap-2">
+        <span className="font-medium">Mensaje</span>
+        <textarea
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          className="min-h-[120px] rounded-xl border border-slate-300 px-4 py-3"
+          placeholder="Cuéntanos qué evaluación buscas o qué dudas tienes."
+        />
+      </label>
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="rounded-xl bg-emerald-500 px-5 py-3 font-bold text-emerald-950 transition hover:bg-emerald-400 disabled:opacity-60"
+      >
+        {loading ? 'Enviando...' : 'Solicitar Evaluación'}
+      </button>
+    </form>
+  )
+}
 
 export default function ImplantesDentalesTacnaPage() {
   return (
@@ -66,19 +233,9 @@ export default function ImplantesDentalesTacnaPage() {
               Solicita información
             </div>
           </div>
-
-          <LeadCaptureForm
-            serviceSlug="implantes-dentales"
-            serviceName="Implantes Dentales"
-            landingPath="/implantes-dentales-tacna"
-            pageType="service"
-            variant="primary"
-            heading="Solicitar Evaluación"
-            submitLabel="Solicitar Evaluación"
-            messageLabel="Mensaje"
-            messagePlaceholder="Cuéntanos qué evaluación buscas o qué dudas tienes."
-            successMessage="¡Gracias! Te contactamos pronto por WhatsApp"
-          />
+          <Suspense fallback={<div className="text-sm text-slate-500">Cargando formulario...</div>}>
+            <ImplantesDentalesTacnaForm />
+          </Suspense>
         </div>
       </section>
     </main>

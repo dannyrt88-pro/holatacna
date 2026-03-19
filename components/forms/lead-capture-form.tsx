@@ -117,6 +117,13 @@ function LeadCaptureFormInner({
         return
       }
 
+      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+        ;(window as any).gtag('event', 'conversion', {
+          send_to: 'AW-18024620453/0NIqCKKagcscEKXD55JD',
+          value: 1.0,
+          currency: 'PEN',
+        })
+      }
       alert(successMessage)
       setName('')
       setPhone('')

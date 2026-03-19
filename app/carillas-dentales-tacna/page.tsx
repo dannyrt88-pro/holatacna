@@ -4,10 +4,10 @@ import { Suspense } from 'react'
 import { LeadCaptureForm } from '@/components/forms/lead-capture-form'
 
 const benefits = [
-  'Orientacion inicial antes de viajar desde Chile.',
-  'Informacion clara para comparar carillas dentales y diseno de sonrisa.',
-  'Coordinacion previa por WhatsApp con clinicas dentales verificadas.',
-  'Apoyo para resolver dudas sobre materiales, tiempos y cuidado posterior.',
+  'Ahorra hasta 60% vs Chile en carillas de porcelana y composite.',
+  'Clinica dental verificada en Tacna, a minutos de la frontera.',
+  'Coordinacion previa por WhatsApp antes de viajar.',
+  'Evaluacion + presupuesto sin costo antes de comprometerte.',
 ]
 
 const treatmentScope = [
@@ -40,11 +40,15 @@ export default function CarillasDentalesTacnaPage() {
                 Carillas dentales en Tacna
               </div>
               <h1 className="mb-4 text-4xl font-bold leading-tight sm:text-5xl">
-                Carillas dentales en Tacna para pacientes chilenos
+                Carillas Dentales en Tacna
               </h1>
-              <p className="mb-6 text-lg leading-8 text-slate-600 sm:text-xl">
-                Informacion para pacientes de Chile que comparan carillas dentales en Tacna y
-                desean evaluar opciones esteticas con orientacion previa antes de viajar.
+              <p className="mb-2 text-xl font-semibold text-pink-700">
+                Ahorra hasta 60% en comparación con Chile.
+              </p>
+              <p className="mb-6 text-base leading-8 text-slate-600 sm:text-lg">
+                Muchos pacientes chilenos viajan a Tacna para diseño de sonrisa y carillas de
+                porcelana o composite con clínica verificada. HolaTacna coordina tu evaluación
+                comercial inicial por WhatsApp antes de que viajes.
               </p>
               <Link
                 href="#formulario-evaluacion"

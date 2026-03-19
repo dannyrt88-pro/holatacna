@@ -1,0 +1,127 @@
+{
+  "name": "WF7 Agente Clasificador de Leads",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "wf7-clasificador",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "wf7-node-001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [0, 300],
+      "webhookId": "wf7-hook-001"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.body;\nconst data = typeof raw === 'string' ? JSON.parse(raw.replace(/^=\\s*/, '').trim()) : raw;\nreturn [{ json: data }];"
+      },
+      "id": "wf7-node-parse",
+      "name": "Parsear Body",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "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" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 700, system: 'Eres el sistema de inteligencia comercial de HolaTacna. Analizas leads de pacientes chilenos interesados en tratamientos en Tacna, Peru. Devuelve UNICAMENTE este JSON valido: {\"urgencia\": \"hot|warm|cold\", \"intencion\": \"listo_viajar|investigando|comparando_precio\", \"calidad\": \"alta|media|baja\", \"prioridad\": 1, \"servicio_detectado\": \"nombre o null\", \"ciudad_detectada\": \"ciudad o null\", \"senales_positivas\": [\"lista\"], \"senales_negativas\": [\"lista\"], \"resumen_equipo\": \"resumen en una linea\", \"accion_recomendada\": \"accion especifica\"}. CRITERIOS: urgencia hot=menciona fecha o quiere coordinacion inmediata, warm=interesado sin fecha, cold=solo cotizando. calidad alta=servicio especifico + ciudad cercana + mensaje detallado, media=servicio general o mensaje vago, baja=sin servicio claro. prioridad 1=hot+alta (30min), 2=hot+media o warm+alta (1h), 3=warm+media (3h), 4=cold (24h), 5=baja calidad (48h).', messages: [{ role: 'user', content: 'Clasifica este lead. Nombre: ' + $('Parsear Body').first().json.name + ' | Telefono: ' + $('Parsear Body').first().json.phone + ' | Servicio: ' + ($('Parsear Body').first().json.service_name || 'No especificado') + ' | Ciudad: ' + ($('Parsear Body').first().json.city_interest || 'No especificada') + ' | Mensaje: ' + ($('Parsear Body').first().json.message || 'Sin mensaje') + ' | Fuente: ' + ($('Parsear Body').first().json.utm_source || 'directo') }] }) }}",
+        "options": {}
+      },
+      "alwaysOutputData": true,
+      "id": "wf7-node-002",
+      "name": "Claude — Clasificar Lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.content[0].text;\nlet classification;\ntry {\n  const match = raw.match(/\\{[\\s\\S]*\\}/);\n  classification = match ? JSON.parse(match[0]) : {};\n} catch(e) {\n  classification = { urgencia: 'warm', intencion: 'investigando', calidad: 'media', prioridad: 3, resumen_equipo: 'Error al clasificar', accion_recomendada: 'Revisar manualmente' };\n}\n\nconst lead = $('Parsear Body').first().json;\n\nreturn [{\n  json: {\n    ...classification,\n    lead_name: lead.name,\n    lead_phone: lead.phone,\n    service_name: lead.service_name,\n    city_interest: lead.city_interest,\n    message: lead.message,\n    utm_source: lead.utm_source\n  }\n}];"
+      },
+      "id": "wf7-node-003",
+      "name": "Parsear Clasificación JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://divgowlyqbmvzzxwtics.supabase.co/rest/v1/leads?tourist_phone=eq.{{ encodeURIComponent($json.lead_phone) }}&order=created_at.desc&limit=1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpdmdvd2x5cWJtdnp6eHd0aWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MDIzMzIsImV4cCI6MjA4ODA3ODMzMn0.8_KxbhJIHJKLHKgjxx8hLJmp_Monb3ir04lI8aIUlGM" },
+            { "name": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpdmdvd2x5cWJtdnp6eHd0aWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MDIzMzIsImV4cCI6MjA4ODA3ODMzMn0.8_KxbhJIHJKLHKgjxx8hLJmp_Monb3ir04lI8aIUlGM" },
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Prefer", "value": "return=minimal" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ ai_urgencia: $json.urgencia, ai_intencion: $json.intencion, ai_calidad: $json.calidad, ai_prioridad: $json.prioridad, ai_resumen: $json.resumen_equipo, ai_accion: $json.accion_recomendada, ai_classified_at: new Date().toISOString() }) }}",
+        "options": {}
+      },
+      "id": "wf7-node-004",
+      "name": "Supabase — Guardar Clasificación",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [960, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8560629617:AAEqU6y_r1-e8YnnpOdQ09xMhqRQkglSfqY/sendMessage",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({\n  chat_id: '8789162933',\n  text: '🧠 <b>Lead Clasificado por IA</b>\\n\\n👤 ' + $('Parsear Clasificación JSON').first().json.lead_name + '\\n📱 ' + $('Parsear Clasificación JSON').first().json.lead_phone + '\\n🏥 ' + $('Parsear Clasificación JSON').first().json.service_name + '\\n🌆 ' + ($('Parsear Clasificación JSON').first().json.city_interest || 'No especificada') + '\\n\\n' + ({'hot':'🔥','warm':'🟡','cold':'🔵'}[$('Parsear Clasificación JSON').first().json.urgencia] || '⚪') + ' <b>Urgencia:</b> ' + ($('Parsear Clasificación JSON').first().json.urgencia || '').toUpperCase() + '\\n🎯 <b>Intención:</b> ' + ($('Parsear Clasificación JSON').first().json.intencion || '').replace(/_/g,' ') + '\\n💎 <b>Calidad:</b> ' + ($('Parsear Clasificación JSON').first().json.calidad || '').toUpperCase() + '\\n⚡ <b>Prioridad:</b> ' + $('Parsear Clasificación JSON').first().json.prioridad + '/5\\n\\n📋 <b>Resumen:</b>\\n' + $('Parsear Clasificación JSON').first().json.resumen_equipo + '\\n\\n✅ <b>Acción recomendada:</b>\\n' + $('Parsear Clasificación JSON').first().json.accion_recomendada,\n  parse_mode: 'HTML'\n}) }}",
+        "options": {}
+      },
+      "id": "wf7-node-005",
+      "name": "Telegram — Clasificación al Equipo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1200, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Parsear Body", "type": "main", "index": 0 }]]
+    },
+    "Parsear Body": {
+      "main": [[{ "node": "Claude — Clasificar Lead", "type": "main", "index": 0 }]]
+    },
+    "Claude — Clasificar Lead": {
+      "main": [[{ "node": "Parsear Clasificación JSON", "type": "main", "index": 0 }]]
+    },
+    "Parsear Clasificación JSON": {
+      "main": [[{ "node": "Supabase — Guardar Clasificación", "type": "main", "index": 0 }]]
+    },
+    "Supabase — Guardar Clasificación": {
+      "main": [[{ "node": "Telegram — Clasificación al Equipo", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "pinData": {},
+  "meta": { "templateCredsSetupCompleted": true },
+  "tags": []
+}

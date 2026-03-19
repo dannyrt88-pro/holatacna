@@ -1,0 +1,236 @@
+{
+  "name": "WF5 Lead Followup",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "wf5-followup",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "a1a1a1a1-0001-0001-0001-a1a1a1a1a1a1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [0, 300],
+      "webhookId": "b2b2b2b2-0001-0001-0001-b2b2b2b2b2b2"
+    },
+    {
+      "parameters": {
+        "amount": 3,
+        "unit": "hours"
+      },
+      "id": "c3c3c3c3-0002-0002-0002-c3c3c3c3c3c3",
+      "name": "Esperar 3h",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "d4d4d4d4-0002-0002-0002-d4d4d4d4d4d4"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://divgowlyqbmvzzxwtics.supabase.co/rest/v1/leads?tourist_phone=eq.{{ encodeURIComponent($('Webhook').first().json.body.phone) }}&select=status&order=created_at.desc&limit=1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpdmdvd2x5cWJtdnp6eHd0aWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MDIzMzIsImV4cCI6MjA4ODA3ODMzMn0.8_KxbhJIHJKLHKgjxx8hLJmp_Monb3ir04lI8aIUlGM"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpdmdvd2x5cWJtdnp6eHd0aWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MDIzMzIsImV4cCI6MjA4ODA3ODMzMn0.8_KxbhJIHJKLHKgjxx8hLJmp_Monb3ir04lI8aIUlGM"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "alwaysOutputData": true,
+      "id": "e5e5e5e5-0003-0003-0003-e5e5e5e5e5e5",
+      "name": "Verificar Lead 3h",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "cond-3h-001",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "pending_review",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "f6f6f6f6-0004-0004-0004-f6f6f6f6f6f6",
+      "name": "¿Pendiente 3h?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8560629617:AAEqU6y_r1-e8YnnpOdQ09xMhqRQkglSfqY/sendMessage",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ chat_id: '8789162933', text: '⏰ <b>Lead sin respuesta — 3 horas</b>\\n\\n👤 ' + $('Webhook').first().json.body.name + '\\n📱 ' + $('Webhook').first().json.body.phone + '\\n🏥 ' + $('Webhook').first().json.body.service_name + '\\n\\nContáctalo ahora por WhatsApp antes de que se enfríe.', parse_mode: 'HTML' }) }}",
+        "options": {}
+      },
+      "id": "a7a7a7a7-0005-0005-0005-a7a7a7a7a7a7",
+      "name": "Telegram Alerta 3h",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [960, 180]
+    },
+    {
+      "parameters": {
+        "amount": 21,
+        "unit": "hours"
+      },
+      "id": "b8b8b8b8-0006-0006-0006-b8b8b8b8b8b8",
+      "name": "Esperar 21h",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [1200, 300],
+      "webhookId": "c9c9c9c9-0006-0006-0006-c9c9c9c9c9c9"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://divgowlyqbmvzzxwtics.supabase.co/rest/v1/leads?tourist_phone=eq.{{ encodeURIComponent($('Webhook').first().json.body.phone) }}&select=status&order=created_at.desc&limit=1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpdmdvd2x5cWJtdnp6eHd0aWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MDIzMzIsImV4cCI6MjA4ODA3ODMzMn0.8_KxbhJIHJKLHKgjxx8hLJmp_Monb3ir04lI8aIUlGM"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpdmdvd2x5cWJtdnp6eHd0aWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MDIzMzIsImV4cCI6MjA4ODA3ODMzMn0.8_KxbhJIHJKLHKgjxx8hLJmp_Monb3ir04lI8aIUlGM"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "alwaysOutputData": true,
+      "id": "d0d0d0d0-0007-0007-0007-d0d0d0d0d0d0",
+      "name": "Verificar Lead 24h",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1440, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "cond-24h-001",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "pending_review",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "e1e1e1e1-0008-0008-0008-e1e1e1e1e1e1",
+      "name": "¿Pendiente 24h?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1680, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8560629617:AAEqU6y_r1-e8YnnpOdQ09xMhqRQkglSfqY/sendMessage",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ chat_id: '8789162933', text: '🔴 <b>Lead sin respuesta — 24 horas</b>\\n\\n👤 ' + $('Webhook').first().json.body.name + '\\n📱 ' + $('Webhook').first().json.body.phone + '\\n🏥 ' + $('Webhook').first().json.body.service_name + '\\n\\n⚠️ Último aviso. Contacta ahora o el lead se perderá.', parse_mode: 'HTML' }) }}",
+        "options": {}
+      },
+      "id": "f2f2f2f2-0009-0009-0009-f2f2f2f2f2f2",
+      "name": "Telegram Alerta 24h",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1920, 180]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [{ "node": "Esperar 3h", "type": "main", "index": 0 }]
+      ]
+    },
+    "Esperar 3h": {
+      "main": [
+        [{ "node": "Verificar Lead 3h", "type": "main", "index": 0 }]
+      ]
+    },
+    "Verificar Lead 3h": {
+      "main": [
+        [{ "node": "¿Pendiente 3h?", "type": "main", "index": 0 }]
+      ]
+    },
+    "¿Pendiente 3h?": {
+      "main": [
+        [{ "node": "Telegram Alerta 3h", "type": "main", "index": 0 }],
+        [{ "node": "Esperar 21h", "type": "main", "index": 0 }]
+      ]
+    },
+    "Telegram Alerta 3h": {
+      "main": [
+        [{ "node": "Esperar 21h", "type": "main", "index": 0 }]
+      ]
+    },
+    "Esperar 21h": {
+      "main": [
+        [{ "node": "Verificar Lead 24h", "type": "main", "index": 0 }]
+      ]
+    },
+    "Verificar Lead 24h": {
+      "main": [
+        [{ "node": "¿Pendiente 24h?", "type": "main", "index": 0 }]
+      ]
+    },
+    "¿Pendiente 24h?": {
+      "main": [
+        [{ "node": "Telegram Alerta 24h", "type": "main", "index": 0 }],
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}

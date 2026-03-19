@@ -4,10 +4,10 @@ import { Suspense } from 'react'
 import { LeadCaptureForm } from '@/components/forms/lead-capture-form'
 
 const benefits = [
-  'Orientacion inicial antes de viajar desde Chile.',
-  'Informacion clara para comparar brackets y alineadores en Tacna.',
-  'Coordinacion previa por WhatsApp con clinicas dentales verificadas.',
-  'Apoyo para resolver dudas sobre tiempos y etapas del tratamiento.',
+  'Ahorra hasta 50% vs Chile en brackets y alineadores.',
+  'Clinica dental verificada en Tacna, a minutos de la frontera.',
+  'Coordinacion previa por WhatsApp antes de iniciar tratamiento.',
+  'Evaluacion inicial sin costo para conocer tu caso.',
 ]
 
 const treatmentScope = [
@@ -40,11 +40,15 @@ export default function OrtodonciaTacnaPage() {
                 Ortodoncia en Tacna
               </div>
               <h1 className="mb-4 text-4xl font-bold leading-tight sm:text-5xl">
-                Ortodoncia en Tacna para pacientes chilenos
+                Ortodoncia en Tacna
               </h1>
-              <p className="mb-6 text-lg leading-8 text-slate-600 sm:text-xl">
-                Conoce opciones de ortodoncia en Tacna para pacientes que viajan desde Chile y
-                buscan brackets o alineadores con orientacion previa antes de iniciar tratamiento.
+              <p className="mb-2 text-xl font-semibold text-sky-700">
+                Ahorra hasta 50% en comparación con Chile.
+              </p>
+              <p className="mb-6 text-base leading-8 text-slate-600 sm:text-lg">
+                Brackets metálicos, estéticos y alineadores transparentes con clínica verificada
+                en Tacna. HolaTacna coordina tu evaluación comercial inicial por WhatsApp antes
+                de que cruces la frontera.
               </p>
               <Link
                 href="#formulario-evaluacion"

@@ -1,0 +1,99 @@
+{
+  "name": "WF6 Agente Asesor WhatsApp",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "wf6-asesor-whatsapp",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "wf6-node-001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [0, 300],
+      "webhookId": "wf6-hook-001"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.body;\nconst data = typeof raw === 'string' ? JSON.parse(raw.replace(/^=\\s*/, '').trim()) : raw;\nreturn [{ json: data }];"
+      },
+      "id": "wf6-node-parse",
+      "name": "Parsear Body",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "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" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 512, system: 'Eres el Asesor Comercial de HolaTacna. Generas mensajes de WhatsApp personalizados para leads chilenos interesados en tratamientos medicos y dentales en Tacna, Peru. REGLAS: 1) Usa solo el primer nombre. 2) Menciona el servicio exacto y el ahorro vs Chile. 3) Tono calido y cercano, no vendedor. 4) Maximo 110 palabras. 5) Maximo 2 emojis. 6) Cierra con pregunta abierta. 7) Devuelve SOLO el texto del mensaje, sin comillas ni explicaciones. SERVICIOS Y AHORROS: Implantes dentales hasta 60% menos, Ortodoncia hasta 50% menos, Carillas hasta 60% menos, Blanqueamiento hasta 50% menos, Cirugia laser ocular hasta 55% menos. CLINICA: Centro Odontologico MonteCarlo, Tacna, verificada con convenio activo.', messages: [{ role: 'user', content: 'Nombre: ' + $('Parsear Body').first().json.name + ' | Servicio: ' + $('Parsear Body').first().json.service_name + ' | Ciudad: ' + ($('Parsear Body').first().json.city_interest || 'Chile') + ' | Mensaje: ' + ($('Parsear Body').first().json.message || 'sin mensaje') + '. Genera el primer mensaje WhatsApp personalizado.' }] }) }}",
+        "options": {}
+      },
+      "alwaysOutputData": true,
+      "id": "wf6-node-002",
+      "name": "Claude — Generar Mensaje WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const claudeMsg = $input.first().json.content[0].text;\nconst lead = $('Parsear Body').first().json;\n\nreturn [{ json: {\n  ai_message: claudeMsg,\n  lead_name: lead.name,\n  lead_phone: lead.phone,\n  service_name: lead.service_name,\n  city_interest: lead.city_interest || 'Chile'\n} }];"
+      },
+      "id": "wf6-node-build",
+      "name": "Armar Mensaje",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8560629617:AAEqU6y_r1-e8YnnpOdQ09xMhqRQkglSfqY/sendMessage",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({\n  chat_id: '8789162933',\n  text: '🤖 <b>Mensaje WhatsApp sugerido por IA</b>\\n\\n👤 ' + $json.lead_name + '\\n📱 ' + $json.lead_phone + '\\n🏥 ' + $json.service_name + '\\n🌆 ' + $json.city_interest + '\\n\\n<b>━━━ MENSAJE SUGERIDO ━━━</b>\\n\\n' + $json.ai_message + '\\n\\n<b>━━━━━━━━━━━━━━━━━━━━</b>\\n\\n<i>Copia y envía por WhatsApp. Puedes ajustarlo.</i>',\n  parse_mode: 'HTML'\n}) }}",
+        "options": {}
+      },
+      "id": "wf6-node-004",
+      "name": "Telegram — Mensaje AI al Equipo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [960, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Parsear Body", "type": "main", "index": 0 }]]
+    },
+    "Parsear Body": {
+      "main": [[{ "node": "Claude — Generar Mensaje WhatsApp", "type": "main", "index": 0 }]]
+    },
+    "Claude — Generar Mensaje WhatsApp": {
+      "main": [[{ "node": "Armar Mensaje", "type": "main", "index": 0 }]]
+    },
+    "Armar Mensaje": {
+      "main": [[{ "node": "Telegram — Mensaje AI al Equipo", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "pinData": {},
+  "meta": { "templateCredsSetupCompleted": true },
+  "tags": []
+}

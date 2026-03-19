@@ -1,0 +1,150 @@
+{
+  "name": "WF10 Agente Monitor de Calidad",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "hours", "hoursInterval": 6 }]
+        }
+      },
+      "id": "wf10-node-001",
+      "name": "Trigger cada 6 horas",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://divgowlyqbmvzzxwtics.supabase.co/rest/v1/leads?status=eq.pending_review&select=id,name,tourist_phone,service_name,city_interest,message,created_at,status,ai_urgencia,ai_calidad,ai_prioridad&order=created_at.asc&limit=50",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpdmdvd2x5cWJtdnp6eHd0aWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MDIzMzIsImV4cCI6MjA4ODA3ODMzMn0.8_KxbhJIHJKLHKgjxx8hLJmp_Monb3ir04lI8aIUlGM" },
+            { "name": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpdmdvd2x5cWJtdnp6eHd0aWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MDIzMzIsImV4cCI6MjA4ODA3ODMzMn0.8_KxbhJIHJKLHKgjxx8hLJmp_Monb3ir04lI8aIUlGM" }
+          ]
+        },
+        "options": {}
+      },
+      "alwaysOutputData": true,
+      "id": "wf10-node-002",
+      "name": "Supabase — Leads Pendientes",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "id": "cond-wf10-001",
+              "leftValue": "={{ Array.isArray($json) ? $json.length : 0 }}",
+              "rightValue": 0,
+              "operator": { "type": "number", "operation": "gt" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "wf10-node-003",
+      "name": "¿Hay leads pendientes?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "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" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({\n  model: 'claude-sonnet-4-6',\n  max_tokens: 1500,\n  system: 'Eres el sistema de control de calidad operativa de HolaTacna. Analizas el estado actual de los leads pendientes para identificar riesgos, cuellos de botella y oportunidades de mejora.\\n\\nCONTEXTO:\\n- HolaTacna conecta pacientes chilenos con clínicas en Tacna\\n- Un lead \"pending_review\" significa que está esperando contacto del equipo\\n- La velocidad de respuesta es crítica — cada hora sin contacto reduce conversión\\n- Los leads hot deben contactarse en menos de 30 minutos\\n- Los leads warm en menos de 3 horas\\n\\nANÁLISIS REQUERIDO:\\n1. RIESGOS CRÍTICOS: leads hot con más de 2 horas sin contacto (conversión en riesgo)\\n2. RIESGOS MODERADOS: leads warm con más de 6 horas sin contacto\\n3. TENDENCIAS: patrones en servicios, ciudades o fuentes que sobresalen\\n4. SALUD OPERATIVA: evaluación general del pipeline\\n5. ACCIONES PRIORITARIAS: lista ordenada de qué hacer ahora\\n\\nFORMATO DE RESPUESTA — devuelve ÚNICAMENTE este JSON:\\n{\\n  \"total_pendientes\": 0,\\n  \"criticos\": [{\"nombre\": \"\", \"telefono\": \"\", \"servicio\": \"\", \"horas_espera\": 0, \"urgencia\": \"\"}],\\n  \"moderados\": [{\"nombre\": \"\", \"telefono\": \"\", \"servicio\": \"\", \"horas_espera\": 0}],\\n  \"salud_pipeline\": \"buena|regular|critica\",\\n  \"score_operativo\": 0,\\n  \"tendencias\": [\"tendencia 1\", \"tendencia 2\"],\\n  \"acciones_prioritarias\": [\"accion 1\", \"accion 2\", \"accion 3\"],\\n  \"alerta_principal\": \"mensaje de alerta principal para el equipo o null\",\\n  \"resumen_ejecutivo\": \"resumen en 2-3 líneas del estado actual\"\n}',\n  messages: [{\n    role: 'user',\n    content: 'Analiza el estado actual del pipeline de leads. Hora del análisis: ' + new Date().toISOString() + '\\n\\nLEADS PENDIENTES EN SUPABASE:\\n' + JSON.stringify($('Supabase — Leads Pendientes').first().json, null, 2) + '\\n\\nCalcula el tiempo de espera de cada lead comparando su created_at con la hora actual. Identifica los casos más urgentes y genera el reporte de calidad.'\n  }]\n}) }}",
+        "options": {}
+      },
+      "alwaysOutputData": true,
+      "id": "wf10-node-004",
+      "name": "Claude — Analizar Calidad Pipeline",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [720, 180]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.content[0].text;\nlet report;\ntry {\n  const match = raw.match(/\\{[\\s\\S]*\\}/);\n  report = match ? JSON.parse(match[0]) : {};\n} catch(e) {\n  report = { total_pendientes: 0, salud_pipeline: 'regular', score_operativo: 50, resumen_ejecutivo: 'Error al generar reporte', acciones_prioritarias: ['Revisar pipeline manualmente'], alerta_principal: 'Error en sistema de monitoreo' };\n}\n\nreturn [{ json: { ...report, generated_at: new Date().toISOString() } }];"
+      },
+      "id": "wf10-node-005",
+      "name": "Parsear Reporte Calidad",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [960, 180]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8560629617:AAEqU6y_r1-e8YnnpOdQ09xMhqRQkglSfqY/sendMessage",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({\n  chat_id: '8789162933',\n  text: (() => {\n    const r = $json;\n    const saludIcon = {'buena':'✅','regular':'⚠️','critica':'🚨'}[r.salud_pipeline] || '❓';\n    let msg = '📊 <b>Reporte de Calidad — HolaTacna</b>\\n';\n    msg += new Date().toLocaleString(\\'es-CL\\') + '\\n\\n';\n    msg += saludIcon + ' <b>Salud del pipeline:</b> ' + (r.salud_pipeline || '').toUpperCase() + '\\n';\n    msg += '📈 <b>Score operativo:</b> ' + (r.score_operativo || 0) + '/100\\n';\n    msg += '📋 <b>Leads pendientes:</b> ' + (r.total_pendientes || 0) + '\\n\\n';\n    if (r.alerta_principal) msg += '🚨 <b>ALERTA:</b> ' + r.alerta_principal + '\\n\\n';\n    if (r.criticos && r.criticos.length > 0) {\n      msg += '🔴 <b>Críticos (' + r.criticos.length + '):</b>\\n';\n      r.criticos.slice(0,3).forEach(c => { msg += '  • ' + c.nombre + ' — ' + c.servicio + ' (' + c.horas_espera + 'h sin contacto)\\n'; });\n      msg += '\\n';\n    }\n    if (r.acciones_prioritarias && r.acciones_prioritarias.length > 0) {\n      msg += '✅ <b>Acciones ahora:</b>\\n';\n      r.acciones_prioritarias.slice(0,3).forEach((a, i) => { msg += (i+1) + '. ' + a + '\\n'; });\n      msg += '\\n';\n    }\n    msg += '💬 ' + (r.resumen_ejecutivo || '');\n    return msg;\n  })(),\n  parse_mode: 'HTML'\n}) }}",
+        "options": {}
+      },
+      "id": "wf10-node-006",
+      "name": "Telegram — Reporte de Calidad",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1200, 180]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8560629617:AAEqU6y_r1-e8YnnpOdQ09xMhqRQkglSfqY/sendMessage",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({\n  chat_id: '8789162933',\n  text: '✅ <b>Monitor de Calidad</b>\\n\\nNo hay leads pendientes en este momento. El pipeline está limpio.',\n  parse_mode: 'HTML'\n}) }}",
+        "options": {}
+      },
+      "id": "wf10-node-007",
+      "name": "Telegram — Pipeline Limpio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [720, 420]
+    }
+  ],
+  "connections": {
+    "Trigger cada 6 horas": {
+      "main": [[{ "node": "Supabase — Leads Pendientes", "type": "main", "index": 0 }]]
+    },
+    "Supabase — Leads Pendientes": {
+      "main": [[{ "node": "¿Hay leads pendientes?", "type": "main", "index": 0 }]]
+    },
+    "¿Hay leads pendientes?": {
+      "main": [
+        [{ "node": "Claude — Analizar Calidad Pipeline", "type": "main", "index": 0 }],
+        [{ "node": "Telegram — Pipeline Limpio", "type": "main", "index": 0 }]
+      ]
+    },
+    "Claude — Analizar Calidad Pipeline": {
+      "main": [[{ "node": "Parsear Reporte Calidad", "type": "main", "index": 0 }]]
+    },
+    "Parsear Reporte Calidad": {
+      "main": [[{ "node": "Telegram — Reporte de Calidad", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "pinData": {},
+  "meta": { "templateCredsSetupCompleted": true },
+  "tags": []
+}

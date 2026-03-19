@@ -1,0 +1,137 @@
+{
+  "name": "WF9 Agente Router de Proveedores",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "wf9-router-proveedores",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "wf9-node-001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [0, 300],
+      "webhookId": "wf9-hook-001"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://divgowlyqbmvzzxwtics.supabase.co/rest/v1/providers?status=eq.active&select=*",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpdmdvd2x5cWJtdnp6eHd0aWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MDIzMzIsImV4cCI6MjA4ODA3ODMzMn0.8_KxbhJIHJKLHKgjxx8hLJmp_Monb3ir04lI8aIUlGM" },
+            { "name": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpdmdvd2x5cWJtdnp6eHd0aWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MDIzMzIsImV4cCI6MjA4ODA3ODMzMn0.8_KxbhJIHJKLHKgjxx8hLJmp_Monb3ir04lI8aIUlGM" }
+          ]
+        },
+        "options": {}
+      },
+      "alwaysOutputData": true,
+      "id": "wf9-node-002",
+      "name": "Supabase — Obtener Proveedores Activos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "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" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({\n  model: 'claude-sonnet-4-6',\n  max_tokens: 500,\n  system: 'Eres el sistema de routing inteligente de HolaTacna. Tu trabajo es seleccionar el proveedor óptimo para cada lead entrante.\\n\\nCRITERIOS DE MATCHING (en orden de prioridad):\\n1. ESPECIALIDAD: el proveedor debe ofrecer el servicio solicitado\\n2. DISPONIBILIDAD: preferir proveedores con capacidad actual\\n3. PERFIL DEL PACIENTE: precio sensible → proveedor económico; calidad exigente → proveedor premium\\n4. CARGA ACTUAL: balancear distribución de leads entre proveedores similares\\n5. HISTORIAL: proveedores con mejor tasa de conversión tienen preferencia\\n\\nFACTORES DE DESCALIFICACIÓN:\\n- Proveedor no ofrece el servicio solicitado\\n- Proveedor marcado como no disponible\\n- Proveedor con calificación crítica activa\\n\\nFORMATO DE RESPUESTA — devuelve ÚNICAMENTE este JSON:\\n{\\n  \"provider_id\": \"id del proveedor seleccionado\",\\n  \"provider_name\": \"nombre del proveedor\",\\n  \"match_score\": 0-100,\\n  \"match_reason\": \"explicación breve del match\",\\n  \"alternative_provider_id\": \"id del segundo mejor o null\",\\n  \"routing_notes\": \"notas para el equipo sobre este routing\"\\n}',\n  messages: [{\n    role: 'user',\n    content: 'Selecciona el mejor proveedor para este lead:\\n\\nLEAD:\\n- Nombre: ' + $('Webhook').first().json.body.name + '\\n- Servicio: ' + $('Webhook').first().json.body.service_name + '\\n- Ciudad: ' + ($('Webhook').first().json.body.city_interest || 'No especificada') + '\\n- Urgencia: ' + ($('Webhook').first().json.body.ai_urgencia || 'warm') + '\\n- Calidad lead: ' + ($('Webhook').first().json.body.ai_calidad || 'media') + '\\n- Mensaje: ' + ($('Webhook').first().json.body.message || 'Sin mensaje') + '\\n\\nPROVEEDORES DISPONIBLES:\\n' + JSON.stringify($('Supabase — Obtener Proveedores Activos').first().json, null, 2)\n  }]\n}) }}",
+        "options": {}
+      },
+      "alwaysOutputData": true,
+      "id": "wf9-node-003",
+      "name": "Claude — Seleccionar Proveedor",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.content[0].text;\nlet routing;\ntry {\n  const match = raw.match(/\\{[\\s\\S]*\\}/);\n  routing = match ? JSON.parse(match[0]) : {};\n} catch(e) {\n  routing = { provider_id: null, provider_name: 'MonteCarlo', match_score: 70, match_reason: 'Proveedor por defecto', routing_notes: 'Error en routing automático — asignar manualmente' };\n}\n\nconst webhook = $('Webhook').first().json.body;\n\nreturn [{ json: { ...routing, lead_name: webhook.name, lead_phone: webhook.phone, service_name: webhook.service_name } }];"
+      },
+      "id": "wf9-node-004",
+      "name": "Parsear Routing",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://divgowlyqbmvzzxwtics.supabase.co/rest/v1/leads?tourist_phone=eq.{{ encodeURIComponent($json.lead_phone) }}&order=created_at.desc&limit=1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpdmdvd2x5cWJtdnp6eHd0aWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MDIzMzIsImV4cCI6MjA4ODA3ODMzMn0.8_KxbhJIHJKLHKgjxx8hLJmp_Monb3ir04lI8aIUlGM" },
+            { "name": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpdmdvd2x5cWJtdnp6eHd0aWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MDIzMzIsImV4cCI6MjA4ODA3ODMzMn0.8_KxbhJIHJKLHKgjxx8hLJmp_Monb3ir04lI8aIUlGM" },
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Prefer", "value": "return=minimal" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ ai_provider_id: $json.provider_id, ai_provider_name: $json.provider_name, ai_match_score: $json.match_score, ai_routed_at: new Date().toISOString() }) }}",
+        "options": {}
+      },
+      "id": "wf9-node-005",
+      "name": "Supabase — Guardar Routing",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [960, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8560629617:AAEqU6y_r1-e8YnnpOdQ09xMhqRQkglSfqY/sendMessage",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({\n  chat_id: '8789162933',\n  text: '🔀 <b>Lead Enrutado por IA</b>\\n\\n👤 ' + $('Parsear Routing').first().json.lead_name + '\\n📱 ' + $('Parsear Routing').first().json.lead_phone + '\\n🏥 ' + $('Parsear Routing').first().json.service_name + '\\n\\n🏆 <b>Proveedor asignado:</b>\\n' + $('Parsear Routing').first().json.provider_name + '\\n\\n📊 <b>Match score:</b> ' + $('Parsear Routing').first().json.match_score + '/100\\n\\n💬 <b>Razón:</b>\\n' + $('Parsear Routing').first().json.match_reason + '\\n\\n📋 <b>Notas:</b>\\n' + $('Parsear Routing').first().json.routing_notes,\n  parse_mode: 'HTML'\n}) }}",
+        "options": {}
+      },
+      "id": "wf9-node-006",
+      "name": "Telegram — Notificar Routing",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1200, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Supabase — Obtener Proveedores Activos", "type": "main", "index": 0 }]]
+    },
+    "Supabase — Obtener Proveedores Activos": {
+      "main": [[{ "node": "Claude — Seleccionar Proveedor", "type": "main", "index": 0 }]]
+    },
+    "Claude — Seleccionar Proveedor": {
+      "main": [[{ "node": "Parsear Routing", "type": "main", "index": 0 }]]
+    },
+    "Parsear Routing": {
+      "main": [[{ "node": "Supabase — Guardar Routing", "type": "main", "index": 0 }]]
+    },
+    "Supabase — Guardar Routing": {
+      "main": [[{ "node": "Telegram — Notificar Routing", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" },
+  "pinData": {},
+  "meta": { "templateCredsSetupCompleted": true },
+  "tags": []
+}
