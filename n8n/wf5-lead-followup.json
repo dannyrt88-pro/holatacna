@@ -106,7 +106,7 @@
       "name": "Esperar 21h",
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1,
-      "position": [1200, 300],
+      "position": [1200, 180],
       "webhookId": "c9c9c9c9-0006-0006-0006-c9c9c9c9c9c9"
     },
     {
@@ -133,7 +133,7 @@
       "name": "Verificar Lead 24h",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [1440, 300]
+      "position": [1440, 180]
     },
     {
       "parameters": {
@@ -161,7 +161,7 @@
       "name": "¿Pendiente 24h?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [1680, 300]
+      "position": [1680, 180]
     },
     {
       "parameters": {
@@ -177,7 +177,7 @@
       "name": "Telegram Alerta 24h",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [1920, 180]
+      "position": [1920, 60]
     }
   ],
   "connections": {
@@ -199,7 +199,7 @@
     "¿Pendiente 3h?": {
       "main": [
         [{ "node": "Telegram Alerta 3h", "type": "main", "index": 0 }],
-        [{ "node": "Esperar 21h", "type": "main", "index": 0 }]
+        []
       ]
     },
     "Telegram Alerta 3h": {
