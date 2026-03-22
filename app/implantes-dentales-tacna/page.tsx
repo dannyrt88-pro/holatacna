@@ -12,6 +12,7 @@ function ImplantesDentalesTacnaForm() {
   const [phone, setPhone] = useState('')
   const [implantCount, setImplantCount] = useState('')
   const [hasDiagnosis, setHasDiagnosis] = useState('')
+  const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -44,6 +45,7 @@ function ImplantesDentalesTacnaForm() {
           name: name.trim(),
           phone: phone.trim(),
           tourist_phone: phone.trim(),
+          email: email.trim() || null,
           service_slug: 'implantes-dentales',
           service_name: 'Implantes Dentales',
           landing_path: pathname,
@@ -74,6 +76,7 @@ function ImplantesDentalesTacnaForm() {
       setPhone('')
       setImplantCount('')
       setHasDiagnosis('')
+      setEmail('')
       setMessage('')
     } catch {
       alert('Hubo un error. Escríbenos directo por WhatsApp')
@@ -148,6 +151,18 @@ function ImplantesDentalesTacnaForm() {
           ))}
         </div>
       </div>
+
+      <label className="grid gap-2">
+        <span className="font-medium">Email <span className="text-slate-400 font-normal">(opcional)</span></span>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="rounded-xl border border-slate-300 px-4 py-3"
+          placeholder="tu@email.com"
+          inputMode="email"
+        />
+      </label>
 
       <label className="grid gap-2">
         <span className="font-medium">Mensaje</span>
