@@ -12,7 +12,8 @@ export default function GoogleLoginButton({ next }: GoogleLoginButtonProps) {
 
   async function handleGoogleLogin() {
     const supabase = createClient()
-    const redirectTo = new URL('/auth/callback', window.location.origin)
+    const base = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin
+    const redirectTo = new URL('/auth/callback', base)
 
     if (next && next.startsWith('/')) {
       redirectTo.searchParams.set('next', next)
