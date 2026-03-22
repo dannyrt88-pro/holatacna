@@ -17,6 +17,7 @@ export type Lead = {
   last_status_at?: string | null
   name: string | null
   tourist_phone: string | null
+  email?: string | null
   preferred_date?: string | null
   message?: string | null
   auto_assigned?: boolean | null
@@ -74,6 +75,7 @@ export type LeadCapturePayload = {
   name: string | null
   phone: string | null
   tourist_phone: string | null
+  email?: string | null
   preferred_date?: string | null
   message: string | null
   service_slug: string | null

@@ -54,6 +54,7 @@ function LeadCaptureFormInner({
   const searchParams = useSearchParams()
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
+  const [email, setEmail] = useState('')
   const [preferredDate, setPreferredDate] = useState('')
   const [message, setMessage] = useState('')
   const [additionalServices, setAdditionalServices] = useState<string[]>([])
@@ -79,6 +80,7 @@ function LeadCaptureFormInner({
       name: name.trim() || null,
       phone: phone.trim() || null,
       tourist_phone: phone.trim() || null,
+      email: email.trim() || null,
       preferred_date: includePreferredDate ? preferredDate || null : null,
       message: includeMessage ? message.trim() || null : null,
       service_slug: serviceSlug || null,
@@ -127,6 +129,7 @@ function LeadCaptureFormInner({
       alert(successMessage)
       setName('')
       setPhone('')
+      setEmail('')
       setPreferredDate('')
       setMessage('')
       setAdditionalServices([])
@@ -161,6 +164,18 @@ function LeadCaptureFormInner({
           className="rounded-xl border border-slate-300 px-4 py-3"
           placeholder="+56 9 ..."
           inputMode="tel"
+        />
+      </label>
+
+      <label className="grid gap-2">
+        <span className="font-medium">Email <span className="text-slate-400 font-normal">(opcional)</span></span>
+        <input
+          type="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          className="rounded-xl border border-slate-300 px-4 py-3"
+          placeholder="tu@email.com"
+          inputMode="email"
         />
       </label>
 

@@ -3,6 +3,7 @@ type TelegramLeadNotification = {
   reference_code?: string | null
   name?: string | null
   tourist_phone?: string | null
+  email?: string | null
   service_name?: string | null
   city_interest?: string | null
   origin_url?: string | null
@@ -53,6 +54,7 @@ function buildLeadMessage(lead: TelegramLeadNotification) {
     "",
     `👤 Nombre: ${formatTelegramValue(lead.name, 'Sin nombre')}`,
     `📱 WhatsApp: ${formatTelegramValue(lead.tourist_phone, 'Sin WhatsApp')}`,
+    lead.email ? `📧 Email: ${lead.email}` : null,
     `🏥 Servicio: ${formatTelegramValue(lead.service_name, 'Sin servicio')}`,
     `🌍 Ciudad: ${formatTelegramValue(lead.city_interest, 'No especificada')}`,
     `💬 Mensaje: ${formatTelegramValue(lead.message, 'Sin mensaje')}`,

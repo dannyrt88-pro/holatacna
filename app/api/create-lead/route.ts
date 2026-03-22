@@ -45,6 +45,7 @@ export async function POST(req: Request) {
     const service_name = body.service_name?.trim() || null
     const service_slug = body.service_slug?.trim() || resolveServiceSlug(service_name)
     const message = body.message?.trim() || null
+    const email = body.email?.trim() || null
 
     const utm_source = getTrackingValue(body.utm_source)
     const utm_medium = getTrackingValue(body.utm_medium)
@@ -74,6 +75,7 @@ export async function POST(req: Request) {
     const leadPayload = {
       name,
       tourist_phone,
+      email,
       preferred_date,
       service_id,
       service_name,
@@ -126,6 +128,7 @@ export async function POST(req: Request) {
         reference_code: assignedLead?.reference_code,
         name: assignedLead?.name,
         tourist_phone: assignedLead?.tourist_phone,
+        email: assignedLead?.email,
         service_name: assignedLead?.service_name,
         city_interest: assignedLead?.city_interest,
         origin_url,
