@@ -193,7 +193,7 @@ export default function ImplantesDentalesTacnaPage() {
           <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
             <div className="rounded-[28px] bg-white p-8 shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
               <div className="mb-4 inline-block rounded-full bg-emerald-100 px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-emerald-700">
-                Tacna dental
+                Dentista en Tacna para chilenos
               </div>
               <h1 className="mb-4 text-4xl font-bold leading-tight sm:text-5xl">
                 Implantes Dentales en Tacna
@@ -202,21 +202,44 @@ export default function ImplantesDentalesTacnaPage() {
                 Ahorra hasta 70% en comparación con Chile.
               </p>
               <p className="text-base leading-8 text-slate-600 sm:text-lg">
-                Muchos clientes chilenos viajan a Tacna para realizar tratamientos dentales con
-                especialistas, reducir costos y coordinar su atención antes de cruzar la frontera.
-                HolaTacna te ayuda a dejar lista la evaluación comercial inicial por WhatsApp.
+                Miles de pacientes chilenos eligen un <strong>dentista en Tacna</strong> para
+                realizarse implantes dentales, carillas y tratamientos completos a una fracción
+                del costo en Chile. HolaTacna te conecta con especialistas y coordina todo antes
+                de que cruces la frontera.
               </p>
             </div>
 
             <div className="rounded-[28px] border border-slate-200 bg-white p-8 shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
-              <h2 className="mb-4 text-2xl font-bold">Beneficios</h2>
+              <h2 className="mb-4 text-2xl font-bold">¿Por qué elegir un dentista en Tacna?</h2>
               <ul className="grid gap-3 text-base leading-7 text-slate-700">
-                <li>• Tratamiento con especialistas</li>
-                <li>• Atención rápida</li>
-                <li>• Costos mucho menores que en Chile</li>
-                <li>• Tacna está a minutos de la frontera</li>
+                <li>• Especialistas en implantes, carillas y ortodoncia</li>
+                <li>• Hasta 70% más barato que en Chile</li>
+                <li>• Atención el mismo día de tu llegada</li>
+                <li>• Tacna a 1h desde Arica, 6h desde Santiago</li>
+                <li>• Coordinación previa por WhatsApp sin costo</li>
               </ul>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white px-5 py-12 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-5xl">
+          <h2 className="mb-8 text-center text-2xl font-bold text-slate-950">
+            Tratamientos dentales en Tacna para pacientes chilenos
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { titulo: 'Implantes dentales', desc: 'Titanio o zirconio. Ahorra hasta 70% vs Chile.' },
+              { titulo: 'Carillas de porcelana', desc: 'Sonrisa perfecta. Hasta 60% más económico.' },
+              { titulo: 'Ortodoncia', desc: 'Brackets o Invisalign. Hasta 50% de ahorro.' },
+              { titulo: 'Blanqueamiento', desc: 'Resultado inmediato. Desde S/180.' },
+            ].map((s) => (
+              <div key={s.titulo} className="rounded-2xl border border-slate-100 bg-slate-50 p-5">
+                <p className="mb-1 font-bold text-slate-900">{s.titulo}</p>
+                <p className="text-sm leading-6 text-slate-600">{s.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>

@@ -1,0 +1,97 @@
+{
+  "name": "WF-INBOX-VERIFY WhatsApp Webhook",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "whatsapp-inbox",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "aa000001-0001-0001-0001-aa000001aa01",
+      "name": "Webhook GET",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [0, 300],
+      "webhookId": "bb000001-0001-0001-0001-bb000001bb01"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "cond-verify-001",
+              "leftValue": "={{ $json.query['hub.verify_token'] }}",
+              "rightValue": "holatacna2026",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "cc000002-0002-0002-0002-cc000002cc02",
+      "name": "¿Token Válido?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $('Webhook GET').first().json.query['hub.challenge'] }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "dd000003-0003-0003-0003-dd000003dd03",
+      "name": "Responder Challenge",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [480, 180]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "Forbidden",
+        "options": {
+          "responseCode": 403
+        }
+      },
+      "id": "ee000004-0004-0004-0004-ee000004ee04",
+      "name": "Responder 403",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [480, 420]
+    }
+  ],
+  "connections": {
+    "Webhook GET": {
+      "main": [
+        [{ "node": "¿Token Válido?", "type": "main", "index": 0 }]
+      ]
+    },
+    "¿Token Válido?": {
+      "main": [
+        [{ "node": "Responder Challenge", "type": "main", "index": 0 }],
+        [{ "node": "Responder 403", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}

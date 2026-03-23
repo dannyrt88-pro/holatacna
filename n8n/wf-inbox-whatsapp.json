@@ -1,0 +1,116 @@
+{
+  "name": "WF-INBOX WhatsApp → Telegram",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-inbox",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "ff000001-0001-0001-0001-ff000001ff01",
+      "name": "Webhook POST",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [0, 300],
+      "webhookId": "gg000001-0001-0001-0001-gg000001gg01"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "cond-hasmsg-001",
+              "leftValue": "={{ $json.body.entry[0].changes[0].value.messages[0].type }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "hh000002-0002-0002-0002-hh000002hh02",
+      "name": "¿Tiene Mensaje?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://divgowlyqbmvzzxwtics.supabase.co/rest/v1/leads?tourist_phone=eq.{{ encodeURIComponent('+' + $('Webhook POST').first().json.body.entry[0].changes[0].value.messages[0].from) }}&select=name,service_name,status,reference_code&order=created_at.desc&limit=1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpdmdvd2x5cWJtdnp6eHd0aWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MDIzMzIsImV4cCI6MjA4ODA3ODMzMn0.8_KxbhJIHJKLHKgjxx8hLJmp_Monb3ir04lI8aIUlGM"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpdmdvd2x5cWJtdnp6eHd0aWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MDIzMzIsImV4cCI6MjA4ODA3ODMzMn0.8_KxbhJIHJKLHKgjxx8hLJmp_Monb3ir04lI8aIUlGM"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "alwaysOutputData": true,
+      "id": "ii000003-0003-0003-0003-ii000003ii03",
+      "name": "Buscar Lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [480, 180]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8560629617:AAEqU6y_r1-e8YnnpOdQ09xMhqRQkglSfqY/sendMessage",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ chat_id: '8789162933', parse_mode: 'HTML', text: '📱 <b>Mensaje WhatsApp entrante</b>\\n\\n' + ($json.name ? '👤 Lead: <b>' + $json.name + '</b>\\n🏥 ' + $json.service_name + '\\n📋 Cód: ' + $json.reference_code + '\\n' : '') + '\\n💬 \"' + $('Webhook POST').first().json.body.entry[0].changes[0].value.messages[0].text.body + '\"\\n\\n📞 De: +' + $('Webhook POST').first().json.body.entry[0].changes[0].value.messages[0].from + '\\n\\n↩️ <a href=\"https://wa.me/' + $('Webhook POST').first().json.body.entry[0].changes[0].value.messages[0].from + '\">Responder por WhatsApp</a>' }) }}",
+        "options": {}
+      },
+      "id": "jj000004-0004-0004-0004-jj000004jj04",
+      "name": "Notificar Telegram",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [720, 180]
+    }
+  ],
+  "connections": {
+    "Webhook POST": {
+      "main": [
+        [{ "node": "¿Tiene Mensaje?", "type": "main", "index": 0 }]
+      ]
+    },
+    "¿Tiene Mensaje?": {
+      "main": [
+        [{ "node": "Buscar Lead", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Buscar Lead": {
+      "main": [
+        [{ "node": "Notificar Telegram", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}
