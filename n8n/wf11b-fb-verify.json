@@ -1,0 +1,49 @@
+{
+  "name": "WF11b Facebook Webhook Verify",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "fb-leads-verify",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "wf11b-node-001",
+      "name": "Webhook Verificación FB",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [0, 300],
+      "webhookId": "wf11b-hook-001"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.query['hub.challenge'] }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "wf11b-node-002",
+      "name": "Responder Challenge",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Verificación FB": {
+      "main": [
+        [{ "node": "Responder Challenge", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}

@@ -1,0 +1,325 @@
+{
+  "name": "WF11 Facebook Lead Ads → HolaTacna",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "ALL",
+        "path": "fb-leads-verify",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "wf11-node-001",
+      "name": "Webhook FB Leads",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [0, 300],
+      "webhookId": "wf11-hook-001"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "cond-verify-001",
+              "leftValue": "={{ $json.query['hub.mode'] }}",
+              "rightValue": "subscribe",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "wf11-node-verify-check",
+      "name": "Es Verificación FB?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.query['hub.challenge'] }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "wf11-node-respond-challenge",
+      "name": "Responder Challenge",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [480, 120]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "OK",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "wf11-node-respond-ok",
+      "name": "Responder OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [480, 480]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $('Webhook FB Leads').first().json.body;\n\nif (!body || !body.entry) {\n  throw new Error('Payload inválido de Facebook: ' + JSON.stringify(body));\n}\n\nconst change = body.entry[0].changes[0];\nif (!change || change.field !== 'leadgen') {\n  throw new Error('Evento no es leadgen: ' + JSON.stringify(change));\n}\n\nconst val = change.value;\nreturn [{ json: { leadgen_id: val.leadgen_id, page_id: val.page_id, form_id: val.form_id, ad_id: val.ad_id || '' } }];"
+      },
+      "id": "wf11-node-002",
+      "name": "Extraer Lead ID",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [720, 480]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://graph.facebook.com/v22.0/{{ $json.leadgen_id }}?access_token=EAAdr98yoGakBRAXXumUdZBLAh4sBDbvRFKERUM1h3kHHomSjquENdxHtTQamU7qN4ccohHsgtDSukEsiADryRImJNd8dmKVZCI3z5K5QA7VAQV1UkEPoRZBBatKz196ifIYV4Dknyq5sV0wI0yiFE0we7XKyvxHNepngbU7K3tKTmkyOyeXF44iKAuHyVURFHAGZAGZCaeppNQvij9TNJ57Dmfi74x3l3&fields=field_data,ad_name,form_id,created_time",
+        "options": {}
+      },
+      "alwaysOutputData": true,
+      "id": "wf11-node-003",
+      "name": "Obtener Datos Lead FB",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [960, 480]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst leadgenId = $('Extraer Lead ID').first().json.leadgen_id;\nconst fields = data.field_data || [];\n\nconst fm = {};\nfor (const f of fields) {\n  fm[f.name] = f.values && f.values[0] ? f.values[0] : '';\n}\n\nconst name    = fm['full_name']     || fm['name']     || fm['nombre']        || 'Sin nombre';\nconst phone   = (fm['phone_number'] || fm['phone']    || fm['telefono']      || '').replace(/\\s/g, '');\nconst email   = fm['email']         || fm['correo']   || '';\nconst service = fm['cual_servicio'] || fm['service']  || fm['tratamiento']   || data.ad_name || 'Facebook Lead Ads';\nconst message = fm['mensaje']       || fm['message']  || fm['comentarios']   || '';\nconst city    = fm['ciudad']        || fm['city']     || fm['ciudad_origen'] || '';\n\nif (!phone) {\n  throw new Error('Lead sin teléfono. Campos: ' + JSON.stringify(Object.keys(fm)));\n}\n\nreturn [{ json: { name, phone, email, service_name: service, message, city_interest: city, utm_source: 'facebook_lead_ads', utm_medium: 'paid_social', leadgen_id: leadgenId, ad_name: data.ad_name || '' } }];"
+      },
+      "id": "wf11-node-004",
+      "name": "Normalizar Campos FB",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1200, 480]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://divgowlyqbmvzzxwtics.supabase.co/rest/v1/leads?tourist_phone=eq.{{ encodeURIComponent($json.phone) }}&created_at=gt.{{ new Date(Date.now() - 72*60*60*1000).toISOString() }}&select=id&limit=1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpdmdvd2x5cWJtdnp6eHd0aWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MDIzMzIsImV4cCI6MjA4ODA3ODMzMn0.8_KxbhJIHJKLHKgjxx8hLJmp_Monb3ir04lI8aIUlGM"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpdmdvd2x5cWJtdnp6eHd0aWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI1MDIzMzIsImV4cCI6MjA4ODA3ODMzMn0.8_KxbhJIHJKLHKgjxx8hLJmp_Monb3ir04lI8aIUlGM"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "alwaysOutputData": true,
+      "id": "wf11-node-005",
+      "name": "Consultar Supabase Duplicado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1440, 480]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "cond-dup-001",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "wf11-node-006",
+      "name": "Es Duplicado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1680, 480]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8560629617:AAEqU6y_r1-e8YnnpOdQ09xMhqRQkglSfqY/sendMessage",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ chat_id: '8789162933', text: '🔄 <b>Lead duplicado ignorado</b>\\n\\n👤 ' + $('Normalizar Campos FB').first().json.name + '\\n📱 ' + $('Normalizar Campos FB').first().json.phone + '\\n\\nYa existe en Supabase (últimas 72h).', parse_mode: 'HTML' }) }}",
+        "options": {}
+      },
+      "id": "wf11-node-007",
+      "name": "Telegram — Duplicado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1920, 360]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.holatacna.com/api/create-lead",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ name: $('Normalizar Campos FB').first().json.name, phone: $('Normalizar Campos FB').first().json.phone, email: $('Normalizar Campos FB').first().json.email, service_name: $('Normalizar Campos FB').first().json.service_name, message: $('Normalizar Campos FB').first().json.message, city_interest: $('Normalizar Campos FB').first().json.city_interest, utm_source: 'facebook_lead_ads', utm_medium: 'paid_social', leadgen_id: $('Normalizar Campos FB').first().json.leadgen_id }) }}",
+        "options": {}
+      },
+      "id": "wf11-node-008",
+      "name": "Guardar Lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1920, 600]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8560629617:AAEqU6y_r1-e8YnnpOdQ09xMhqRQkglSfqY/sendMessage",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ chat_id: '8789162933', text: '📘 <b>Nuevo Lead — Facebook Ads</b>\\n\\n👤 ' + $('Normalizar Campos FB').first().json.name + '\\n📱 ' + $('Normalizar Campos FB').first().json.phone + ($('Normalizar Campos FB').first().json.email ? '\\n📧 ' + $('Normalizar Campos FB').first().json.email : '') + '\\n🦷 ' + $('Normalizar Campos FB').first().json.service_name + ($('Normalizar Campos FB').first().json.city_interest ? '\\n🌆 ' + $('Normalizar Campos FB').first().json.city_interest : '') + ($('Normalizar Campos FB').first().json.message ? '\\n💬 ' + $('Normalizar Campos FB').first().json.message : '') + '\\n\\n📣 Anuncio: ' + ($('Normalizar Campos FB').first().json.ad_name || 'Facebook Lead') + '\\n🕐 ' + new Date().toLocaleString('es-PE', { timeZone: 'America/Lima' }), parse_mode: 'HTML' }) }}",
+        "options": {}
+      },
+      "id": "wf11-node-009",
+      "name": "Telegram — Nuevo Lead FB",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [2160, 600]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://daroste.app.n8n.cloud/webhook/wf4-whatsapp",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ phone: $('Normalizar Campos FB').first().json.phone, name: $('Normalizar Campos FB').first().json.name, service_name: $('Normalizar Campos FB').first().json.service_name }) }}",
+        "options": {}
+      },
+      "id": "wf11-node-010",
+      "name": "WF4 — WhatsApp Automático",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [2400, 480]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://daroste.app.n8n.cloud/webhook/wf7-clasificador",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ name: $('Normalizar Campos FB').first().json.name, phone: $('Normalizar Campos FB').first().json.phone, service_name: $('Normalizar Campos FB').first().json.service_name, city_interest: $('Normalizar Campos FB').first().json.city_interest, message: $('Normalizar Campos FB').first().json.message, utm_source: 'facebook_lead_ads' }) }}",
+        "options": {}
+      },
+      "id": "wf11-node-011",
+      "name": "WF7 — Clasificador IA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [2400, 600]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://daroste.app.n8n.cloud/webhook/wf5-followup",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ name: $('Normalizar Campos FB').first().json.name, phone: $('Normalizar Campos FB').first().json.phone, service_name: $('Normalizar Campos FB').first().json.service_name }) }}",
+        "options": {}
+      },
+      "id": "wf11-node-012",
+      "name": "WF5 — Follow-up",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [2400, 720]
+    }
+  ],
+  "connections": {
+    "Webhook FB Leads": {
+      "main": [
+        [{ "node": "Es Verificación FB?", "type": "main", "index": 0 }]
+      ]
+    },
+    "Es Verificación FB?": {
+      "main": [
+        [{ "node": "Responder Challenge", "type": "main", "index": 0 }],
+        [{ "node": "Responder OK", "type": "main", "index": 0 }]
+      ]
+    },
+    "Responder OK": {
+      "main": [
+        [{ "node": "Extraer Lead ID", "type": "main", "index": 0 }]
+      ]
+    },
+    "Extraer Lead ID": {
+      "main": [
+        [{ "node": "Obtener Datos Lead FB", "type": "main", "index": 0 }]
+      ]
+    },
+    "Obtener Datos Lead FB": {
+      "main": [
+        [{ "node": "Normalizar Campos FB", "type": "main", "index": 0 }]
+      ]
+    },
+    "Normalizar Campos FB": {
+      "main": [
+        [{ "node": "Consultar Supabase Duplicado", "type": "main", "index": 0 }]
+      ]
+    },
+    "Consultar Supabase Duplicado": {
+      "main": [
+        [{ "node": "Es Duplicado?", "type": "main", "index": 0 }]
+      ]
+    },
+    "Es Duplicado?": {
+      "main": [
+        [{ "node": "Telegram — Duplicado", "type": "main", "index": 0 }],
+        [{ "node": "Guardar Lead", "type": "main", "index": 0 }]
+      ]
+    },
+    "Guardar Lead": {
+      "main": [
+        [{ "node": "Telegram — Nuevo Lead FB", "type": "main", "index": 0 }]
+      ]
+    },
+    "Telegram — Nuevo Lead FB": {
+      "main": [
+        [
+          { "node": "WF4 — WhatsApp Automático", "type": "main", "index": 0 },
+          { "node": "WF7 — Clasificador IA", "type": "main", "index": 0 },
+          { "node": "WF5 — Follow-up", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}
