@@ -16,18 +16,34 @@ type ProviderMessageInput = {
   suggestedPackageSlug?: string | null
 }
 
+function normalizeServiceName(serviceName: string | null | undefined): string {
+  const s = (serviceName || '').toLowerCase()
+  if (s.includes('implante')) return 'Implantes Dentales'
+  if (s.includes('oftalmo') || s.includes('ojos') || s.includes('laser')) return 'Oftalmologia'
+  if (s.includes('estet') || s.includes('cosmet')) return 'Estetica'
+  if (s.includes('dermato')) return 'Dermatologia'
+  if (s.includes('ortodo')) return 'Ortodoncia'
+  if (s.includes('carill')) return 'Carillas Dentales'
+  return serviceName || 'servicios dentales'
+}
+
 function getServiceIntro(serviceName: string | null | undefined) {
-  switch (serviceName) {
+  const normalized = normalizeServiceName(serviceName)
+  switch (normalized) {
     case 'Implantes Dentales':
-      return 'Recibimos tu solicitud para implantes dentales en Tacna.'
+      return 'Vi que te interesa colocarte implantes dentales en Tacna. Te puedo ayudar a coordinar todo desde aqui.'
     case 'Oftalmologia':
-      return 'Recibimos tu solicitud para atencion oftalmologica en Tacna.'
+      return 'Vi que te interesa una consulta oftalmologica en Tacna. Te puedo ayudar a coordinar tu visita.'
     case 'Estetica':
-      return 'Recibimos tu solicitud para tratamientos esteticos en Tacna.'
+      return 'Vi que te interesan tratamientos esteticos en Tacna. Te puedo ayudar a coordinar todo.'
     case 'Dermatologia':
-      return 'Recibimos tu solicitud para dermatologia en Tacna.'
+      return 'Vi que te interesa una consulta dermatologica en Tacna. Te puedo ayudar a coordinar tu visita.'
+    case 'Ortodoncia':
+      return 'Vi que te interesa ortodoncia en Tacna. Te puedo ayudar a coordinar todo desde aqui.'
+    case 'Carillas Dentales':
+      return 'Vi que te interesan carillas dentales en Tacna. Te puedo ayudar a coordinar todo.'
     default:
-      return `Recibimos tu solicitud para ${serviceName || 'un servicio en HolaTacna'}.`
+      return `Vi que te interesa ${normalized} en Tacna. Te puedo ayudar a coordinar tu visita.`
   }
 }
 
@@ -38,12 +54,15 @@ export function buildInitialPatientWhatsAppMessage(input: PatientMessageInput) {
     : null
 
   return [
-    'Hola, gracias por contactar HolaTacna.',
+    'Hola! Soy Danny de HolaTacna 😊',
     '',
     getServiceIntro(input.serviceName),
+    '',
+    'Para darte un presupuesto exacto necesito saber:',
+    '1. Cuantos implantes necesitas aproximadamente?',
+    '2. Tienes alguna fecha tentativa para venir a Tacna?',
+    '',
     input.referenceCode ? `Tu codigo de referencia es ${input.referenceCode}.` : null,
-    'Un asesor comercial revisara tu caso y te respondera pronto por este medio.',
-    'Si deseas, puedes enviarnos mas detalles para acelerar la evaluacion.',
     packageLine,
   ]
     .filter(Boolean)
