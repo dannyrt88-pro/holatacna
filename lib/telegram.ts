@@ -74,6 +74,9 @@ export async function notifyTelegramLead(lead: TelegramLeadNotification) {
     return
   }
 
+  const phone = lead.tourist_phone?.replace(/[^\d]/g, '')
+  const waLink = phone ? `\n\n[↩️ Responder por WhatsApp](https://wa.me/${phone})` : ''
+
   const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
     method: "POST",
     headers: {
@@ -81,7 +84,7 @@ export async function notifyTelegramLead(lead: TelegramLeadNotification) {
     },
     body: JSON.stringify({
       chat_id: chatId,
-      text: buildLeadMessage(lead),
+      text: buildLeadMessage(lead) + waLink,
       parse_mode: "MarkdownV2",
       disable_web_page_preview: true,
     }),
@@ -116,6 +119,9 @@ export async function notifyTelegramDirectLead(lead: TelegramLeadNotification) {
     "Accion: enviar al proveedor y monitorear cierre.",
   ].filter(Boolean) as string[]
 
+  const phone = lead.tourist_phone?.replace(/[^\d]/g, '')
+  const waLink = phone ? `\n\n[↩️ Responder por WhatsApp](https://wa.me/${phone})` : ''
+
   const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
     method: "POST",
     headers: {
@@ -123,7 +129,7 @@ export async function notifyTelegramDirectLead(lead: TelegramLeadNotification) {
     },
     body: JSON.stringify({
       chat_id: chatId,
-      text: lines.map(escapeTelegram).join("\n"),
+      text: lines.map(escapeTelegram).join("\n") + waLink,
       parse_mode: "MarkdownV2",
       disable_web_page_preview: true,
     }),
