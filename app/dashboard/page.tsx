@@ -17,9 +17,7 @@ import {
 export default function Dashboard() {
   const router = useRouter()
   const supabase = createClient()
-  const topScrollRef = useRef<HTMLDivElement | null>(null)
-  const bottomScrollRef = useRef<HTMLDivElement | null>(null)
-  const syncingScrollRef = useRef<'top' | 'bottom' | null>(null)
+  const tableContainerRef = useRef<HTMLDivElement | null>(null)
   const latestLeadCreatedAtRef = useRef<string | null>(null)
   const leadIdsRef = useRef<Set<string>>(new Set())
 
@@ -325,6 +323,7 @@ export default function Dashboard() {
     document.title =
       newLeadCount > 0 ? `🔔 ${newLeadCount} leads nuevos — Dashboard HolaTacna` : 'Dashboard HolaTacna'
   }, [newLeadCount])
+
 
   function getCountryFlag(phone: string) {
     if (!phone) return ''
@@ -856,25 +855,6 @@ export default function Dashboard() {
       .join(' | ')
   }
 
-  function syncScroll(source: 'top' | 'bottom') {
-    const top = topScrollRef.current
-    const bottom = bottomScrollRef.current
-
-    if (!top || !bottom) return
-
-    if (syncingScrollRef.current && syncingScrollRef.current !== source) {
-      syncingScrollRef.current = null
-      return
-    }
-
-    syncingScrollRef.current = source
-
-    if (source === 'top') {
-      bottom.scrollLeft = top.scrollLeft
-    } else {
-      top.scrollLeft = bottom.scrollLeft
-    }
-  }
 
   function getPriorityStyle(priority: string): CSSProperties {
     if (priority === 'Alta') return priorityPillStyles.high
@@ -965,7 +945,7 @@ export default function Dashboard() {
 
   function clearNewLeadBadge() {
     setNewLeadCount(0)
-    topScrollRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    tableContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   if (loading) {
@@ -1150,17 +1130,9 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div style={scrollHintWrapStyle}>
-              <span style={scrollHintStyle}>Desliza hacia los lados para ver todas las columnas</span>
-              <div ref={topScrollRef} style={topScrollbarStyle} onScroll={() => syncScroll('top')}>
-                <div style={topScrollbarInnerStyle} />
-              </div>
-            </div>
-
             <div
-              ref={bottomScrollRef}
+              ref={tableContainerRef}
               style={tableScrollStyle}
-              onScroll={() => syncScroll('bottom')}
             >
               <table style={tableStyle}>
                 <thead>
@@ -1906,45 +1878,15 @@ const tableHeaderStyle: CSSProperties = {
 }
 
 const tableScrollStyle: CSSProperties = {
-  overflowX: 'scroll',
-  overflowY: 'hidden',
-  padding: '20px 0 0',
-  scrollbarGutter: 'stable',
-}
-
-const scrollHintWrapStyle: CSSProperties = {
-  padding: '0 22px',
-}
-
-const scrollHintStyle: CSSProperties = {
-  display: 'inline-block',
-  background: '#eff6ff',
-  color: '#1d4ed8',
-  border: '1px solid #bfdbfe',
-  borderRadius: '999px',
-  padding: '8px 12px',
-  fontSize: '12px',
-  fontWeight: 700,
-}
-
-const topScrollbarStyle: CSSProperties = {
-  overflowX: 'scroll',
-  overflowY: 'hidden',
-  marginTop: '12px',
-  paddingBottom: '4px',
-  scrollbarGutter: 'stable',
-}
-
-const topScrollbarInnerStyle: CSSProperties = {
-  width: '2120px',
-  height: '1px',
+  overflow: 'auto',
+  maxHeight: 'calc(100vh - 320px)',
 }
 
 const tableStyle: CSSProperties = {
   width: '100%',
   borderCollapse: 'separate',
   borderSpacing: 0,
-  minWidth: '2120px',
+  minWidth: '3800px',
 }
 
 const thStyle: CSSProperties = {
