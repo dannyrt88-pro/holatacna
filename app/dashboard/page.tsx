@@ -706,6 +706,7 @@ export default function Dashboard() {
   function openWhatsApp(lead: Lead) {
     const phone = lead.tourist_phone
     const message = buildInitialPatientWhatsAppMessage({
+      name: lead.name,
       referenceCode: lead.reference_code,
       serviceName: lead.service_name,
       suggestedPackageSlug: lead.suggested_package_slug,

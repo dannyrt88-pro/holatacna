@@ -1,6 +1,7 @@
 import { getPackageBySlug } from '@/lib/package-catalog'
 
 type PatientMessageInput = {
+  name?: string | null
   referenceCode?: string | null
   serviceName?: string | null
   suggestedPackageSlug?: string | null
@@ -53,8 +54,10 @@ export function buildInitialPatientWhatsAppMessage(input: PatientMessageInput) {
     ? `Tambien tenemos un paquete sugerido: ${suggestedPackage.name}.`
     : null
 
+  const firstName = (input.name || '').split(' ')[0] || ''
+
   return [
-    'Hola! Soy Danny de HolaTacna 😊',
+    firstName ? `Hola ${firstName}! Soy Danny de HolaTacna 😊` : 'Hola! Soy Danny de HolaTacna 😊',
     '',
     getServiceIntro(input.serviceName),
     '',
