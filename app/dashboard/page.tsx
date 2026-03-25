@@ -1531,9 +1531,9 @@ const pageStyle: CSSProperties = {
 }
 
 const containerStyle: CSSProperties = {
-  maxWidth: '1440px',
+  maxWidth: '100%',
   margin: '0 auto',
-  padding: '0 24px',
+  padding: '0 20px',
 }
 
 const heroSectionStyle: CSSProperties = {
@@ -1908,12 +1908,12 @@ const tableHeaderStyle: CSSProperties = {
 const tableScrollStyle: CSSProperties = {
   overflowX: 'scroll',
   overflowY: 'hidden',
-  padding: '20px 24px 24px',
+  padding: '20px 0 0',
   scrollbarGutter: 'stable',
 }
 
 const scrollHintWrapStyle: CSSProperties = {
-  padding: '0 24px',
+  padding: '0 22px',
 }
 
 const scrollHintStyle: CSSProperties = {
