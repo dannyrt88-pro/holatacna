@@ -67,7 +67,7 @@
         "sendBody": true,
         "contentType": "raw",
         "rawContentType": "application/json",
-        "body": "={{ JSON.stringify({ chat_id: $('Webhook Telegram').first().json.body.message.chat.id, text: $json.content[0].text }) }}",
+        "body": "={{ JSON.stringify({ chat_id: $('Webhook Telegram').first().json.body.message.chat.id, text: '<pre>' + $json.content[0].text + '</pre>', parse_mode: 'HTML' }) }}",
         "options": {}
       },
       "id": "wf12-node-004",
